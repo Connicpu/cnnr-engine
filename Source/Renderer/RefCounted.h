@@ -1,8 +1,10 @@
 #pragma once
 
+#include <stdlib.h>
 #include <atomic>
 #include <cstdint>
 #include <cassert>
+#include <stdexcept>
 
 class RefCounted;
 template <typename T>
@@ -77,17 +79,33 @@ protected:
 
     virtual void Free()
     {
+#ifdef _WIN32
         _aligned_free(this);
+#else
+        free(this);
+#endif
     }
 
     inline static void *operator new(size_t size)
     {
-        return _aligned_malloc(size, 16);
+        void *ptr;
+#ifdef _WIN32
+        ptr = _aligned_malloc(size, 16);
+#else
+        ptr = aligned_alloc(16, size);
+#endif
+        if (!ptr)
+            throw std::bad_alloc{};
+        return ptr;
     }
 
     inline static void operator delete(void *ptr)
     {
+#ifdef _WIN32
         _aligned_free(ptr);
+#else
+        free(ptr);
+#endif
     }
 
     template <typename T, typename ...Args>
