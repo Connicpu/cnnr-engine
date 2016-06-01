@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <Common/Filesystem.h>
+#include <Common/Platform.h>
 
 enum class EventType;
 enum class ElementState;
@@ -12,6 +13,7 @@ enum class VirtualKeyCode;
 class Event
 {
 public:
+    virtual ~Event() {}
     EventType type;
 
     struct Resized;
@@ -24,6 +26,31 @@ public:
     struct MouseWheel;
     struct MouseInput;
     struct Touch;
+
+    // This is the only way to make allocation of this definitely cross-dll-safe
+    static void *operator new(size_t size)
+    {
+        void *ptr;
+#ifdef _WIN32
+        static HANDLE procheap = GetProcessHeap();
+        ptr = HeapAlloc(procheap, 0, size);
+#else
+        ptr = malloc(size);
+#endif
+        if (!ptr)
+            throw std::bad_alloc{};
+        return ptr;
+    }
+
+    static void operator delete(void *ptr)
+    {
+#ifdef _WIN32
+        static HANDLE procheap = GetProcessHeap();
+        HeapFree(procheap, 0, ptr);
+#else
+        free(ptr);
+#endif
+    }
 };
 
 struct Event::Resized : public Event
@@ -98,6 +125,7 @@ enum class EventType
     MouseWheel,
     MouseInput,
     Touch,
+    Close,
 };
 
 enum class ElementState

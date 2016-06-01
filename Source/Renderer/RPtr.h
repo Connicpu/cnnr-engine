@@ -42,6 +42,11 @@ public:
         Swap(move);
     }
 
+    inline ~RPtr()
+    {
+        Reset();
+    }
+
     inline RPtr &operator=(const RPtr &ptr)
     {
         if (this == std::addressof(ptr))
@@ -61,7 +66,7 @@ public:
         return *this;
     }
 
-    /// Give the p value of this smart pointer and reset it without releasing
+    // Give the p value of this smart pointer and reset it without decrementing the refcount
     inline T *Release()
     {
         auto temp = p;
@@ -69,7 +74,7 @@ public:
         return temp;
     }
 
-    /// Release this reference to the pointer
+    // Release this reference to the pointer
     inline void Reset()
     {
         if (p)
@@ -154,6 +159,11 @@ public:
     inline RWeak()
         : p(nullptr)
     {
+    }
+
+    explicit inline RWeak(T *ptr)
+    {
+        _Assign(ptr);
     }
 
     explicit inline RWeak(const RPtr<T> &ptr)

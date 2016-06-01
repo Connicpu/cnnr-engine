@@ -4,6 +4,11 @@
 class TestObj : public IRenderBase
 {
 public:
+    virtual bool GetInstance(IRenderInstance **instance) override
+    {
+        *instance = nullptr;
+        return false;
+    }
 };
 
 int main()
