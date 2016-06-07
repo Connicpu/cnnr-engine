@@ -2,6 +2,7 @@
 #include <Common/Platform.h>
 #include <Common/InitOnce.h>
 #include <Common/WindowsHelpers.h>
+#include "DxDevice.h"
 
 // Window Class Helpers
 static RunOnce REGISTER_WINDOW_CLASS_RO;
@@ -12,6 +13,10 @@ HwndDisplay::HwndDisplay(DxInstance *instance, DxDevice *device, LPCWSTR title)
 {
     InitializeWindow(title);
     InitializeSwap();
+}
+
+HwndDisplay::~HwndDisplay()
+{
 }
 
 bool HwndDisplay::PollEvent(Event **event)

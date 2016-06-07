@@ -4,7 +4,7 @@
 #include <Renderer/RenderHelpers.h>
 #include "DxInstance.h"
 
-class DxDevice : ImplRenderBase<IDevice, DxInstance>
+class DxDevice : public ImplRenderBase<IDevice, DxInstance>
 {
 
 };

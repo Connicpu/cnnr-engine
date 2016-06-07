@@ -13,6 +13,7 @@ class HwndDisplay : public ImplRenderBase<IDisplay, DxInstance>, IDxTarget
 {
 public:
     HwndDisplay(DxInstance *instance, DxDevice *device, LPCWSTR title);
+    ~HwndDisplay();
 
     // IDisplay
     virtual bool PollEvent(Event **event) override;

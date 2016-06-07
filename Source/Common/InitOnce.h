@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _WIN32
+#ifdef MSVC
 
 #include "Platform.h"
 #include <atomic>
@@ -21,7 +21,7 @@ public:
         if (init) return;
 
         AcquireSRWLockExclusive(&lock);
-        auto init = initialized.load(std::memory_order_acquire);
+        init = initialized.load(std::memory_order_acquire);
         if (!init)
         {
             f();
@@ -44,7 +44,7 @@ private:
 class RunOnce
 {
 public:
-    RunOnce() = default;
+    inline RunOnce() : initialized(false) {};
     RunOnce(const RunOnce &) = delete;
     RunOnce &operator=(const RunOnce &) = delete;
 
@@ -57,7 +57,7 @@ public:
         if (init) return;
 
         pthread_rwlock_wrlock(&lock);
-        auto init = initialized.load(std::memory_order_acquire);
+        init = initialized.load(std::memory_order_acquire);
         if (!init)
         {
             f();
@@ -69,7 +69,7 @@ public:
 
 private:
     pthread_rwlock_t lock = PTHREAD_RWLOCK_INITIALIZER;
-    std::atomic<bool> initialized = false;
+    std::atomic<bool> initialized;
 };
 
 #endif
