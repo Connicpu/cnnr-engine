@@ -13,3 +13,4 @@ class IStreamingTexture : public ITexture
 public:
     virtual void Update(const uint8_t *data, size_t len) = 0;
 };
+

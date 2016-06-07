@@ -1,4 +1,6 @@
 #include "DxInstance.h"
+#include "DxDevice.h"
+#include "HwndDisplay.h"
 #include <Renderer/RenderHelpers.h>
 
 void CreateRenderInstance(const CreateInstParams *params, IRenderInstance **inst)

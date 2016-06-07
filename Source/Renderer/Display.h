@@ -1,13 +1,15 @@
 #pragma once
 
 #include "RenderBase.h"
+#include "Target.h"
 #include "Events.h"
 #include <memory>
 
-class IDisplay : public IRenderBase
+class IDisplay : public IRenderTarget
 {
 public:
     virtual bool PollEvent(Event **event) = 0;
+    virtual void Present() = 0;
 
     ///////////////////////
     // Inline helpers

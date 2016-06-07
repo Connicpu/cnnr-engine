@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <cassert>
 #include <stdexcept>
+#include <memory>
 
 class RefCounted;
 template <typename T>

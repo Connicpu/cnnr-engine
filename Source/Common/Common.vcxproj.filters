@@ -5,6 +5,12 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Header Files\Concurrency">
+      <UniqueIdentifier>{64304a80-2688-4aeb-88ef-bb68f4b62d38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Windows">
+      <UniqueIdentifier>{7a842bd8-d09f-46ea-b87f-8e47adb2cae4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Filesystem.h">
@@ -12,6 +18,12 @@
     </ClInclude>
     <ClInclude Include="Platform.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InitOnce.h">
+      <Filter>Header Files\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsHelpers.h">
+      <Filter>Header Files\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
