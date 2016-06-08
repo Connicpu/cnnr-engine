@@ -51,6 +51,12 @@ void HwndDisplay::GetTargetObject(void *target)
     *(IDxTarget **)target = this;
 }
 
+void HwndDisplay::GetRTV(ID3D11RenderTargetView **rtv)
+{
+    ComPtr<ID3D11RenderTargetView> ptr{ this->render_target };
+    *rtv = ptr.Detach();
+}
+
 LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
     HwndDisplay *display = (HwndDisplay *)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
@@ -77,7 +83,7 @@ void HwndDisplay::InitializeWindow(LPCWSTR title)
     HINSTANCE hinstance = GetHinstanceFromFn(&WndProc);
     RegisterWindowClass(hinstance);
 
-    HWND hwnd = CreateWindowExW(
+    hwnd = CreateWindowExW(
         WS_EX_OVERLAPPEDWINDOW, // ex-style
         WINDOW_CLASS_NAME,      // class
         title,                  // window title

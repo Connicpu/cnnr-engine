@@ -24,7 +24,7 @@ public:
     virtual void GetTargetObject(void *target) override;
 
     // IDxTarget
-    virtual void GetRTV(ID3D11RenderTargetView **rtv) = 0;
+    virtual void GetRTV(ID3D11RenderTargetView **rtv) override;
 
 private:
     static LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
