@@ -6,5 +6,6 @@
 
 class DxDevice : public ImplRenderBase<IDevice, DxInstance>
 {
-
+public:
+    DxDevice(DxInstance *inst, const DeviceParams *params);
 };
