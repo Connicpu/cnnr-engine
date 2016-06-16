@@ -1,0 +1,7 @@
+[Pack]
+Name = "TestGif"
+Type = "AnimatedGif"
+
+[Gif]
+Path = "test.gif"
+Size = 1.0

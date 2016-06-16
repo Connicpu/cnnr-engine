@@ -4,11 +4,16 @@
 #include <Common/Filesystem.h>
 #include <Common/Platform.h>
 
+class Event;
+class EventFree;
+
 enum class EventType;
 enum class ElementState;
 enum class MouseButton;
 enum class TouchPhase;
 enum class VirtualKeyCode;
+
+using EventPtr = std::unique_ptr<Event, EventFree>;
 
 class Event
 {
@@ -31,26 +36,35 @@ public:
     static void *operator new(size_t size)
     {
         void *ptr;
-#ifdef _WIN32
-        static HANDLE procheap = GetProcessHeap();
-        ptr = HeapAlloc(procheap, 0, size);
-#else
         ptr = malloc(size);
-#endif
         if (!ptr)
             throw std::bad_alloc{};
         return ptr;
     }
 
+private:
     static void operator delete(void *ptr)
     {
-#ifdef _WIN32
-        static HANDLE procheap = GetProcessHeap();
-        HeapFree(procheap, 0, ptr);
-#else
         free(ptr);
-#endif
     }
+};
+
+class EventFree
+{
+public:
+    EventFree(void(*pFree)(void *))
+        : pFree(pFree)
+    {
+    }
+
+    void operator()(Event *event)
+    {
+        event->~Event();
+        pFree(event);
+    }
+
+private:
+    void(*pFree)(void *);
 };
 
 struct Event::Resized : public Event
@@ -65,7 +79,7 @@ struct Event::Moved : public Event
 
 struct Event::DroppedFile : public Event
 {
-    fs::path path;
+    std::shared_ptr<fs::path> path;
 };
 
 struct Event::ReceivedCharacter : public Event

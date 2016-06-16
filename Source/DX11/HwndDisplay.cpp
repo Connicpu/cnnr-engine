@@ -3,6 +3,7 @@
 #include <Common/InitOnce.h>
 #include <Common/WindowsHelpers.h>
 #include "DxDevice.h"
+#include "DxException.h"
 
 // Window Class Helpers
 static RunOnce REGISTER_WINDOW_CLASS_RO;
@@ -40,10 +41,26 @@ bool HwndDisplay::PollEvent(Event **event)
 
 void HwndDisplay::Present()
 {
+    UINT flags = 0;
+    if (occluded)
+    {
+        flags |= DXGI_PRESENT_TEST;
+    }
+
+    auto result = swap_chain->Present(0, flags);
+    if (result == DXGI_STATUS_OCCLUDED)
+    {
+        occluded = true;
+        return;
+    }
+    
+    occluded = false;
+    CheckHR(result);
 }
 
 void HwndDisplay::Clear(float color[4])
 {
+    device->context->ClearRenderTargetView(render_target, color);
 }
 
 void HwndDisplay::GetTargetObject(void *target)
@@ -70,6 +87,10 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             display = (HwndDisplay *)create->lpCreateParams;
             SetWindowLongPtrW(hwnd, GWLP_USERDATA, (LONG_PTR)display);
             return 0;
+        }
+        case WM_MOUSEMOVE:
+        {
+            Event event;
         }
         default:
         {
@@ -113,8 +134,8 @@ void HwndDisplay::RegisterWindowClass(HINSTANCE hinst)
         wndc.cbClsExtra = 0;
         wndc.cbWndExtra = sizeof(HwndDisplay *);
         wndc.hInstance = hinst;
-        wndc.hIcon = LoadIconA(nullptr, IDI_APPLICATION);
-        wndc.hCursor = LoadCursorA(nullptr, IDC_ARROW);
+        wndc.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
+        wndc.hCursor = LoadCursor(nullptr, IDC_ARROW);
         wndc.hbrBackground = nullptr;
         wndc.lpszMenuName = nullptr;
         wndc.lpszClassName = WINDOW_CLASS_NAME;
@@ -122,3 +143,4 @@ void HwndDisplay::RegisterWindowClass(HINSTANCE hinst)
         RegisterClassExW(&wndc);
     });
 }
+

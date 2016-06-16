@@ -37,6 +37,7 @@ DxInstance::DxInstance(const CreateInstParams *params)
 
 void DxInstance::CreateDevice(const DeviceParams *params, IDevice **device)
 {
+    *device = MakeRenderObject<DxDevice>(this, params).Release();
 }
 
 void DxInstance::CreateDisplay(const DisplayParams *params, IDisplay **display)

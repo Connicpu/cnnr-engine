@@ -40,4 +40,6 @@ private:
     RPtr<DxDevice> device;
     ComPtr<IDXGISwapChain> swap_chain;
     ComPtr<ID3D11RenderTargetView> render_target;
+
+    bool occluded = false;
 };

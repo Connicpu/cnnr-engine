@@ -12,7 +12,7 @@
 struct SpriteEntry;
 class DxDevice;
 
-class SpriteSet : ImplRenderBase<ISpriteSet, DxInstance>
+class SpriteSet : public ImplRenderBase<ISpriteSet, DxInstance>
 {
 public:
     SpriteSet(
@@ -49,6 +49,11 @@ private:
 struct SpriteEntry : public IStreamingTexture
 {
 public:
+    SpriteEntry(SpriteSet *owner, ID3D11Texture2D *backing, uint32_t i)
+        : owner(owner), backingStore(backing), index(i)
+    {
+    }
+
     virtual void GetSize(uint32_t *width, uint32_t *height) override;
     virtual void Update(const uint8_t *data, size_t len) override;
 

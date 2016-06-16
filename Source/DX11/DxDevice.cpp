@@ -1,5 +1,6 @@
 #include "DxDevice.h"
 #include "DxException.h"
+#include "SpriteSet.h"
 
 DxDevice::DxDevice(DxInstance *inst, const DeviceParams *params)
     : ImplRenderBase<IDevice, DxInstance>(inst)
@@ -14,8 +15,6 @@ DxDevice::DxDevice(DxInstance *inst, const DeviceParams *params)
     };
 
     D3D_FEATURE_LEVEL feature_level;
-    ComPtr<ID3D11Device> d3d_device;
-    ComPtr<ID3D11DeviceContext> d3d_context;
     CheckHR(D3D11CreateDevice(
         inst->dxgi_adapter,
         D3D_DRIVER_TYPE_UNKNOWN,
@@ -24,8 +23,23 @@ DxDevice::DxDevice(DxInstance *inst, const DeviceParams *params)
         feature_levels,
         ARRAYSIZE(feature_levels),
         D3D11_SDK_VERSION,
-        &d3d_device,
+        &device,
         &feature_level,
-        &d3d_context
+        &context
     ));
+}
+
+void DxDevice::CreateSpriteSet(
+    bool streaming, uint32_t spriteCount,
+    uint32_t spriteWidth, uint32_t spriteHeight,
+    const uint32_t **buffers,
+    ISpriteSet **set)
+{
+    if (!streaming) assert(buffers);
+    auto inst = GetInst();
+
+    *set = MakeRenderObject<SpriteSet>(
+        inst.p, this, streaming, spriteCount, spriteWidth,
+        spriteHeight, buffers
+    ).Release();
 }

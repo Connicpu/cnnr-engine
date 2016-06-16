@@ -47,6 +47,9 @@
     <ClCompile Include="SpriteSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DxDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Module.def">

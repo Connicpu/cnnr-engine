@@ -1,0 +1,9 @@
+[Pack]
+Name = "Test"
+Type = "Sprites"
+
+[[Sprite]]
+Name = "Dickbutt"
+Path = "Dickbutt.png"
+Size = 1.0
+Format = "PNG" # optional because Path ends with .png

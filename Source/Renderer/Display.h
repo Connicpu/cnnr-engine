@@ -14,12 +14,12 @@ public:
     ///////////////////////
     // Inline helpers
 
-    inline bool PollEvent(std::unique_ptr<Event> &event)
+    inline bool PollEvent(EventPtr &event)
     {
         Event *ptr;
         bool result = this->PollEvent(&ptr);
         if (result)
-            event = std::unique_ptr<Event>{ ptr };
+            event = EventPtr{ ptr, EventFree(&free) };
         return result;
     }
 };

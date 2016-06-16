@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{B1FC51F7-8CC4-44DF-A29B-1A57BA664532}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6EF71830-F4B5-4BB5-B60C-AB3205F4ECA9} = {6EF71830-F4B5-4BB5-B60C-AB3205F4ECA9}
+		{BD576648-802C-4751-9335-F102A19C0851} = {BD576648-802C-4751-9335-F102A19C0851}
+		{C0B00D86-BEB4-4D31-AA09-53F20754C3DF} = {C0B00D86-BEB4-4D31-AA09-53F20754C3DF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Renderer", "Renderer\Renderer.vcxproj", "{8CC4BAE9-F642-4C59-A589-A5987BE37DB3}"
 EndProject
