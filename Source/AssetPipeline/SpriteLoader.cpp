@@ -47,7 +47,7 @@ SpritePack *SpriteLoader::Load(const std::string &pack)
     // Read in the sprite list / animated gif
     if (pack_type == SpritePackType::Sprites)
     {
-        for (auto &sprite_desc : config_root["Sprites"]->GetArray())
+        for (auto &sprite_desc : config_root["Sprite"]->GetArray())
         {
             // todo
         }

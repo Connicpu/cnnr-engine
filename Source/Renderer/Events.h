@@ -52,6 +52,7 @@ private:
 class EventFree
 {
 public:
+	EventFree() : EventFree(&free) {}
     EventFree(void(*pFree)(void *))
         : pFree(pFree)
     {
@@ -66,6 +67,13 @@ public:
 private:
     void(*pFree)(void *);
 };
+
+template <typename T>
+inline EventPtr MakeEvent(const T &data)
+{
+	T *p = new T(data);
+	return EventPtr{ p, EventFree(&free) };
+}
 
 struct Event::Resized : public Event
 {
@@ -103,7 +111,7 @@ struct Event::KeyboardInput : public Event
 
 struct Event::MouseMoved : public Event
 {
-    int32_t dx, dy;
+    int32_t x, y;
 };
 
 struct Event::MouseWheel : public Event
@@ -139,7 +147,6 @@ enum class EventType
     MouseWheel,
     MouseInput,
     Touch,
-    Close,
 };
 
 enum class ElementState
