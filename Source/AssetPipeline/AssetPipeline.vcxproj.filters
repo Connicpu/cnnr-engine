@@ -24,12 +24,18 @@
     <ClInclude Include="SpritePack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteDesc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SpriteLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteDesc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

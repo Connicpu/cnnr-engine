@@ -97,7 +97,7 @@
       <PreprocessorDefinitions>MSVC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(CONNORLIB_HOME)\bin\x86\serialization.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(CONNORLIB_HOME)\bin\x86\serialization.dll.lib;$(CONNORLIB_HOME)\bin\x86\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell -NoProfile -File $(SolutionDir)BuildScripts\msvc_postbuild.ps1</Command>
@@ -112,7 +112,7 @@
       <PreprocessorDefinitions>MSVC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(CONNORLIB_HOME)\bin\x64\serialization.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(CONNORLIB_HOME)\bin\x64\serialization.dll.lib;$(CONNORLIB_HOME)\bin\x64\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell -NoProfile -File $(SolutionDir)BuildScripts\msvc_postbuild.ps1</Command>
@@ -131,7 +131,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(CONNORLIB_HOME)\bin\x86\serialization.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(CONNORLIB_HOME)\bin\x86\serialization.dll.lib;$(CONNORLIB_HOME)\bin\x86\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell -NoProfile -File $(SolutionDir)BuildScripts\msvc_postbuild.ps1</Command>
@@ -150,7 +150,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(CONNORLIB_HOME)\bin\x64\serialization.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(CONNORLIB_HOME)\bin\x64\serialization.dll.lib;$(CONNORLIB_HOME)\bin\x64\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell -NoProfile -File $(SolutionDir)BuildScripts\msvc_postbuild.ps1</Command>

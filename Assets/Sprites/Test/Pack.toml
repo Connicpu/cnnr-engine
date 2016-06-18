@@ -6,4 +6,4 @@ Type = "Sprites"
 Name = "Dickbutt"
 Path = "Dickbutt.png"
 Size = 1.0
-Format = "PNG" # optional because Path ends with .png
+#Format = "PNG" # optional because Path ends with .png
