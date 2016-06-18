@@ -20,12 +20,16 @@ HwndDisplay::~HwndDisplay()
 {
 }
 
-bool HwndDisplay::PollEvent(Event **event)
+bool HwndDisplay::PollEvent(EventPtr &event)
 {
     for (;;)
     {
-        if (event_queue.try_pop(*event))
-            return true;
+		Event *ptr;
+		if (event_queue.try_pop(ptr))
+		{
+			event = EventPtr{ ptr, EventFree(&free) };
+			return true;
+		}
 
         MSG msg;
         if (PeekMessageW(&msg, hwnd, 0, 0, PM_REMOVE))
@@ -56,6 +60,11 @@ void HwndDisplay::Present()
     
     occluded = false;
     CheckHR(result);
+}
+
+bool HwndDisplay::Closed()
+{
+	return closed;
 }
 
 void HwndDisplay::Clear(float color[4])
@@ -90,13 +99,33 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         }
         case WM_MOUSEMOVE:
         {
-            Event event;
+			if (display)
+			{
+				Event::MouseMoved event;
+				event.type = EventType::MouseMoved;
+				event.x = (short)LOWORD(lp);
+				event.y = (short)HIWORD(lp);
+				display->event_queue.push(MakeEvent(event).release());
+			}
+			break;
         }
+		case WM_CLOSE:
+		{
+			if (display)
+			{
+				Event event;
+				event.type = EventType::Closed;
+				display->closed = true;
+				display->event_queue.push(MakeEvent(event).release());
+			}
+			break;
+		}
         default:
         {
             return DefWindowProcW(hwnd, msg, wp, lp);
         }
     }
+	return DefWindowProcW(hwnd, msg, wp, lp);
 }
 
 void HwndDisplay::InitializeWindow(LPCWSTR title)
@@ -118,6 +147,8 @@ void HwndDisplay::InitializeWindow(LPCWSTR title)
         hinstance,              // module instance
         (LPVOID)this            // creation parameter (passed to WM_CREATE's CREATESTRUCT)
     );
+
+	ShowWindow(hwnd, SW_SHOW);
 }
 
 void HwndDisplay::InitializeSwap()

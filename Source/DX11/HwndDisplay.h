@@ -16,8 +16,9 @@ public:
     ~HwndDisplay();
 
     // IDisplay
-    virtual bool PollEvent(Event **event) override;
+    virtual bool PollEvent(EventPtr &event) override;
     virtual void Present() override;
+	virtual bool Closed() override;
 
     // IRenderTarget
     virtual void Clear(float color[4]) override;
@@ -42,4 +43,5 @@ private:
     ComPtr<ID3D11RenderTargetView> render_target;
 
     bool occluded = false;
+	bool closed = false;
 };
