@@ -149,10 +149,60 @@ void HwndDisplay::InitializeWindow(LPCWSTR title)
     );
 
 	ShowWindow(hwnd, SW_SHOW);
+
+    RECT rect;
+    GetClientRect(hwnd, &rect);
+    width = uint32_t(rect.right - rect.left);
+    height = uint32_t(rect.bottom - rect.top);
 }
 
 void HwndDisplay::InitializeSwap()
 {
+    HRESULT hr;
+    DXGI_SWAP_CHAIN_DESC1 desc;
+    desc.Width = width;
+    desc.Height = height;
+    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    desc.Stereo = false;
+    desc.SampleDesc = { 1, 0 };
+    desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    desc.BufferCount = 2;
+    desc.Scaling = DXGI_SCALING_STRETCH;
+    desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+    desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+    desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+    DXGI_SWAP_CHAIN_FULLSCREEN_DESC full_desc;
+    full_desc.RefreshRate = { 60, 1 };
+    full_desc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+    full_desc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+    full_desc.Windowed = true;
+
+    auto inst = GetInst();
+    hr = inst->dxgi_factory->CreateSwapChainForHwnd(
+        device->device,
+        hwnd,
+        &desc,
+        &full_desc,
+        nullptr,
+        &swap_chain
+    );
+    CheckHR(hr);
+
+    hr = swap_chain->GetBuffer(0, IID_PPV_ARGS(&back_buffer));
+    CheckHR(hr);
+
+    D3D11_RENDER_TARGET_VIEW_DESC rtv_desc;
+    rtv_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+    rtv_desc.Format = desc.Format;
+    rtv_desc.Texture2D.MipSlice = 0;
+
+    hr = device->device->CreateRenderTargetView(
+        back_buffer,
+        &rtv_desc,
+        &render_target
+    );
+    CheckHR(hr);
 }
 
 void HwndDisplay::RegisterWindowClass(HINSTANCE hinst)

@@ -112,13 +112,13 @@ public:
         return &p;
     }
 
-    inline T *operator->()
+    inline T *operator->() const
     {
         assert(p != nullptr);
         return p;
     }
 
-    inline T &operator*()
+    inline T &operator*() const
     {
         assert(p != nullptr);
         return *p;

@@ -38,8 +38,11 @@ private:
     concurrency::concurrent_queue<Event *> event_queue;
     HWND hwnd;
 
+    uint32_t width, height;
+
     RPtr<DxDevice> device;
-    ComPtr<IDXGISwapChain> swap_chain;
+    ComPtr<IDXGISwapChain1> swap_chain;
+    ComPtr<ID3D11Texture2D> back_buffer;
     ComPtr<ID3D11RenderTargetView> render_target;
 
     bool occluded = false;

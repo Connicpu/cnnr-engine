@@ -15,7 +15,7 @@ public:
     virtual void CreateSpriteSet(
         bool streaming, uint32_t spriteCount,
         uint32_t spriteWidth, uint32_t spriteHeight,
-        const uint32_t **buffers,
+        const uint8_t **buffers,
         ISpriteSet **set
     ) = 0;
 };

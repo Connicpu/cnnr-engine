@@ -2,11 +2,14 @@
 #include <Common/Platform.h>
 #include <AssetPipeline/SpriteLoader.h>
 #include <iostream>
+#include <Common/MathLib.h>
 
 static const wchar_t RENDERER[] = L"DX11.dll";
 
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
+    using namespace DirectX;
+
 	AllocConsole();
 	FILE *f;
 	freopen_s(&f, "CONIN$", "r", stdin);
@@ -27,7 +30,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
     CreateRenderInstance(&instparams, &inst);
 
     DeviceParams devparams;
-    devparams.debug = false;
+    devparams.debug = true;
     RPtr<IDevice> dev;
     inst->CreateDevice(&devparams, &dev);
 
@@ -49,7 +52,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
             switch (event->type)
             {
                 case EventType::MouseMoved:
-                    std::cout << "Mouse moved!" << std::endl;
+                    //std::cout << "Mouse moved!" << std::endl;
                     break;
 
 				case EventType::Closed:
@@ -62,6 +65,11 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
             }
         }
 
+        static float hue = 0;
+        hue = fmodf(hue + 0.01f, 1.0f);
+        display->Clear(XMColorHSVToRGB(XMVectorSet(hue, 1, 1, 1)));
+
+        display->Present();
         Sleep(16);
     }
     

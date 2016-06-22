@@ -162,6 +162,7 @@
     <ClCompile Include="MMap.cpp" />
     <ClCompile Include="SpriteDesc.cpp" />
     <ClCompile Include="SpriteLoader.cpp" />
+    <ClCompile Include="SpritePack.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

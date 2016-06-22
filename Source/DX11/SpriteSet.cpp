@@ -8,7 +8,7 @@ SpriteSet::SpriteSet(
     DxInstance *instance, DxDevice *device,
     bool streaming, uint32_t spriteCount,
     uint32_t spriteWidth, uint32_t spriteHeight,
-    const uint32_t ** buffers)
+    const uint8_t ** buffers)
     : ImplRenderBase<ISpriteSet, DxInstance>{ instance },
     device(device->device),
     spriteWidth(spriteWidth),
@@ -27,6 +27,7 @@ SpriteSet::SpriteSet(
     texDesc.CPUAccessFlags = streaming ? D3D11_CPU_ACCESS_WRITE : 0;
     texDesc.Usage = streaming ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;
     texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    texDesc.MiscFlags = 0;
     texDesc.MipLevels = 1;
     texDesc.SampleDesc = { 1, 0 };
     texDesc.Width = spriteWidth;
