@@ -6,3 +6,5 @@ A 2D hobby game engine I'm working on.
 * Box2D physics
 * Cross-platform
 * Multiple rendering backends
+
+(NOTE: It may only compile in msvc until `#include <filesystem>` is implemented in gcc and clang)
