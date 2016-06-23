@@ -14,11 +14,14 @@ enum class TouchPhase;
 enum class VirtualKeyCode;
 
 using EventPtr = std::unique_ptr<Event, EventFree>;
+template <typename T>
+inline EventPtr MakeEvent(const T &data);
 
 class Event
 {
 public:
     virtual ~Event() {}
+    
     EventType type;
 
     struct Resized;
@@ -32,6 +35,17 @@ public:
     struct MouseInput;
     struct Touch;
 
+    const Resized &resized() const { return (Resized &)*this; }
+    const Moved &moved() const { return (Moved &)*this; }
+    const DroppedFile &dropped_file() const { return (DroppedFile &)*this; }
+    const ReceivedCharacter &received_character() const { return (ReceivedCharacter &)*this; }
+    const Focused &focused() const { return (Focused &)*this; }
+    const KeyboardInput &keyboard_input() const { return (KeyboardInput &)*this; }
+    const MouseMoved &mouse_moved() const { return (MouseMoved &)*this; }
+    const MouseWheel &mouse_wheel() const { return (MouseWheel &)*this; }
+    const MouseInput &mouse_input() const { return (MouseInput &)*this; }
+    const Touch &touch() const { return (Touch &)*this; }
+
     // This is the only way to make allocation of this definitely cross-dll-safe
     static void *operator new(size_t size)
     {
@@ -43,6 +57,8 @@ public:
     }
 
 private:
+    template <typename T>
+    friend inline EventPtr MakeEvent(const T &data);
     static void operator delete(void *ptr)
     {
         free(ptr);
@@ -82,12 +98,13 @@ struct Event::Resized : public Event
 
 struct Event::Moved : public Event
 {
-    int32_t dx, dy;
+    int32_t x, y;
 };
 
 struct Event::DroppedFile : public Event
 {
-    std::shared_ptr<fs::path> path;
+    int32_t x, y;
+    fs::path path;
 };
 
 struct Event::ReceivedCharacter : public Event
@@ -153,6 +170,15 @@ enum class ElementState
 {
     Pressed,
     Released,
+};
+
+enum class MouseButton
+{
+    Left,
+    Right,
+    Middle,
+    X1,
+    X2,
 };
 
 enum class TouchPhase

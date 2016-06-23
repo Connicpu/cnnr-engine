@@ -67,6 +67,14 @@ bool HwndDisplay::Closed()
 	return closed;
 }
 
+void HwndDisplay::BeginDraw()
+{
+    if (dirty_buffers)
+    {
+        InitializeSwap();
+    }
+}
+
 void HwndDisplay::Clear(float color[4])
 {
     device->context->ClearRenderTargetView(render_target, color);
@@ -83,6 +91,48 @@ void HwndDisplay::GetRTV(ID3D11RenderTargetView **rtv)
     *rtv = ptr.Detach();
 }
 
+inline void GetEventButton(UINT msg, WPARAM wp, MouseButton *button, ElementState *state)
+{
+    UINT base;
+    if (msg >= WM_XBUTTONDOWN)
+    {
+        base = msg - WM_XBUTTONDOWN;
+        if (HIWORD(wp) == XBUTTON1)
+            *button = MouseButton::X1;
+        else
+            *button = MouseButton::X2;
+    }
+    else if (msg >= WM_MBUTTONDOWN)
+    {
+        base = msg - WM_MBUTTONDOWN;
+        *button = MouseButton::Middle;
+    }
+    else if (msg >= WM_RBUTTONDOWN)
+    {
+        base = msg - WM_RBUTTONDOWN;
+        *button = MouseButton::Right;
+    }
+    else
+    {
+        base = msg - WM_LBUTTONDOWN;
+        *button = MouseButton::Left;
+    }
+
+    switch (base)
+    {
+        case 0:
+            *state = ElementState::Pressed;
+            break;
+        case 1:
+            *state = ElementState::Released;
+            break;
+        default:
+            assert("Invalid event made it in here" && false);
+            unreachable();
+    }
+}
+
+
 LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
     HwndDisplay *display = (HwndDisplay *)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
@@ -97,6 +147,62 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             SetWindowLongPtrW(hwnd, GWLP_USERDATA, (LONG_PTR)display);
             return 0;
         }
+
+        // Window resizes!
+        case WM_SIZE:
+        {
+            if (display)
+            {
+                Event::Resized event;
+                event.type = EventType::Resized;
+                event.width = LOWORD(lp);
+                event.height = HIWORD(lp);
+                display->event_queue.push(MakeEvent(event).release());
+                display->dirty_buffers = true;
+            }
+            break;
+        }
+        // Window got moved :3
+        case WM_MOVE:
+        {
+            if (display)
+            {
+                Event::Moved event;
+                event.type = EventType::Moved;
+                event.x = (short)LOWORD(lp);
+                event.y = (short)HIWORD(lp);
+                display->event_queue.push(MakeEvent(event).release());
+            }
+            break;
+        }
+        // Oh boy! Drag-and-drop files! :D
+        case WM_DROPFILES:
+        {
+            auto drop = (HDROP)wp;
+            if (display)
+            {
+                uint32_t file_count = DragQueryFileW(drop, UINT_MAX, nullptr, 0);
+                for (uint32_t i = 0; i < file_count; ++i)
+                {
+                    POINT point;
+                    uint32_t path_len = DragQueryFileW(drop, i, nullptr, 0);
+                    std::vector<wchar_t> temp_path(path_len + 1);
+                    if (DragQueryFileW(drop, i, temp_path.data(), (uint32_t)temp_path.size()) &&
+                        DragQueryPoint(drop, &point))
+                    {
+                        Event::DroppedFile event;
+                        event.type = EventType::DroppedFile;
+                        event.x = point.x;
+                        event.y = point.y;
+                        event.path = temp_path.data();
+                        display->event_queue.push(MakeEvent(event).release());
+                    }
+                }
+            }
+            DragFinish(drop);
+            return 0;
+        }
+        // Whenever the mouse moves ;)
         case WM_MOUSEMOVE:
         {
 			if (display)
@@ -109,20 +215,37 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			}
 			break;
         }
-		case WM_CLOSE:
-		{
-			if (display)
-			{
-				Event event;
-				event.type = EventType::Closed;
-				display->closed = true;
-				display->event_queue.push(MakeEvent(event).release());
-			}
-			break;
-		}
+        // RIP Window
+        case WM_CLOSE:
+        {
+            PostQuitMessage(0);
+            if (display)
+            {
+                Event event;
+                event.type = EventType::Closed;
+                display->closed = true;
+                display->event_queue.push(MakeEvent(event).release());
+            }
+            break;
+        }
+        // Mouse button events. SO MANY! XD
+        case WM_LBUTTONDOWN: case WM_LBUTTONUP:
+        case WM_RBUTTONDOWN: case WM_RBUTTONUP:
+        case WM_MBUTTONDOWN: case WM_MBUTTONUP:
+        case WM_XBUTTONDOWN: case WM_XBUTTONUP:
+        {
+            if (display)
+            {
+                Event::MouseInput event;
+                event.type = EventType::MouseInput;
+                GetEventButton(msg, wp, &event.button, &event.state);
+                display->event_queue.push(MakeEvent(event).release());
+            }
+            break;
+        }
         default:
         {
-            return DefWindowProcW(hwnd, msg, wp, lp);
+            break;
         }
     }
 	return DefWindowProcW(hwnd, msg, wp, lp);
@@ -150,6 +273,8 @@ void HwndDisplay::InitializeWindow(LPCWSTR title)
 
 	ShowWindow(hwnd, SW_SHOW);
 
+    DragAcceptFiles(hwnd, true);
+
     RECT rect;
     GetClientRect(hwnd, &rect);
     width = uint32_t(rect.right - rect.left);
@@ -158,6 +283,11 @@ void HwndDisplay::InitializeWindow(LPCWSTR title)
 
 void HwndDisplay::InitializeSwap()
 {
+    // TODO: Depth buffer? Do I want to support out-of-order drawing?
+    render_target.Release();
+    back_buffer.Release();
+    swap_chain.Release();
+
     HRESULT hr;
     DXGI_SWAP_CHAIN_DESC1 desc;
     desc.Width = width;
@@ -166,7 +296,7 @@ void HwndDisplay::InitializeSwap()
     desc.Stereo = false;
     desc.SampleDesc = { 1, 0 };
     desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    desc.BufferCount = 2;
+    desc.BufferCount = 16;
     desc.Scaling = DXGI_SCALING_STRETCH;
     desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;

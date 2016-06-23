@@ -8,6 +8,7 @@
 #else
 
 #include <Vendor/Math/DirectXMath.h>
+#include <Vendor/Math/DirectXColors.h>
 
 #endif
 

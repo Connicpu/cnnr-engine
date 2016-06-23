@@ -21,6 +21,7 @@ public:
 	virtual bool Closed() override;
 
     // IRenderTarget
+    virtual void BeginDraw() override;
     virtual void Clear(float color[4]) override;
     virtual void GetTargetObject(void *target) override;
 
@@ -47,4 +48,5 @@ private:
 
     bool occluded = false;
 	bool closed = false;
+    bool dirty_buffers = false;
 };
