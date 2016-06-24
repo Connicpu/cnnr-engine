@@ -18,7 +18,7 @@ public:
     // IDisplay
     virtual bool PollEvent(EventPtr &event) override;
     virtual void Present() override;
-	virtual bool Closed() override;
+    virtual bool Closed() override;
 
     // IRenderTarget
     virtual void BeginDraw() override;
@@ -47,6 +47,6 @@ private:
     ComPtr<ID3D11RenderTargetView> render_target;
 
     bool occluded = false;
-	bool closed = false;
+    bool closed = false;
     bool dirty_buffers = false;
 };

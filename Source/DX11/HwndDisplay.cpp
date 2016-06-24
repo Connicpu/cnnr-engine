@@ -24,12 +24,12 @@ bool HwndDisplay::PollEvent(EventPtr &event)
 {
     for (;;)
     {
-		Event *ptr;
-		if (event_queue.try_pop(ptr))
-		{
-			event = EventPtr{ ptr, EventFree(&free) };
-			return true;
-		}
+        Event *ptr;
+        if (event_queue.try_pop(ptr))
+        {
+            event = EventPtr{ ptr, EventFree(&free) };
+            return true;
+        }
 
         MSG msg;
         if (PeekMessageW(&msg, hwnd, 0, 0, PM_REMOVE))
@@ -64,7 +64,7 @@ void HwndDisplay::Present()
 
 bool HwndDisplay::Closed()
 {
-	return closed;
+    return closed;
 }
 
 void HwndDisplay::BeginDraw()
@@ -205,15 +205,15 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         // Whenever the mouse moves ;)
         case WM_MOUSEMOVE:
         {
-			if (display)
-			{
-				Event::MouseMoved event;
-				event.type = EventType::MouseMoved;
-				event.x = (short)LOWORD(lp);
-				event.y = (short)HIWORD(lp);
-				display->event_queue.push(MakeEvent(event).release());
-			}
-			break;
+            if (display)
+            {
+                Event::MouseMoved event;
+                event.type = EventType::MouseMoved;
+                event.x = (short)LOWORD(lp);
+                event.y = (short)HIWORD(lp);
+                display->event_queue.push(MakeEvent(event).release());
+            }
+            break;
         }
         // RIP Window
         case WM_CLOSE:
@@ -248,7 +248,7 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             break;
         }
     }
-	return DefWindowProcW(hwnd, msg, wp, lp);
+    return DefWindowProcW(hwnd, msg, wp, lp);
 }
 
 void HwndDisplay::InitializeWindow(LPCWSTR title)
@@ -271,7 +271,7 @@ void HwndDisplay::InitializeWindow(LPCWSTR title)
         (LPVOID)this            // creation parameter (passed to WM_CREATE's CREATESTRUCT)
     );
 
-	ShowWindow(hwnd, SW_SHOW);
+    ShowWindow(hwnd, SW_SHOW);
 
     DragAcceptFiles(hwnd, true);
 

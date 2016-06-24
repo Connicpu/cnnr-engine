@@ -68,7 +68,7 @@ private:
 class EventFree
 {
 public:
-	EventFree() : EventFree(&free) {}
+    EventFree() : EventFree(&free) {}
     EventFree(void(*pFree)(void *))
         : pFree(pFree)
     {
@@ -87,8 +87,8 @@ private:
 template <typename T>
 inline EventPtr MakeEvent(const T &data)
 {
-	T *p = new T(data);
-	return EventPtr{ p, EventFree(&free) };
+    T *p = new T(data);
+    return EventPtr{ p, EventFree(&free) };
 }
 
 struct Event::Resized : public Event
