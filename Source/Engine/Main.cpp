@@ -3,6 +3,7 @@
 #include <AssetPipeline/SpriteLoader.h>
 #include <iostream>
 #include <Common/MathLib.h>
+#include <AssetPipeline/SpritePack.h>
 
 static const wchar_t RENDERER[] = L"DX11.dll";
 
@@ -14,7 +15,7 @@ Math::XMVECTOR NextClear()
     return XMColorHSVToRGB(XMVectorSet(hue, 1, 1, 1));
 }
 
-int main(char *argc, const char *argv)
+int main(int, const char *)
 {
     while (!fs::exists(fs::current_path() / "Assets"))
         fs::current_path(fs::current_path().parent_path());
@@ -37,6 +38,12 @@ int main(char *argc, const char *argv)
     SpriteLoader loader{ dev.p };
     loader.Load("Test");
 
+    auto gif = (GifPack *)loader.Load("TestGif");
+    auto gif_time = std::chrono::system_clock::now();
+    ImageLoad::duration gif_dur;
+    gif->LoadFrame(0, &gif_dur);
+    gif->CacheNextThreaded(1);
+
     DisplayParams disparams;
     disparams.device = dev.p;
     disparams.window_title = "Hi there :D";
@@ -44,6 +51,7 @@ int main(char *argc, const char *argv)
     inst->CreateDisplay(&disparams, &display);
 
     bool quit = false;
+    uint32_t gif_frame = 0;
     while (!quit)
     {
         EventPtr event;
@@ -79,6 +87,16 @@ int main(char *argc, const char *argv)
                     std::cout << "Unknown event o:" << std::endl;
                     break;
             }
+        }
+
+        auto now = std::chrono::system_clock::now();
+        if (gif_time + gif_dur >= now)
+        {
+            gif_time = now;
+            gif_frame++;
+            if (!gif->LoadFrame(gif_frame, &gif_dur))
+                gif_frame = 0;
+            gif->CacheNextThreaded(gif_frame + 1);
         }
 
         display->Clear(NextClear());

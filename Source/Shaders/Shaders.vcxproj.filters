@@ -5,4 +5,12 @@
       <UniqueIdentifier>{65b533fb-35fe-4754-b2b5-2665d7e2c715}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="SpriteVS.hlsl">
+      <Filter>DX11</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleVS.hlsl">
+      <Filter>DX11</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

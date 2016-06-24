@@ -47,14 +47,18 @@ SpritePack *SpriteLoader::Load(const std::string &pack)
         throw std::runtime_error{ "Pack `" + pack + "` has an invalid Pack.Type" };
     
     // Read in the sprite list / animated gif
+    std::unique_ptr<SpritePack> pack_ptr;
     if (pack_type == SpritePackType::Sprites)
     {
-        auto pack = SpritePack::LoadPack(device_.p, pack_folder, config_root);
+        pack_ptr = SpritePack::LoadPack(device_.p, pack_folder, config_root);
     }
     else if (pack_type == SpritePackType::AnimatedGif)
     {
-
+        pack_ptr = GifPack::LoadGif(device_.p, pack_folder, config_root);
     }
 
-    return nullptr;
+    auto ppack = pack_ptr.get();
+    loaded_packs_[pack] = std::move(pack_ptr);
+
+    return ppack;
 }

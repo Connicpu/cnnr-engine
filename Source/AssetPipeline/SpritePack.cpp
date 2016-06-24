@@ -150,12 +150,65 @@ bool SpritePack::FindSprite(const std::string &name, uint32_t *sprite)
     return true;
 }
 
-std::unique_ptr<GifPack> GifPack::LoadGif(const fs::path &pack_folder, const TOML::Table &config_root)
+std::unique_ptr<GifPack> GifPack::LoadGif(
+    IDevice *device, const fs::path &pack_folder, const TOML::Table &config_root
+)
 {
-    return std::unique_ptr<GifPack>();
+    auto &gif_config = config_root["Gif"]->GetTable();
+
+    SpriteDesc sprite_desc;
+    sprite_desc.Deserialize(gif_config, pack_folder);
+    auto gif = ImageLoad::AnimatedGif::Load(sprite_desc.GetImageId());
+    
+    ImageLoad::Frame frame0;
+    ImageLoad::duration dur0;
+    if (!gif.GetFrame(0, &frame0, &dur0))
+        return nullptr;
+
+    uint32_t width, height;
+    gif.GetSize(&width, &height);
+    const uint8_t *buffer;
+    frame0.GetBuffer(&buffer);
+
+    RPtr<ISpriteSet> set;
+    device->CreateSpriteSet(
+        true, 1,
+        width, height,
+        &buffer,
+        &set
+    );
+
+    auto pack = std::unique_ptr<GifPack>{ new GifPack(std::move(gif)) };
+    pack->sprite_set = std::move(set);
+    pack->sprite_names.push_back(sprite_desc.name);
+    pack->name_map.emplace(sprite_desc.name, 0);
+    pack->sprite_set->GetStreamingSprite(0, &pack->texture);
+    return std::move(pack);
 }
 
 bool GifPack::LoadFrame(uint32_t frame, ImageLoad::duration *duration)
+{
+    if (cache_future.valid())
+        if (!cache_future.get())
+            frame = 0;
+    return InternalLoadFrame(frame, duration);
+}
+
+void GifPack::CacheNextThreaded(uint32_t frame)
+{
+    cache_future = std::async([this, frame]() -> bool
+    {
+        ImageLoad::duration dur;
+        if (!this->InternalLoadFrame(frame, &dur))
+        {
+            this->InternalLoadFrame(0, &dur);
+            return false;
+        }
+        return true;
+    });
+}
+
+bool GifPack::InternalLoadFrame(uint32_t frame, ImageLoad::duration *duration)
 {
     ImageLoad::Frame frame_buf;
     if (!gif.GetFrame(frame, &frame_buf, duration))

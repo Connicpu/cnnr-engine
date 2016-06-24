@@ -5,7 +5,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
     int argc = __argc;
     char **argv = __argv;
 
-    if (argc >= 2 && strcmp(argv[1], "-console") == 0)
+    //if (argc >= 2 && strcmp(argv[1], "-console") == 0)
     {
         AllocConsole();
         FILE *f;

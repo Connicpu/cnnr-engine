@@ -7,6 +7,7 @@
 #include <vector>
 #include <chrono>
 #include <unordered_map>
+#include <future>
 
 enum class SpritePackType
 {
@@ -39,17 +40,24 @@ protected:
     RPtr<ISpriteSet> sprite_set;
     std::vector<std::string> sprite_names;
     std::vector<SpriteWindow> windows;
-    std::unordered_map<std::string, size_t> name_map;
+    std::unordered_map<std::string, uint32_t> name_map;
 };
 
 class GifPack : public SpritePack
 {
 public:
-    static std::unique_ptr<GifPack> LoadGif(const fs::path &pack_folder, const TOML::Table &config_root);
+    static std::unique_ptr<GifPack> LoadGif(
+        IDevice *device, const fs::path &pack_folder, const TOML::Table &config_root
+    );
 
     bool LoadFrame(uint32_t frame, ImageLoad::duration *duration);
+    void CacheNextThreaded(uint32_t frame);
 
-private:
+protected:
+    GifPack(ImageLoad::AnimatedGif &&gif) : gif(std::move(gif)) {}
+    bool InternalLoadFrame(uint32_t frame, ImageLoad::duration *duration);
+
+    std::future<bool> cache_future;
     IStreamingTexture *texture;
     ImageLoad::AnimatedGif gif;
 };

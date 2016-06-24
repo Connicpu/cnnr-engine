@@ -168,12 +168,14 @@
     <ClInclude Include="DxPlatform.h" />
     <ClInclude Include="DxTarget.h" />
     <ClInclude Include="HwndDisplay.h" />
+    <ClInclude Include="InputLayouts.h" />
     <ClInclude Include="SpriteSet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DxDevice.cpp" />
     <ClCompile Include="DxInstance.cpp" />
     <ClCompile Include="HwndDisplay.cpp" />
+    <ClCompile Include="InputLayouts.cpp" />
     <ClCompile Include="SpriteSet.cpp" />
   </ItemGroup>
   <ItemGroup>
