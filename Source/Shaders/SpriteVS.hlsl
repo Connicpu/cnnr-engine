@@ -13,7 +13,7 @@ struct VertexIn
     float3x2 transform : TRANSFORM;
     uint material_id : MATERIALID0;
     float layer : LAYER;
-    float4 rect : TEXCOORD1; // <top, left, bottom, right>
+    float4 rect : TEXCOORD1; // <left, top, right, bottom>
     float4 tint : COLOR0;
 };
 
@@ -39,6 +39,6 @@ VertexOut main(VertexIn input)
     output.position = float4(pos.xy, input.layer, 1);
     output.color = input.tint;
     output.material_id = input.material_id;
-    output.texcoord = lerp(input.rect.yx, input.rect.wz, input.vert_uv);
+    output.texcoord = lerp(input.rect.xy, input.rect.zw, input.vert_uv);
     return output;
 }
