@@ -110,6 +110,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CxMath.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="MathCommon.h" />

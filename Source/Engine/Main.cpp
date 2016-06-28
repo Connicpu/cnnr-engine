@@ -4,22 +4,11 @@
 #include <iostream>
 #include <Common/MathLib.h>
 #include <AssetPipeline/SpritePack.h>
-#include <Math/Vector.h>
 
 static const wchar_t RENDERER[] = L"DX11.dll";
 
-Math::XMVECTOR NextClear()
-{
-    using namespace Math;
-    static float hue = 0;
-    hue = fmodf(hue + 0.001f, 1.0f);
-    return XMColorHSVToRGB(XMVectorSet(hue, 1, 1, 1));
-}
-
 int main(int, const char *)
 {
-    Vec2 vec(1, 2);
-
     while (!fs::exists(fs::current_path() / "Assets"))
         fs::current_path(fs::current_path().parent_path());
 
@@ -102,7 +91,7 @@ int main(int, const char *)
             gif->CacheNextThreaded(gif_frame + 1);
         }
 
-        display->Clear(NextClear());
+        //display->Clear(NextClear());
         display->Present();
         Sleep(16);
     }

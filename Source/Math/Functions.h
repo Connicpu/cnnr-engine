@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Structures.h"
-#include "MathCommon.h"
+#include "CxMath.h"
 #include <cmath>
 
 namespace Math
@@ -69,14 +69,27 @@ namespace Math
         return Dot(v, v);
     }
 
-    constexpr float Length(const Vec2F v)
+    inline float Length(const Vec2F v)
     {
-        return constexpr_sqrt(LengthSq(v));
+        return std::sqrt(LengthSq(v));
+    }
+    constexpr float LengthCx(const Vec2F v)
+    {
+        return cx::sqrt(LengthSq(v));
     }
 
-    constexpr Vec2F Normalize(const Vec2F v)
+    inline Vec2F Normalize(const Vec2F v)
     {
         return v / Length(v);
+    }
+    constexpr Vec2F NormalizeCx(const Vec2F v)
+    {
+        return v / LengthCx(v);
+    }
+
+    constexpr bool IsZero(const Vec2F v)
+    {
+        return LengthSq(v) < 1e-8;
     }
 
     ////////////////////////////
@@ -170,7 +183,7 @@ namespace Math
 
     constexpr Size2U SizeU()
     {
-        return Size2U{ 0.f, 0.f };
+        return Size2U{ 0, 0 };
     }
 
     constexpr Size2U SizeU(uint32_t width, uint32_t height)

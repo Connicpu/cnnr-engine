@@ -17,7 +17,8 @@ namespace Math
         constexpr static Matrix3x2 Translation(Vec2F vec);
         constexpr static Matrix3x2 Translation(Point2F point);
         constexpr static Matrix3x2 Scale(Size2F scale, Point2F center = Point2());
-        constexpr static Matrix3x2 Rotation(float angle, Point2F center = Point2());
+        inline static Matrix3x2 Rotation(float angle, Point2F center = Point2());
+        constexpr static Matrix3x2 RotationCx(float angle, Point2F center = Point2());
     };
 }
 
@@ -43,12 +44,11 @@ constexpr Math::Matrix3x2 Math::Matrix3x2::Identity()
 
 constexpr Math::Matrix3x2 Math::Matrix3x2::Translation(const Vec2F vec)
 {
-    const float x = vec.x, y = vec.y;
     return Matrix3x2F
     {
         1, 0,
         0, 1,
-        x, y,
+        vec.x, vec.y,
     };
 }
 
@@ -59,19 +59,39 @@ constexpr Math::Matrix3x2 Math::Matrix3x2::Translation(const Point2F point)
 
 constexpr Math::Matrix3x2 Math::Matrix3x2::Scale(const Size2F scale, const Point2F center)
 {
-    float w = scale.width, h = scale.height;
-    float x = center.x - w * center.x, y = center.y - h * center.y;
-
     return Matrix3x2F
     {
-        w, 0,
-        0, h,
-        x, y,
+        scale.width, 0,
+        0, scale.height,
+        center.x - scale.width * center.x, center.y - scale.height * center.y,
     };
 }
 
-constexpr Math::Matrix3x2 Math::Matrix3x2::Rotation(float angle, Point2F center)
+inline Math::Matrix3x2 Math::Matrix3x2::Rotation(float angle, Point2F center)
 {
-    return Matrix3x2();
+    const float cos = std::cos(angle);
+    const float sin = std::sin(angle);
+    const float x = center.x;
+    const float y = center.y;
+    const float tx = x - cos*x - sin*y;
+    const float ty = y - cos*y - sin*x;
+
+    return Matrix3x2F
+    {
+        cos, -sin,
+        sin,  cos,
+         tx,   ty,
+    };
+}
+
+constexpr Math::Matrix3x2 Math::Matrix3x2::RotationCx(float angle, Point2F center)
+{
+    return Matrix3x2F
+    {
+        cx::cos(angle), -cx::sin(angle),
+        cx::sin(angle),  cx::cos(angle),
+        center.x - cx::cos(angle)*center.x - cx::sin(angle)*center.y,
+        center.y - cx::cos(angle)*center.y - cx::sin(angle)*center.x,
+    };
 }
 
