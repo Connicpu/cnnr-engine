@@ -38,3 +38,8 @@ struct ColorF
 {
     float r, g, b, a;
 };
+
+struct ColorHslF
+{
+    float h, s, l, a;
+};

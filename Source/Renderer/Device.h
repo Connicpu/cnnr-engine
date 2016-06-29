@@ -18,4 +18,7 @@ public:
         const uint8_t **buffers,
         ISpriteSet **set
     ) = 0;
+
+    // TODO: Other creation functions that need a device
 };
+

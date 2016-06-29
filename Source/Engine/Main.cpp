@@ -7,6 +7,16 @@
 
 static const wchar_t RENDERER[] = L"DX11.dll";
 
+const float *NextClear()
+{
+    static ColorF color;
+    static float hue = 0;
+
+    hue = std::fmod(hue + 0.01f, 1.f);
+    color = Math::HslToRgb(Math::ColorHsl(hue, 1, 1));
+    return &color.r;
+}
+
 int main(int, const char *)
 {
     while (!fs::exists(fs::current_path() / "Assets"))
@@ -91,7 +101,7 @@ int main(int, const char *)
             gif->CacheNextThreaded(gif_frame + 1);
         }
 
-        //display->Clear(NextClear());
+        display->Clear(NextClear());
         display->Present();
         Sleep(16);
     }

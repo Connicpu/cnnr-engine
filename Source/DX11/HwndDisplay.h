@@ -22,7 +22,7 @@ public:
 
     // IRenderTarget
     virtual void BeginDraw() override;
-    virtual void Clear(float color[4]) override;
+    virtual void Clear(const float color[4]) override;
     virtual void GetTargetObject(void *target) override;
 
     // IDxTarget

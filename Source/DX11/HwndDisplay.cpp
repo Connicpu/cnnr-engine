@@ -75,7 +75,7 @@ void HwndDisplay::BeginDraw()
     }
 }
 
-void HwndDisplay::Clear(float color[4])
+void HwndDisplay::Clear(const float color[4])
 {
     device->context->ClearRenderTargetView(render_target, color);
 }

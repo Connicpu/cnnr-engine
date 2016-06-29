@@ -245,5 +245,175 @@ namespace Math
     }
 
     ////////////////////////////
+    // Matrix transform functions
+
+    constexpr Matrix3x2F operator*(Matrix3x2F m1, Matrix3x2F m2)
+    {
+        return Matrix3x2F
+        {
+            m1.m11 * m2.m11 + m1.m12 * m2.m21,          m1.m11 * m2.m12 + m1.m12 * m2.m22,
+            m2.m11 * m1.m21 + m2.m21 * m1.m22,          m2.m12 * m1.m21 + m1.m22 * m2.m22,
+            m2.m31 + m2.m11 * m1.m31 + m2.m21 * m1.m32, m2.m32 + m2.m12 * m1.m31 + m2.m22 * m1.m32,
+        };
+    }
+
+    constexpr Point2F operator*(Matrix3x2F m, Point2F point)
+    {
+        return Point2(
+            point.x*m.m11 + point.y*m.m21 + m.m31,
+            point.x*m.m12 + point.y*m.m22 + m.m32
+        );
+    }
+
+    constexpr Vec2F operator*(Matrix3x2F m, Vec2F vec)
+    {
+        return Vec2(
+            vec.x*m.m11 + vec.y*m.m21,
+            vec.x*m.m12 + vec.y*m.m22
+        );
+    }
+
+    ////////////////////////////
     // Color functions
+
+    constexpr ColorF Color(float r, float g, float b, float a = 1)
+    {
+        return ColorF{ r, g, b, a };
+    }
+
+    constexpr ColorHslF ColorHsl(float h, float s, float l, float a = 1)
+    {
+        return ColorHslF{ h, s, l, a };
+    }
+
+    namespace ColorDetail
+    {
+        constexpr float hsl_rgb_q(ColorHslF hsl)
+        {
+            return hsl.l < 0.5f
+                ? hsl.l * (1 + hsl.s)
+                : hsl.l + hsl.s - hsl.l * hsl.s;
+        }
+
+        constexpr float hsl_rgb_p(ColorHslF hsl)
+        {
+            return 2 * hsl.l - hsl_rgb_q(hsl);
+        }
+
+        constexpr float hue_to_rgb(float p, float q, float t)
+        {
+            return t < 0
+                ? hue_to_rgb(p, q, t + 1)
+                : t > 1
+                    ? hue_to_rgb(p, q, t - 1)
+                    : t < 1 / 6.f
+                        ? p + (q - p) * 6 * t
+                        : t < 1 / 2.f
+                            ? q
+                            : t < 2 / 3.f
+                                ? p + (q - p) * 6 * (2 / 3.f - t)
+                                : p;
+        }
+
+        constexpr bool rgb_max_r(ColorF rgb)
+        {
+            return rgb.r >= rgb.g && rgb.r >= rgb.b;
+        }
+
+        constexpr bool rgb_max_g(ColorF rgb)
+        {
+            return !rgb_max_r(rgb) && rgb.g >= rgb.b;
+        }
+
+        constexpr bool rgb_max_b(ColorF rgb)
+        {
+            return !rgb_max_r(rgb) && !rgb_max_g(rgb);
+        }
+
+        constexpr float rgb_max(ColorF rgb)
+        {
+            return rgb.r >= rgb.g && rgb.r >= rgb.b
+                ? rgb.r
+                : rgb.g >= rgb.b
+                    ? rgb.g
+                    : rgb.b;
+        }
+
+        constexpr float rgb_min(ColorF rgb)
+        {
+            return rgb.r <= rgb.g && rgb.r <= rgb.b
+                ? rgb.r
+                : rgb.g <= rgb.b
+                    ? rgb.g
+                    : rgb.b;
+        }
+
+        constexpr float rgb_l(ColorF rgb)
+        {
+            return (rgb_max(rgb) + rgb_min(rgb)) / 2;
+        }
+
+        constexpr float rgb_d(ColorF rgb)
+        {
+            return rgb_max(rgb) - rgb_min(rgb);
+        }
+
+        constexpr float rgb_s(ColorF rgb)
+        {
+            return rgb_l(rgb) > 0.5f
+                ? rgb_d(rgb) / (2 - rgb_d(rgb))
+                : rgb_d(rgb) / (rgb_max(rgb) + rgb_min(rgb));
+        }
+
+        constexpr float rgb_h_r(ColorF rgb)
+        {
+            return (rgb.g - rgb.b) / rgb_d(rgb) + (rgb.g < rgb.b ? 6 : 0);
+        }
+
+        constexpr float rgb_h_g(ColorF rgb)
+        {
+            return (rgb.b - rgb.r) / rgb_d(rgb) + 2;
+        }
+
+        constexpr float rgb_h_b(ColorF rgb)
+        {
+            return (rgb.r - rgb.g) / rgb_d(rgb) + 4;
+        }
+
+        constexpr float rgb_h(ColorF rgb)
+        {
+            return (rgb_max_r(rgb)
+                ? rgb_h_r(rgb)
+                : rgb_max_g(rgb)
+                    ? rgb_h_g(rgb)
+                    : rgb_h_b(rgb))
+                / 6.0f;
+        }
+    }
+
+    constexpr ColorF HslToRgb(ColorHslF hsl)
+    {
+        using namespace ColorDetail;
+        return hsl.s == 0
+            ? Color(hsl.l, hsl.l, hsl.l, hsl.a)
+            : Color(
+                hue_to_rgb(hsl_rgb_p(hsl), hsl_rgb_q(hsl), hsl.h + 1 / 3.f),
+                hue_to_rgb(hsl_rgb_p(hsl), hsl_rgb_q(hsl), hsl.h),
+                hue_to_rgb(hsl_rgb_p(hsl), hsl_rgb_q(hsl), hsl.h - 1 / 3.f),
+                hsl.a
+            );
+    }
+
+    constexpr ColorHslF RgbToHsl(ColorF rgb)
+    {
+        using namespace ColorDetail;
+        return rgb_max(rgb) == rgb_min(rgb)
+            ? ColorHsl(0, 0, rgb_l(rgb))
+            : ColorHsl(
+                rgb_h(rgb),
+                rgb_s(rgb),
+                rgb_l(rgb),
+                rgb.a
+            );
+    }
 }
