@@ -27,7 +27,7 @@ public:
         : type(type)
     {
     };
-    
+
     EventType type;
 
     struct Resized;

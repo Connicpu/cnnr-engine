@@ -2,6 +2,7 @@
 #include <Common/Platform.h>
 #include <AssetPipeline/SpriteLoader.h>
 #include <Common/MathLib.h>
+#include <Renderer/StringHelpers.h>
 #include <AssetPipeline/SpritePack.h>
 #include <iostream>
 #include <iomanip>
@@ -114,7 +115,7 @@ int main(int, const char *)
 
                 default:
                 {
-                    std::cout << "Unknown event o:" << std::endl;
+                    std::cout << "Unknown event " << EventTypeName(event.base.type) << std::endl;
                     break;
                 }
             }

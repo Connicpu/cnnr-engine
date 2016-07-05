@@ -10,7 +10,12 @@
 template <typename T>
 using ComPtr = ATL::CComPtr<T>;
 
+#ifdef NDEBUG
 #define unreachable() (__assume(0))
+#else
+#include <cassert>
+#define unreachable() ((assert(false && "Unreachable statement reached")), (__assume(0)))
+#endif
 
 #else
 

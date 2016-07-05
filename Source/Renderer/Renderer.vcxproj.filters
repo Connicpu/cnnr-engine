@@ -46,8 +46,8 @@
     <ClInclude Include="SpriteSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Events.cpp" />
+    <ClInclude Include="StringHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
