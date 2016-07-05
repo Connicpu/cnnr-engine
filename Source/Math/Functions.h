@@ -297,7 +297,7 @@ namespace Math
 
         constexpr float hsl_rgb_p(ColorHslF hsl)
         {
-            return 2 * hsl.l - hsl_rgb_q(hsl);
+            return hsl.l - hsl_rgb_q(hsl);
         }
 
         constexpr float hue_to_rgb(float p, float q, float t)

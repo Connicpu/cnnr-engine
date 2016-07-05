@@ -16,7 +16,7 @@ public:
     ~HwndDisplay();
 
     // IDisplay
-    virtual bool PollEvent(EventPtr &event) override;
+    virtual bool PollEvent(EventStorage &event) override;
     virtual void Present() override;
     virtual bool Closed() override;
 
@@ -36,7 +36,7 @@ private:
 
     static void RegisterWindowClass(HINSTANCE hinst);
 
-    concurrency::concurrent_queue<Event *> event_queue;
+    concurrency::concurrent_queue<EventStorage> event_queue;
     HWND hwnd;
 
     uint32_t width, height;

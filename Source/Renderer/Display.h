@@ -8,7 +8,7 @@
 class IDisplay : public IRenderTarget
 {
 public:
-    virtual bool PollEvent(EventPtr &event) = 0;
+    virtual bool PollEvent(EventStorage &event) = 0;
     virtual void Present() = 0;
     virtual bool Closed() = 0;
 };

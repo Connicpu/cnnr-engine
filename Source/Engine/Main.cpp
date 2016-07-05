@@ -1,9 +1,10 @@
 #include <Renderer/Renderer.h>
 #include <Common/Platform.h>
 #include <AssetPipeline/SpriteLoader.h>
-#include <iostream>
 #include <Common/MathLib.h>
 #include <AssetPipeline/SpritePack.h>
+#include <iostream>
+#include <iomanip>
 
 static const wchar_t RENDERER[] = L"DX11.dll";
 
@@ -12,8 +13,8 @@ const float *NextClear()
     static ColorF color;
     static float hue = 0;
 
-    hue = std::fmod(hue + 0.01f, 1.f);
-    color = Math::HslToRgb(Math::ColorHsl(hue, 1, 1));
+    hue = std::fmod(hue + 0.001f, 1.f);
+    color = Math::HslToRgb(Math::ColorHsl(hue, 1.0f, 1.0f));
     return &color.r;
 }
 
@@ -56,38 +57,66 @@ int main(int, const char *)
     uint32_t gif_frame = 0;
     while (!quit)
     {
-        EventPtr event;
+        EventStorage event;
         while (display->PollEvent(event))
         {
-            switch (event->type)
+            switch (event.base.type)
             {
                 case EventType::Resized:
+                {
                     break;
+                }
 
                 case EventType::Moved:
+                {
                     break;
+                }
 
                 case EventType::DroppedFile:
-                    std::cout << "Dropped a file: " << event->dropped_file().path << std::endl;
+                {
+                    std::cout << "Dropped a file: " << event.dropped_file.path << std::endl;
                     break;
+                }
+
+                case EventType::ReceivedCharacter:
+                {
+                    uint32_t code = event.received_character.codepoint;
+                    std::cout << "Unicode char: U+"
+                              << std::setfill('0') << std::setw(6) << std::hex
+                              << code << std::endl;
+                    break;
+                }
+
+                case EventType::Focused:
+                {
+                    break;
+                }
 
                 case EventType::MouseMoved:
+                {
                     break;
+                }
 
                 case EventType::MouseInput:
-                    if (event->mouse_input().state == ElementState::Pressed)
+                {
+                    if (event.mouse_input.state == ElementState::Pressed)
                     {
                         std::cout << "Mouse down" << std::endl;
                     }
                     break;
+                }
 
                 case EventType::Closed:
+                {
                     quit = true;
                     break;
+                }
 
                 default:
+                {
                     std::cout << "Unknown event o:" << std::endl;
                     break;
+                }
             }
         }
 
