@@ -180,6 +180,20 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             break;
         }
 
+        // RIP Window
+        case WM_CLOSE:
+        {
+            PostQuitMessage(0);
+            if (display)
+            {
+                Event event;
+                event.type = EventType::Closed;
+                display->closed = true;
+                display->event_queue.push(event);
+            }
+            break;
+        }
+
         // Oh boy! Drag-and-drop files! :D
         case WM_DROPFILES:
         {
@@ -327,17 +341,9 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             break;
         }
 
-        // RIP Window
-        case WM_CLOSE:
+        // Mouse wheel scrolling
+        case WM_VSCROLL:
         {
-            PostQuitMessage(0);
-            if (display)
-            {
-                Event event;
-                event.type = EventType::Closed;
-                display->closed = true;
-                display->event_queue.push(event);
-            }
             break;
         }
 
