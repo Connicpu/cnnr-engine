@@ -211,8 +211,8 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         // Receive characters!
         case WM_CHAR:
         {
-            static __declspec(thread) bool HAS_HIGH_SURROGATE;
-            static __declspec(thread) wchar_t LAST_HIGH_SURROGATE;
+            thread_local static bool HAS_HIGH_SURROGATE;
+            thread_local static wchar_t LAST_HIGH_SURROGATE;
 
             uint32_t char_code;
             if (IS_HIGH_SURROGATE(wp))
