@@ -157,7 +157,6 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             if (display)
             {
                 Event::Resized event;
-                event.type = EventType::Resized;
                 event.width = LOWORD(lp);
                 event.height = HIWORD(lp);
                 display->event_queue.push(event);
@@ -172,7 +171,6 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             if (display)
             {
                 Event::Moved event;
-                event.type = EventType::Moved;
                 event.x = (short)LOWORD(lp);
                 event.y = (short)HIWORD(lp);
                 display->event_queue.push(event);
@@ -210,7 +208,6 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
                         DragQueryPoint(drop, &point))
                     {
                         Event::DroppedFile event;
-                        event.type = EventType::DroppedFile;
                         event.x = point.x;
                         event.y = point.y;
                         event.path = temp_path.data();
@@ -263,7 +260,6 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             if (display)
             {
                 Event::ReceivedCharacter event;
-                event.type = EventType::ReceivedCharacter;
                 event.codepoint = char_code;
                 display->event_queue.push(event);
             }
@@ -277,7 +273,6 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             if (display)
             {
                 Event::Focused event;
-                event.type = EventType::Focused;
                 event.state = msg == WM_SETFOCUS;
                 display->event_queue.push(event);
             }
@@ -342,8 +337,20 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         }
 
         // Mouse wheel scrolling
-        case WM_VSCROLL:
+        case WM_MOUSEWHEEL:
         {
+            auto raw_delta = GET_WHEEL_DELTA_WPARAM(wp);
+            auto delta = float(raw_delta) / WHEEL_DELTA;
+
+            if (display)
+            {
+                Event::MouseWheel event;
+                event.dx = 0;
+                event.dy = delta;
+                event.isPixel = false;
+                event.touchPhase = TouchPhase::Moved;
+                display->event_queue.push(event);
+            }
             break;
         }
 
@@ -359,6 +366,48 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
                 event.type = EventType::MouseInput;
                 GetEventButton(msg, wp, &event.button, &event.state);
                 display->event_queue.push(event);
+            }
+            break;
+        }
+
+        // Touch events :3
+        case WM_TOUCH:
+        {
+            UINT num_inputs = LOWORD(wp);
+            auto inputs = std::vector<TOUCHINPUT>(num_inputs);
+
+            if (display && GetTouchInputInfo((HTOUCHINPUT)lp, num_inputs, inputs.data(), sizeof(TOUCHINPUT)))
+            {
+                for (auto &input : inputs)
+                {
+                    Event::Touch event;
+                    event.x = input.x * 100.f;
+                    event.y = input.y * 100.f;
+                    event.id = input.dwID;
+
+                    // Determine the phase
+                    if (input.dwFlags & TOUCHEVENTF_DOWN)
+                        event.phase = TouchPhase::Started;
+                    else if (input.dwFlags & TOUCHEVENTF_UP)
+                        event.phase = TouchPhase::Ended;
+                    else if (input.dwFlags & TOUCHEVENTF_MOVE)
+                        event.phase = TouchPhase::Moved;
+                    else
+                        continue;
+
+                    // Determine the source
+                    if (input.dwFlags & TOUCHEVENTF_PALM)
+                        event.source = TouchSource::Palm;
+                    else if (input.dwFlags & TOUCHEVENTF_PEN)
+                        event.source = TouchSource::Pen;
+                    else
+                        event.source = TouchSource::Finger;
+
+                    display->event_queue.push(event);
+                }
+
+                CloseTouchInputHandle((HTOUCHINPUT)lp);
+                return 0;
             }
             break;
         }

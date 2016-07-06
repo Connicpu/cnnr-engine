@@ -11,11 +11,8 @@ enum class EventType;
 enum class ElementState;
 enum class MouseButton;
 enum class TouchPhase;
+enum class TouchSource;
 enum class VirtualKeyCode;
-
-using EventPtr = std::unique_ptr<Event, EventFree>;
-template <typename T>
-inline EventPtr MakeEvent(const T &data);
 
 class Event
 {
@@ -40,17 +37,6 @@ public:
     struct MouseWheel;
     struct MouseInput;
     struct Touch;
-
-    const Resized &resized() const { return (Resized &)*this; }
-    const Moved &moved() const { return (Moved &)*this; }
-    const DroppedFile &dropped_file() const { return (DroppedFile &)*this; }
-    const ReceivedCharacter &received_character() const { return (ReceivedCharacter &)*this; }
-    const Focused &focused() const { return (Focused &)*this; }
-    const KeyboardInput &keyboard_input() const { return (KeyboardInput &)*this; }
-    const MouseMoved &mouse_moved() const { return (MouseMoved &)*this; }
-    const MouseWheel &mouse_wheel() const { return (MouseWheel &)*this; }
-    const MouseInput &mouse_input() const { return (MouseInput &)*this; }
-    const Touch &touch() const { return (Touch &)*this; }
 };
 
 class EventFree
@@ -72,73 +58,6 @@ private:
     void(*pFree)(void *);
 };
 
-template <typename T>
-inline EventPtr MakeEvent(const T &data)
-{
-    T *p = new T(data);
-    return EventPtr{ p, EventFree(&free) };
-}
-
-struct Event::Resized : public Event
-{
-    uint32_t width, height;
-};
-
-struct Event::Moved : public Event
-{
-    int32_t x, y;
-};
-
-struct Event::DroppedFile : public Event
-{
-    int32_t x, y;
-    fs::path path;
-};
-
-struct Event::ReceivedCharacter : public Event
-{
-    uint32_t codepoint;
-};
-
-struct Event::Focused : public Event
-{
-    bool state;
-};
-
-struct Event::KeyboardInput : public Event
-{
-    ElementState state;
-    uint8_t scanCode;
-
-    bool hasVK;
-    VirtualKeyCode virtualKey;
-};
-
-struct Event::MouseMoved : public Event
-{
-    int32_t x, y;
-};
-
-struct Event::MouseWheel : public Event
-{
-    bool isPixel;
-    float dx, dy;
-    TouchPhase touchPhase;
-};
-
-struct Event::MouseInput : public Event
-{
-    ElementState state;
-    MouseButton button;
-};
-
-struct Event::Touch : public Event
-{
-    TouchPhase phase;
-    double x, y;
-    uint64_t id;
-};
-
 enum class EventType
 {
     Resized,
@@ -154,6 +73,87 @@ enum class EventType
     Touch,
 };
 
+struct Event::Resized : public Event
+{
+    inline Resized() : Event(EventType::Resized) {}
+
+    uint32_t width, height;
+};
+
+struct Event::Moved : public Event
+{
+    inline Moved() : Event(EventType::Moved) {}
+
+    int32_t x, y;
+};
+
+struct Event::DroppedFile : public Event
+{
+    inline DroppedFile() : Event(EventType::DroppedFile) {}
+
+    int32_t x, y;
+    fs::path path;
+};
+
+struct Event::ReceivedCharacter : public Event
+{
+    inline ReceivedCharacter() : Event(EventType::ReceivedCharacter) {}
+
+    uint32_t codepoint;
+};
+
+struct Event::Focused : public Event
+{
+    inline Focused() : Event(EventType::Focused) {}
+
+    bool state;
+};
+
+struct Event::KeyboardInput : public Event
+{
+    inline KeyboardInput() : Event(EventType::KeyboardInput) {}
+
+    ElementState state;
+    uint8_t scanCode;
+
+    bool hasVK;
+    VirtualKeyCode virtualKey;
+};
+
+struct Event::MouseMoved : public Event
+{
+    inline MouseMoved() : Event(EventType::MouseMoved) {}
+
+    int32_t x, y;
+};
+
+struct Event::MouseWheel : public Event
+{
+    inline MouseWheel() : Event(EventType::MouseWheel) {}
+
+    bool isPixel;
+    float dx, dy;
+    TouchPhase touchPhase;
+};
+
+struct Event::MouseInput : public Event
+{
+    inline MouseInput() : Event(EventType::MouseInput) {}
+
+    ElementState state;
+    MouseButton button;
+};
+
+struct Event::Touch : public Event
+{
+    inline Touch() : Event(EventType::Touch) {}
+
+    TouchPhase phase;
+    TouchSource source;
+    double x, y;
+    uint64_t id;
+};
+
 union EventStorage
 {
     inline EventStorage()
@@ -162,6 +162,7 @@ union EventStorage
 
     }
 
+    #pragma region Copy Initializers
     inline EventStorage(const Event &base)
     {
         new (&this->base) Event(base);
@@ -258,6 +259,106 @@ union EventStorage
                 unreachable();
         }
     }
+#pragma endregion
+
+    #pragma region Move Initializers
+    inline EventStorage(Event &&base)
+    {
+        new (&this->base) Event(base);
+    }
+
+    inline EventStorage(Event::Resized &&resized)
+    {
+        new (&this->base) Event::Resized(std::move(resized));
+    }
+
+    inline EventStorage(Event::Moved &&moved)
+    {
+        new (&this->base) Event::Moved(std::move(moved));
+    }
+
+    inline EventStorage(Event::DroppedFile &&dropped_file)
+    {
+        new (&this->base) Event::DroppedFile(std::move(dropped_file));
+    }
+
+    inline EventStorage(Event::ReceivedCharacter &&received_character)
+    {
+        new (&this->base) Event::ReceivedCharacter(std::move(received_character));
+    }
+
+    inline EventStorage(Event::Focused &&focused)
+    {
+        new (&this->base) Event::Focused(std::move(focused));
+    }
+
+    inline EventStorage(Event::KeyboardInput &&keyboard_input)
+    {
+        new (&this->base) Event::KeyboardInput(std::move(keyboard_input));
+    }
+
+    inline EventStorage(Event::MouseMoved &&mouse_moved)
+    {
+        new (&this->base) Event::MouseMoved(std::move(mouse_moved));
+    }
+
+    inline EventStorage(Event::MouseWheel &&mouse_wheel)
+    {
+        new (&this->base) Event::MouseWheel(std::move(mouse_wheel));
+    }
+
+    inline EventStorage(Event::MouseInput &&mouse_input)
+    {
+        new (&this->base) Event::MouseInput(std::move(mouse_input));
+    }
+
+    inline EventStorage(Event::Touch &&touch)
+    {
+        new (&this->base) Event::Touch(std::move(touch));
+    }
+
+    inline EventStorage(EventStorage &&move)
+    {
+        switch (move.base.type)
+        {
+            case EventType::Resized:
+                new (this) EventStorage(std::move(move.resized));
+                break;
+            case EventType::Moved:
+                new (this) EventStorage(std::move(move.moved));
+                break;
+            case EventType::Closed:
+                new (this) EventStorage(std::move(move.base));
+                break;
+            case EventType::DroppedFile:
+                new (this) EventStorage(std::move(move.dropped_file));
+                break;
+            case EventType::ReceivedCharacter:
+                new (this) EventStorage(std::move(move.received_character));
+                break;
+            case EventType::Focused:
+                new (this) EventStorage(std::move(move.focused));
+                break;
+            case EventType::KeyboardInput:
+                new (this) EventStorage(std::move(move.keyboard_input));
+                break;
+            case EventType::MouseMoved:
+                new (this) EventStorage(std::move(move.mouse_moved));
+                break;
+            case EventType::MouseWheel:
+                new (this) EventStorage(std::move(move.mouse_wheel));
+                break;
+            case EventType::MouseInput:
+                new (this) EventStorage(std::move(move.mouse_input));
+                break;
+            case EventType::Touch:
+                new (this) EventStorage(std::move(move.touch));
+                break;
+            default:
+                unreachable();
+        }
+    }
+    #pragma endregion
 
     inline ~EventStorage()
     {
@@ -305,6 +406,13 @@ enum class TouchPhase
     Moved,
     Ended,
     Cancelled,
+};
+
+enum class TouchSource
+{
+    Finger,
+    Pen,
+    Palm,
 };
 
 enum class VirtualKeyCode
