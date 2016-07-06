@@ -2,6 +2,7 @@
 #include <Common/Platform.h>
 #include <AssetPipeline/SpriteLoader.h>
 #include <Common/MathLib.h>
+#include <Common/optional.h>
 #include <Renderer/StringHelpers.h>
 #include <AssetPipeline/SpritePack.h>
 #include <iostream>
@@ -104,12 +105,25 @@ int main(int, const char *)
                     {
                         std::cout << "Mouse down" << std::endl;
                     }
+                    else
+                    {
+                        std::cout << "Mouse up" << std::endl;
+                    }
                     break;
                 }
 
                 case EventType::Closed:
                 {
                     quit = true;
+                    break;
+                }
+
+                case EventType::Touch:
+                {
+                    if (event.touch.phase != TouchPhase::Moved)
+                    {
+                        std::cout << "Touch " << event.touch.id << " " << TouchPhaseName(event.touch.phase) << std::endl;
+                    }
                     break;
                 }
 

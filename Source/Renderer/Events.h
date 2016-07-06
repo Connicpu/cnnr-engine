@@ -11,7 +11,6 @@ enum class EventType;
 enum class ElementState;
 enum class MouseButton;
 enum class TouchPhase;
-enum class TouchSource;
 enum class VirtualKeyCode;
 
 class Event
@@ -149,7 +148,6 @@ struct Event::Touch : public Event
     inline Touch() : Event(EventType::Touch) {}
 
     TouchPhase phase;
-    TouchSource source;
     double x, y;
     uint64_t id;
 };
@@ -406,13 +404,6 @@ enum class TouchPhase
     Moved,
     Ended,
     Cancelled,
-};
-
-enum class TouchSource
-{
-    Finger,
-    Pen,
-    Palm,
 };
 
 enum class VirtualKeyCode

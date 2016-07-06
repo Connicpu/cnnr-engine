@@ -11,6 +11,9 @@
     <Filter Include="Header Files\Windows">
       <UniqueIdentifier>{7a842bd8-d09f-46ea-b87f-8e47adb2cae4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\TSFiller">
+      <UniqueIdentifier>{e7bc6613-2c08-4d20-b476-bc8623e1e3ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Filesystem.h">
@@ -30,6 +33,9 @@
     </ClInclude>
     <ClInclude Include="MathLib.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optional.h">
+      <Filter>Header Files\TSFiller</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

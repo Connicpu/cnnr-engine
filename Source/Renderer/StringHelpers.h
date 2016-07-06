@@ -22,20 +22,44 @@ inline const char *EventTypeName(EventType event)
     }
 }
 
-inline bool ParseEventType(const char *name, EventType &result)
+inline std::optional<EventType> ParseEventType(const char *name)
 {
-    if (strcmp(name, "Resized") == 0) { result = EventType::Resized; return true; }
-    if (strcmp(name, "Moved") == 0) { result = EventType::Moved; return true; }
-    if (strcmp(name, "Closed") == 0) { result = EventType::Closed; return true; }
-    if (strcmp(name, "DroppedFile") == 0) { result = EventType::DroppedFile; return true; }
-    if (strcmp(name, "ReceivedCharacter") == 0) { result = EventType::ReceivedCharacter; return true; }
-    if (strcmp(name, "Focused") == 0) { result = EventType::Focused; return true; }
-    if (strcmp(name, "KeyboardInput") == 0) { result = EventType::KeyboardInput; return true; }
-    if (strcmp(name, "MouseMoved") == 0) { result = EventType::MouseMoved; return true; }
-    if (strcmp(name, "MouseWheel") == 0) { result = EventType::MouseWheel; return true; }
-    if (strcmp(name, "MouseInput") == 0) { result = EventType::MouseInput; return true; }
-    if (strcmp(name, "Touch") == 0) { result = EventType::Touch; return true; }
-    return false;
+    if (strcmp(name, "Resized") == 0) { return EventType::Resized; }
+    if (strcmp(name, "Moved") == 0) { return EventType::Moved; }
+    if (strcmp(name, "Closed") == 0) { return EventType::Closed; }
+    if (strcmp(name, "DroppedFile") == 0) { return EventType::DroppedFile; }
+    if (strcmp(name, "ReceivedCharacter") == 0) { return EventType::ReceivedCharacter; }
+    if (strcmp(name, "Focused") == 0) { return EventType::Focused; }
+    if (strcmp(name, "KeyboardInput") == 0) { return EventType::KeyboardInput; }
+    if (strcmp(name, "MouseMoved") == 0) { return EventType::MouseMoved; }
+    if (strcmp(name, "MouseWheel") == 0) { return EventType::MouseWheel; }
+    if (strcmp(name, "MouseInput") == 0) { return EventType::MouseInput; }
+    if (strcmp(name, "Touch") == 0) { return EventType::Touch; }
+
+    return std::nullopt;
+}
+
+inline const char *TouchPhaseName(TouchPhase phase)
+{
+    switch (phase)
+    {
+        case TouchPhase::Started: return "Started";
+        case TouchPhase::Moved: return "Moved";
+        case TouchPhase::Ended: return "Ended";
+        case TouchPhase::Cancelled: return "Cancelled";
+        default:
+            unreachable();
+    }
+}
+
+inline std::optional<TouchPhase> ParseTouchPhase(const char *name)
+{
+    if (strcmp(name, "Started") == 0) { return TouchPhase::Started; }
+    if (strcmp(name, "Moved") == 0) { return TouchPhase::Moved; }
+    if (strcmp(name, "Ended") == 0) { return TouchPhase::Ended; }
+    if (strcmp(name, "Cancelled") == 0) { return TouchPhase::Cancelled; }
+
+    return std::nullopt;
 }
 
 inline const char *VirtualKeyCodeName(VirtualKeyCode code)
@@ -206,165 +230,166 @@ inline const char *VirtualKeyCodeName(VirtualKeyCode code)
     }
 }
 
-inline bool ParseVirtualKeyCode(const char *name, VirtualKeyCode &result)
+inline std::optional<VirtualKeyCode> ParseVirtualKeyCode(const char *name)
 {
-    if (strcmp(name, "Key0") == 0) { result = VirtualKeyCode::Key0; return true; }
-    if (strcmp(name, "Key1") == 0) { result = VirtualKeyCode::Key1; return true; }
-    if (strcmp(name, "Key2") == 0) { result = VirtualKeyCode::Key2; return true; }
-    if (strcmp(name, "Key3") == 0) { result = VirtualKeyCode::Key3; return true; }
-    if (strcmp(name, "Key4") == 0) { result = VirtualKeyCode::Key4; return true; }
-    if (strcmp(name, "Key5") == 0) { result = VirtualKeyCode::Key5; return true; }
-    if (strcmp(name, "Key6") == 0) { result = VirtualKeyCode::Key6; return true; }
-    if (strcmp(name, "Key7") == 0) { result = VirtualKeyCode::Key7; return true; }
-    if (strcmp(name, "Key8") == 0) { result = VirtualKeyCode::Key8; return true; }
-    if (strcmp(name, "Key9") == 0) { result = VirtualKeyCode::Key9; return true; }
+    if (strcmp(name, "Key0") == 0) { return VirtualKeyCode::Key0; }
+    if (strcmp(name, "Key1") == 0) { return VirtualKeyCode::Key1; }
+    if (strcmp(name, "Key2") == 0) { return VirtualKeyCode::Key2; }
+    if (strcmp(name, "Key3") == 0) { return VirtualKeyCode::Key3; }
+    if (strcmp(name, "Key4") == 0) { return VirtualKeyCode::Key4; }
+    if (strcmp(name, "Key5") == 0) { return VirtualKeyCode::Key5; }
+    if (strcmp(name, "Key6") == 0) { return VirtualKeyCode::Key6; }
+    if (strcmp(name, "Key7") == 0) { return VirtualKeyCode::Key7; }
+    if (strcmp(name, "Key8") == 0) { return VirtualKeyCode::Key8; }
+    if (strcmp(name, "Key9") == 0) { return VirtualKeyCode::Key9; }
 
-    if (strcmp(name, "A") == 0) { result = VirtualKeyCode::A; return true; }
-    if (strcmp(name, "B") == 0) { result = VirtualKeyCode::B; return true; }
-    if (strcmp(name, "C") == 0) { result = VirtualKeyCode::C; return true; }
-    if (strcmp(name, "D") == 0) { result = VirtualKeyCode::D; return true; }
-    if (strcmp(name, "E") == 0) { result = VirtualKeyCode::E; return true; }
-    if (strcmp(name, "F") == 0) { result = VirtualKeyCode::F; return true; }
-    if (strcmp(name, "G") == 0) { result = VirtualKeyCode::G; return true; }
-    if (strcmp(name, "H") == 0) { result = VirtualKeyCode::H; return true; }
-    if (strcmp(name, "I") == 0) { result = VirtualKeyCode::I; return true; }
-    if (strcmp(name, "J") == 0) { result = VirtualKeyCode::J; return true; }
-    if (strcmp(name, "K") == 0) { result = VirtualKeyCode::K; return true; }
-    if (strcmp(name, "L") == 0) { result = VirtualKeyCode::L; return true; }
-    if (strcmp(name, "M") == 0) { result = VirtualKeyCode::M; return true; }
-    if (strcmp(name, "N") == 0) { result = VirtualKeyCode::N; return true; }
-    if (strcmp(name, "O") == 0) { result = VirtualKeyCode::O; return true; }
-    if (strcmp(name, "P") == 0) { result = VirtualKeyCode::P; return true; }
-    if (strcmp(name, "Q") == 0) { result = VirtualKeyCode::Q; return true; }
-    if (strcmp(name, "R") == 0) { result = VirtualKeyCode::R; return true; }
-    if (strcmp(name, "S") == 0) { result = VirtualKeyCode::S; return true; }
-    if (strcmp(name, "T") == 0) { result = VirtualKeyCode::T; return true; }
-    if (strcmp(name, "U") == 0) { result = VirtualKeyCode::U; return true; }
-    if (strcmp(name, "V") == 0) { result = VirtualKeyCode::V; return true; }
-    if (strcmp(name, "W") == 0) { result = VirtualKeyCode::W; return true; }
-    if (strcmp(name, "X") == 0) { result = VirtualKeyCode::X; return true; }
-    if (strcmp(name, "Y") == 0) { result = VirtualKeyCode::Y; return true; }
-    if (strcmp(name, "Z") == 0) { result = VirtualKeyCode::Z; return true; }
+    if (strcmp(name, "A") == 0) { return VirtualKeyCode::A; }
+    if (strcmp(name, "B") == 0) { return VirtualKeyCode::B; }
+    if (strcmp(name, "C") == 0) { return VirtualKeyCode::C; }
+    if (strcmp(name, "D") == 0) { return VirtualKeyCode::D; }
+    if (strcmp(name, "E") == 0) { return VirtualKeyCode::E; }
+    if (strcmp(name, "F") == 0) { return VirtualKeyCode::F; }
+    if (strcmp(name, "G") == 0) { return VirtualKeyCode::G; }
+    if (strcmp(name, "H") == 0) { return VirtualKeyCode::H; }
+    if (strcmp(name, "I") == 0) { return VirtualKeyCode::I; }
+    if (strcmp(name, "J") == 0) { return VirtualKeyCode::J; }
+    if (strcmp(name, "K") == 0) { return VirtualKeyCode::K; }
+    if (strcmp(name, "L") == 0) { return VirtualKeyCode::L; }
+    if (strcmp(name, "M") == 0) { return VirtualKeyCode::M; }
+    if (strcmp(name, "N") == 0) { return VirtualKeyCode::N; }
+    if (strcmp(name, "O") == 0) { return VirtualKeyCode::O; }
+    if (strcmp(name, "P") == 0) { return VirtualKeyCode::P; }
+    if (strcmp(name, "Q") == 0) { return VirtualKeyCode::Q; }
+    if (strcmp(name, "R") == 0) { return VirtualKeyCode::R; }
+    if (strcmp(name, "S") == 0) { return VirtualKeyCode::S; }
+    if (strcmp(name, "T") == 0) { return VirtualKeyCode::T; }
+    if (strcmp(name, "U") == 0) { return VirtualKeyCode::U; }
+    if (strcmp(name, "V") == 0) { return VirtualKeyCode::V; }
+    if (strcmp(name, "W") == 0) { return VirtualKeyCode::W; }
+    if (strcmp(name, "X") == 0) { return VirtualKeyCode::X; }
+    if (strcmp(name, "Y") == 0) { return VirtualKeyCode::Y; }
+    if (strcmp(name, "Z") == 0) { return VirtualKeyCode::Z; }
 
-    if (strcmp(name, "Escape") == 0) { result = VirtualKeyCode::Escape; return true; }
+    if (strcmp(name, "Escape") == 0) { return VirtualKeyCode::Escape; }
 
-    if (strcmp(name, "F1") == 0) { result = VirtualKeyCode::F1; return true; }
-    if (strcmp(name, "F2") == 0) { result = VirtualKeyCode::F2; return true; }
-    if (strcmp(name, "F3") == 0) { result = VirtualKeyCode::F3; return true; }
-    if (strcmp(name, "F4") == 0) { result = VirtualKeyCode::F4; return true; }
-    if (strcmp(name, "F5") == 0) { result = VirtualKeyCode::F5; return true; }
-    if (strcmp(name, "F6") == 0) { result = VirtualKeyCode::F6; return true; }
-    if (strcmp(name, "F7") == 0) { result = VirtualKeyCode::F7; return true; }
-    if (strcmp(name, "F8") == 0) { result = VirtualKeyCode::F8; return true; }
-    if (strcmp(name, "F9") == 0) { result = VirtualKeyCode::F9; return true; }
-    if (strcmp(name, "F10") == 0) { result = VirtualKeyCode::F10; return true; }
-    if (strcmp(name, "F11") == 0) { result = VirtualKeyCode::F11; return true; }
-    if (strcmp(name, "F12") == 0) { result = VirtualKeyCode::F12; return true; }
-    if (strcmp(name, "F13") == 0) { result = VirtualKeyCode::F13; return true; }
-    if (strcmp(name, "F14") == 0) { result = VirtualKeyCode::F14; return true; }
-    if (strcmp(name, "F15") == 0) { result = VirtualKeyCode::F15; return true; }
+    if (strcmp(name, "F1") == 0) { return VirtualKeyCode::F1; }
+    if (strcmp(name, "F2") == 0) { return VirtualKeyCode::F2; }
+    if (strcmp(name, "F3") == 0) { return VirtualKeyCode::F3; }
+    if (strcmp(name, "F4") == 0) { return VirtualKeyCode::F4; }
+    if (strcmp(name, "F5") == 0) { return VirtualKeyCode::F5; }
+    if (strcmp(name, "F6") == 0) { return VirtualKeyCode::F6; }
+    if (strcmp(name, "F7") == 0) { return VirtualKeyCode::F7; }
+    if (strcmp(name, "F8") == 0) { return VirtualKeyCode::F8; }
+    if (strcmp(name, "F9") == 0) { return VirtualKeyCode::F9; }
+    if (strcmp(name, "F10") == 0) { return VirtualKeyCode::F10; }
+    if (strcmp(name, "F11") == 0) { return VirtualKeyCode::F11; }
+    if (strcmp(name, "F12") == 0) { return VirtualKeyCode::F12; }
+    if (strcmp(name, "F13") == 0) { return VirtualKeyCode::F13; }
+    if (strcmp(name, "F14") == 0) { return VirtualKeyCode::F14; }
+    if (strcmp(name, "F15") == 0) { return VirtualKeyCode::F15; }
 
-    if (strcmp(name, "Snapshot") == 0) { result = VirtualKeyCode::Snapshot; return true; }
-    if (strcmp(name, "Scroll") == 0) { result = VirtualKeyCode::Scroll; return true; }
-    if (strcmp(name, "Pause") == 0) { result = VirtualKeyCode::Pause; return true; }
+    if (strcmp(name, "Snapshot") == 0) { return VirtualKeyCode::Snapshot; }
+    if (strcmp(name, "Scroll") == 0) { return VirtualKeyCode::Scroll; }
+    if (strcmp(name, "Pause") == 0) { return VirtualKeyCode::Pause; }
 
-    if (strcmp(name, "Insert") == 0) { result = VirtualKeyCode::Insert; return true; }
-    if (strcmp(name, "Home") == 0) { result = VirtualKeyCode::Home; return true; }
-    if (strcmp(name, "Delete") == 0) { result = VirtualKeyCode::Delete; return true; }
-    if (strcmp(name, "End") == 0) { result = VirtualKeyCode::End; return true; }
-    if (strcmp(name, "PageDown") == 0) { result = VirtualKeyCode::PageDown; return true; }
-    if (strcmp(name, "PageUp") == 0) { result = VirtualKeyCode::PageUp; return true; }
+    if (strcmp(name, "Insert") == 0) { return VirtualKeyCode::Insert; }
+    if (strcmp(name, "Home") == 0) { return VirtualKeyCode::Home; }
+    if (strcmp(name, "Delete") == 0) { return VirtualKeyCode::Delete; }
+    if (strcmp(name, "End") == 0) { return VirtualKeyCode::End; }
+    if (strcmp(name, "PageDown") == 0) { return VirtualKeyCode::PageDown; }
+    if (strcmp(name, "PageUp") == 0) { return VirtualKeyCode::PageUp; }
 
-    if (strcmp(name, "Left") == 0) { result = VirtualKeyCode::Left; return true; }
-    if (strcmp(name, "Up") == 0) { result = VirtualKeyCode::Up; return true; }
-    if (strcmp(name, "Right") == 0) { result = VirtualKeyCode::Right; return true; }
-    if (strcmp(name, "Down") == 0) { result = VirtualKeyCode::Down; return true; }
+    if (strcmp(name, "Left") == 0) { return VirtualKeyCode::Left; }
+    if (strcmp(name, "Up") == 0) { return VirtualKeyCode::Up; }
+    if (strcmp(name, "Right") == 0) { return VirtualKeyCode::Right; }
+    if (strcmp(name, "Down") == 0) { return VirtualKeyCode::Down; }
 
-    if (strcmp(name, "Back") == 0) { result = VirtualKeyCode::Back; return true; }
-    if (strcmp(name, "Return") == 0) { result = VirtualKeyCode::Return; return true; }
-    if (strcmp(name, "Space") == 0) { result = VirtualKeyCode::Space; return true; }
+    if (strcmp(name, "Back") == 0) { return VirtualKeyCode::Back; }
+    if (strcmp(name, "Return") == 0) { return VirtualKeyCode::Return; }
+    if (strcmp(name, "Space") == 0) { return VirtualKeyCode::Space; }
 
-    if (strcmp(name, "Numlock") == 0) { result = VirtualKeyCode::Numlock; return true; }
-    if (strcmp(name, "Numpad0") == 0) { result = VirtualKeyCode::Numpad0; return true; }
-    if (strcmp(name, "Numpad1") == 0) { result = VirtualKeyCode::Numpad1; return true; }
-    if (strcmp(name, "Numpad2") == 0) { result = VirtualKeyCode::Numpad2; return true; }
-    if (strcmp(name, "Numpad3") == 0) { result = VirtualKeyCode::Numpad3; return true; }
-    if (strcmp(name, "Numpad4") == 0) { result = VirtualKeyCode::Numpad4; return true; }
-    if (strcmp(name, "Numpad5") == 0) { result = VirtualKeyCode::Numpad5; return true; }
-    if (strcmp(name, "Numpad6") == 0) { result = VirtualKeyCode::Numpad6; return true; }
-    if (strcmp(name, "Numpad7") == 0) { result = VirtualKeyCode::Numpad7; return true; }
-    if (strcmp(name, "Numpad8") == 0) { result = VirtualKeyCode::Numpad8; return true; }
-    if (strcmp(name, "Numpad9") == 0) { result = VirtualKeyCode::Numpad9; return true; }
+    if (strcmp(name, "Numlock") == 0) { return VirtualKeyCode::Numlock; }
+    if (strcmp(name, "Numpad0") == 0) { return VirtualKeyCode::Numpad0; }
+    if (strcmp(name, "Numpad1") == 0) { return VirtualKeyCode::Numpad1; }
+    if (strcmp(name, "Numpad2") == 0) { return VirtualKeyCode::Numpad2; }
+    if (strcmp(name, "Numpad3") == 0) { return VirtualKeyCode::Numpad3; }
+    if (strcmp(name, "Numpad4") == 0) { return VirtualKeyCode::Numpad4; }
+    if (strcmp(name, "Numpad5") == 0) { return VirtualKeyCode::Numpad5; }
+    if (strcmp(name, "Numpad6") == 0) { return VirtualKeyCode::Numpad6; }
+    if (strcmp(name, "Numpad7") == 0) { return VirtualKeyCode::Numpad7; }
+    if (strcmp(name, "Numpad8") == 0) { return VirtualKeyCode::Numpad8; }
+    if (strcmp(name, "Numpad9") == 0) { return VirtualKeyCode::Numpad9; }
 
-    if (strcmp(name, "AbntC1") == 0) { result = VirtualKeyCode::AbntC1; return true; }
-    if (strcmp(name, "AbntC2") == 0) { result = VirtualKeyCode::AbntC2; return true; }
-    if (strcmp(name, "Add") == 0) { result = VirtualKeyCode::Add; return true; }
-    if (strcmp(name, "Apostrophe") == 0) { result = VirtualKeyCode::Apostrophe; return true; }
-    if (strcmp(name, "Apps") == 0) { result = VirtualKeyCode::Apps; return true; }
-    if (strcmp(name, "At") == 0) { result = VirtualKeyCode::At; return true; }
-    if (strcmp(name, "Ax") == 0) { result = VirtualKeyCode::Ax; return true; }
-    if (strcmp(name, "Backslash") == 0) { result = VirtualKeyCode::Backslash; return true; }
-    if (strcmp(name, "Calculator") == 0) { result = VirtualKeyCode::Calculator; return true; }
-    if (strcmp(name, "Capital") == 0) { result = VirtualKeyCode::Capital; return true; }
-    if (strcmp(name, "Colon") == 0) { result = VirtualKeyCode::Colon; return true; }
-    if (strcmp(name, "Comma") == 0) { result = VirtualKeyCode::Comma; return true; }
-    if (strcmp(name, "Convert") == 0) { result = VirtualKeyCode::Convert; return true; }
-    if (strcmp(name, "Decimal") == 0) { result = VirtualKeyCode::Decimal; return true; }
-    if (strcmp(name, "Divide") == 0) { result = VirtualKeyCode::Divide; return true; }
-    if (strcmp(name, "Equals") == 0) { result = VirtualKeyCode::Equals; return true; }
-    if (strcmp(name, "Grave") == 0) { result = VirtualKeyCode::Grave; return true; }
-    if (strcmp(name, "Kana") == 0) { result = VirtualKeyCode::Kana; return true; }
-    if (strcmp(name, "Kanji") == 0) { result = VirtualKeyCode::Kanji; return true; }
-    if (strcmp(name, "LAlt") == 0) { result = VirtualKeyCode::LAlt; return true; }
-    if (strcmp(name, "LBracket") == 0) { result = VirtualKeyCode::LBracket; return true; }
-    if (strcmp(name, "LControl") == 0) { result = VirtualKeyCode::LControl; return true; }
-    if (strcmp(name, "LMenu") == 0) { result = VirtualKeyCode::LMenu; return true; }
-    if (strcmp(name, "LShift") == 0) { result = VirtualKeyCode::LShift; return true; }
-    if (strcmp(name, "LWin") == 0) { result = VirtualKeyCode::LWin; return true; }
-    if (strcmp(name, "Mail") == 0) { result = VirtualKeyCode::Mail; return true; }
-    if (strcmp(name, "MediaSelect") == 0) { result = VirtualKeyCode::MediaSelect; return true; }
-    if (strcmp(name, "MediaStop") == 0) { result = VirtualKeyCode::MediaStop; return true; }
-    if (strcmp(name, "Minus") == 0) { result = VirtualKeyCode::Minus; return true; }
-    if (strcmp(name, "Multiply") == 0) { result = VirtualKeyCode::Multiply; return true; }
-    if (strcmp(name, "Mute") == 0) { result = VirtualKeyCode::Mute; return true; }
-    if (strcmp(name, "MyComputer") == 0) { result = VirtualKeyCode::MyComputer; return true; }
-    if (strcmp(name, "NavigateForward") == 0) { result = VirtualKeyCode::NavigateForward; return true; }
-    if (strcmp(name, "NavigateBackward") == 0) { result = VirtualKeyCode::NavigateBackward; return true; }
-    if (strcmp(name, "NextTrack") == 0) { result = VirtualKeyCode::NextTrack; return true; }
-    if (strcmp(name, "NoConvert") == 0) { result = VirtualKeyCode::NoConvert; return true; }
-    if (strcmp(name, "NumpadComma") == 0) { result = VirtualKeyCode::NumpadComma; return true; }
-    if (strcmp(name, "NumpadEnter") == 0) { result = VirtualKeyCode::NumpadEnter; return true; }
-    if (strcmp(name, "NumpadEquals") == 0) { result = VirtualKeyCode::NumpadEquals; return true; }
-    if (strcmp(name, "OEM102") == 0) { result = VirtualKeyCode::OEM102; return true; }
-    if (strcmp(name, "Period") == 0) { result = VirtualKeyCode::Period; return true; }
-    if (strcmp(name, "PlayPause") == 0) { result = VirtualKeyCode::PlayPause; return true; }
-    if (strcmp(name, "Power") == 0) { result = VirtualKeyCode::Power; return true; }
-    if (strcmp(name, "PrevTrack") == 0) { result = VirtualKeyCode::PrevTrack; return true; }
-    if (strcmp(name, "RAlt") == 0) { result = VirtualKeyCode::RAlt; return true; }
-    if (strcmp(name, "RBracket") == 0) { result = VirtualKeyCode::RBracket; return true; }
-    if (strcmp(name, "RControl") == 0) { result = VirtualKeyCode::RControl; return true; }
-    if (strcmp(name, "RMenu") == 0) { result = VirtualKeyCode::RMenu; return true; }
-    if (strcmp(name, "RShift") == 0) { result = VirtualKeyCode::RShift; return true; }
-    if (strcmp(name, "RWin") == 0) { result = VirtualKeyCode::RWin; return true; }
-    if (strcmp(name, "Semicolon") == 0) { result = VirtualKeyCode::Semicolon; return true; }
-    if (strcmp(name, "Slash") == 0) { result = VirtualKeyCode::Slash; return true; }
-    if (strcmp(name, "Sleep") == 0) { result = VirtualKeyCode::Sleep; return true; }
-    if (strcmp(name, "Stop") == 0) { result = VirtualKeyCode::Stop; return true; }
-    if (strcmp(name, "Subtract") == 0) { result = VirtualKeyCode::Subtract; return true; }
-    if (strcmp(name, "Sysrq") == 0) { result = VirtualKeyCode::Sysrq; return true; }
-    if (strcmp(name, "Tab") == 0) { result = VirtualKeyCode::Tab; return true; }
-    if (strcmp(name, "Underline") == 0) { result = VirtualKeyCode::Underline; return true; }
-    if (strcmp(name, "Unlabeled") == 0) { result = VirtualKeyCode::Unlabeled; return true; }
-    if (strcmp(name, "VolumeDown") == 0) { result = VirtualKeyCode::VolumeDown; return true; }
-    if (strcmp(name, "VolumeUp") == 0) { result = VirtualKeyCode::VolumeUp; return true; }
-    if (strcmp(name, "Wake") == 0) { result = VirtualKeyCode::Wake; return true; }
-    if (strcmp(name, "WebBack") == 0) { result = VirtualKeyCode::WebBack; return true; }
-    if (strcmp(name, "WebFavorites") == 0) { result = VirtualKeyCode::WebFavorites; return true; }
-    if (strcmp(name, "WebForward") == 0) { result = VirtualKeyCode::WebForward; return true; }
-    if (strcmp(name, "WebHome") == 0) { result = VirtualKeyCode::WebHome; return true; }
-    if (strcmp(name, "WebRefresh") == 0) { result = VirtualKeyCode::WebRefresh; return true; }
-    if (strcmp(name, "WebSearch") == 0) { result = VirtualKeyCode::WebSearch; return true; }
-    if (strcmp(name, "WebStop") == 0) { result = VirtualKeyCode::WebStop; return true; }
-    if (strcmp(name, "Yen") == 0) { result = VirtualKeyCode::Yen; return true; }
-    return false;
+    if (strcmp(name, "AbntC1") == 0) { return VirtualKeyCode::AbntC1; }
+    if (strcmp(name, "AbntC2") == 0) { return VirtualKeyCode::AbntC2; }
+    if (strcmp(name, "Add") == 0) { return VirtualKeyCode::Add; }
+    if (strcmp(name, "Apostrophe") == 0) { return VirtualKeyCode::Apostrophe; }
+    if (strcmp(name, "Apps") == 0) { return VirtualKeyCode::Apps; }
+    if (strcmp(name, "At") == 0) { return VirtualKeyCode::At; }
+    if (strcmp(name, "Ax") == 0) { return VirtualKeyCode::Ax; }
+    if (strcmp(name, "Backslash") == 0) { return VirtualKeyCode::Backslash; }
+    if (strcmp(name, "Calculator") == 0) { return VirtualKeyCode::Calculator; }
+    if (strcmp(name, "Capital") == 0) { return VirtualKeyCode::Capital; }
+    if (strcmp(name, "Colon") == 0) { return VirtualKeyCode::Colon; }
+    if (strcmp(name, "Comma") == 0) { return VirtualKeyCode::Comma; }
+    if (strcmp(name, "Convert") == 0) { return VirtualKeyCode::Convert; }
+    if (strcmp(name, "Decimal") == 0) { return VirtualKeyCode::Decimal; }
+    if (strcmp(name, "Divide") == 0) { return VirtualKeyCode::Divide; }
+    if (strcmp(name, "Equals") == 0) { return VirtualKeyCode::Equals; }
+    if (strcmp(name, "Grave") == 0) { return VirtualKeyCode::Grave; }
+    if (strcmp(name, "Kana") == 0) { return VirtualKeyCode::Kana; }
+    if (strcmp(name, "Kanji") == 0) { return VirtualKeyCode::Kanji; }
+    if (strcmp(name, "LAlt") == 0) { return VirtualKeyCode::LAlt; }
+    if (strcmp(name, "LBracket") == 0) { return VirtualKeyCode::LBracket; }
+    if (strcmp(name, "LControl") == 0) { return VirtualKeyCode::LControl; }
+    if (strcmp(name, "LMenu") == 0) { return VirtualKeyCode::LMenu; }
+    if (strcmp(name, "LShift") == 0) { return VirtualKeyCode::LShift; }
+    if (strcmp(name, "LWin") == 0) { return VirtualKeyCode::LWin; }
+    if (strcmp(name, "Mail") == 0) { return VirtualKeyCode::Mail; }
+    if (strcmp(name, "MediaSelect") == 0) { return VirtualKeyCode::MediaSelect; }
+    if (strcmp(name, "MediaStop") == 0) { return VirtualKeyCode::MediaStop; }
+    if (strcmp(name, "Minus") == 0) { return VirtualKeyCode::Minus; }
+    if (strcmp(name, "Multiply") == 0) { return VirtualKeyCode::Multiply; }
+    if (strcmp(name, "Mute") == 0) { return VirtualKeyCode::Mute; }
+    if (strcmp(name, "MyComputer") == 0) { return VirtualKeyCode::MyComputer; }
+    if (strcmp(name, "NavigateForward") == 0) { return VirtualKeyCode::NavigateForward; }
+    if (strcmp(name, "NavigateBackward") == 0) { return VirtualKeyCode::NavigateBackward; }
+    if (strcmp(name, "NextTrack") == 0) { return VirtualKeyCode::NextTrack; }
+    if (strcmp(name, "NoConvert") == 0) { return VirtualKeyCode::NoConvert; }
+    if (strcmp(name, "NumpadComma") == 0) { return VirtualKeyCode::NumpadComma; }
+    if (strcmp(name, "NumpadEnter") == 0) { return VirtualKeyCode::NumpadEnter; }
+    if (strcmp(name, "NumpadEquals") == 0) { return VirtualKeyCode::NumpadEquals; }
+    if (strcmp(name, "OEM102") == 0) { return VirtualKeyCode::OEM102; }
+    if (strcmp(name, "Period") == 0) { return VirtualKeyCode::Period; }
+    if (strcmp(name, "PlayPause") == 0) { return VirtualKeyCode::PlayPause; }
+    if (strcmp(name, "Power") == 0) { return VirtualKeyCode::Power; }
+    if (strcmp(name, "PrevTrack") == 0) { return VirtualKeyCode::PrevTrack; }
+    if (strcmp(name, "RAlt") == 0) { return VirtualKeyCode::RAlt; }
+    if (strcmp(name, "RBracket") == 0) { return VirtualKeyCode::RBracket; }
+    if (strcmp(name, "RControl") == 0) { return VirtualKeyCode::RControl; }
+    if (strcmp(name, "RMenu") == 0) { return VirtualKeyCode::RMenu; }
+    if (strcmp(name, "RShift") == 0) { return VirtualKeyCode::RShift; }
+    if (strcmp(name, "RWin") == 0) { return VirtualKeyCode::RWin; }
+    if (strcmp(name, "Semicolon") == 0) { return VirtualKeyCode::Semicolon; }
+    if (strcmp(name, "Slash") == 0) { return VirtualKeyCode::Slash; }
+    if (strcmp(name, "Sleep") == 0) { return VirtualKeyCode::Sleep; }
+    if (strcmp(name, "Stop") == 0) { return VirtualKeyCode::Stop; }
+    if (strcmp(name, "Subtract") == 0) { return VirtualKeyCode::Subtract; }
+    if (strcmp(name, "Sysrq") == 0) { return VirtualKeyCode::Sysrq; }
+    if (strcmp(name, "Tab") == 0) { return VirtualKeyCode::Tab; }
+    if (strcmp(name, "Underline") == 0) { return VirtualKeyCode::Underline; }
+    if (strcmp(name, "Unlabeled") == 0) { return VirtualKeyCode::Unlabeled; }
+    if (strcmp(name, "VolumeDown") == 0) { return VirtualKeyCode::VolumeDown; }
+    if (strcmp(name, "VolumeUp") == 0) { return VirtualKeyCode::VolumeUp; }
+    if (strcmp(name, "Wake") == 0) { return VirtualKeyCode::Wake; }
+    if (strcmp(name, "WebBack") == 0) { return VirtualKeyCode::WebBack; }
+    if (strcmp(name, "WebFavorites") == 0) { return VirtualKeyCode::WebFavorites; }
+    if (strcmp(name, "WebForward") == 0) { return VirtualKeyCode::WebForward; }
+    if (strcmp(name, "WebHome") == 0) { return VirtualKeyCode::WebHome; }
+    if (strcmp(name, "WebRefresh") == 0) { return VirtualKeyCode::WebRefresh; }
+    if (strcmp(name, "WebSearch") == 0) { return VirtualKeyCode::WebSearch; }
+    if (strcmp(name, "WebStop") == 0) { return VirtualKeyCode::WebStop; }
+    if (strcmp(name, "Yen") == 0) { return VirtualKeyCode::Yen; }
+
+    return std::nullopt;
 }

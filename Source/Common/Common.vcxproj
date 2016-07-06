@@ -133,6 +133,7 @@
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="InitOnce.h" />
     <ClInclude Include="MathLib.h" />
+    <ClInclude Include="optional.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="WindowsHelpers.h" />
   </ItemGroup>

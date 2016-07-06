@@ -135,6 +135,7 @@ inline void GetEventButton(UINT msg, WPARAM wp, MouseButton *button, ElementStat
 }
 
 static VirtualKeyCode MapVK(int vk, bool &has);
+#define MOUSEEVENTF_FROMTOUCH 0xFF515780
 
 LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
@@ -360,6 +361,9 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         case WM_MBUTTONDOWN: case WM_MBUTTONUP:
         case WM_XBUTTONDOWN: case WM_XBUTTONUP:
         {
+            if ((GetMessageExtraInfo() & MOUSEEVENTF_FROMTOUCH) == MOUSEEVENTF_FROMTOUCH)
+                break;
+
             if (display)
             {
                 Event::MouseInput event;
@@ -394,14 +398,6 @@ LRESULT HwndDisplay::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
                         event.phase = TouchPhase::Moved;
                     else
                         continue;
-
-                    // Determine the source
-                    if (input.dwFlags & TOUCHEVENTF_PALM)
-                        event.source = TouchSource::Palm;
-                    else if (input.dwFlags & TOUCHEVENTF_PEN)
-                        event.source = TouchSource::Pen;
-                    else
-                        event.source = TouchSource::Finger;
 
                     display->event_queue.push(event);
                 }
@@ -440,9 +436,9 @@ void HwndDisplay::InitializeWindow(LPCWSTR title)
         (LPVOID)this            // creation parameter (passed to WM_CREATE's CREATESTRUCT)
     );
 
-    ShowWindow(hwnd, SW_SHOW);
-
     DragAcceptFiles(hwnd, true);
+    RegisterTouchWindow(hwnd, 0);
+    ShowWindow(hwnd, SW_SHOW);
 
     RECT rect;
     GetClientRect(hwnd, &rect);
