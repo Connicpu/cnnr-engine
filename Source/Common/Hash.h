@@ -1,0 +1,487 @@
+#pragma once
+
+#include <string>
+#include <vector>
+#include <random>
+#include <stdint.h>
+#include <gsl.h>
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Implementation helper
+
+namespace HashDetails
+{
+    template <typename H, typename In, typename Out>
+    struct TruncateHash
+    {
+        template <typename ...Args>
+        TruncateHash(Args &&...args)
+            : hasher(std::forward<Args>(args)...)
+        {
+        }
+
+        inline void reset()
+        {
+            hasher.reset();
+        }
+
+        inline void write(const uint8_t *data, size_t len)
+        {
+            hasher.write(data, data + len);
+        }
+
+        inline void write(const void *data, size_t len)
+        {
+            hasher.write(data, len);
+        }
+
+        void write(gsl::span<const uint8_t> data)
+        {
+            hasher.write(data);
+        }
+
+        operator Out() const
+        {
+            return static_cast<Out>(static_cast<In>(hasher));
+        }
+
+        H hasher;
+    };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// FNV-1 Hash implementation
+
+namespace Fnv1Details
+{
+    template <typename Integral, Integral offset_basis, Integral prime>
+    struct Hasher
+    {
+        Hasher()
+            : state(offset_basis)
+        {
+        }
+
+        inline void reset()
+        {
+        }
+
+        inline void write(const uint8_t *data, size_t len)
+        {
+            write({ data, data + len });
+        }
+
+        inline void write(const void *data, size_t len)
+        {
+            auto ptr = reinterpret_cast<const uint8_t *>(data);
+            write(ptr, len);
+        }
+
+        void write(gsl::span<const uint8_t> data)
+        {
+            for (uint8_t byte : data)
+            {
+                state = state * prime;
+                state = state ^ static_cast<Integral>(byte);
+            }
+        }
+
+        operator Integral() const
+        {
+            return state;
+        }
+
+        Integral state;
+    };
+}
+
+using Fnv1_32 = Fnv1Details::Hasher<uint32_t, 2166136261U, 16777619U>;
+using Fnv1_64 = Fnv1Details::Hasher<uint64_t, 14695981039346656037Ui64, 1099511628211Ui64>;
+using Fnv1 = std::conditional<std::is_same<size_t, uint32_t>::value, Fnv1_32, Fnv1_64>::type;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// FNV-1A Hash implementation
+
+namespace Fnv1ADetails
+{
+    template <typename Integral, Integral offset_basis, Integral prime>
+    struct Hasher
+    {
+        Hasher()
+            : state(offset_basis)
+        {
+        }
+
+        inline void reset()
+        {
+        }
+
+        inline void write(const uint8_t *data, size_t len)
+        {
+            write({ data, data + len });
+        }
+
+        inline void write(const void *data, size_t len)
+        {
+            auto ptr = reinterpret_cast<const uint8_t *>(data);
+            write(ptr, len);
+        }
+
+        void write(gsl::span<const uint8_t> data)
+        {
+            for (uint8_t byte : data)
+            {
+                state = state ^ static_cast<Integral>(byte);
+                state = state * prime;
+            }
+        }
+
+        operator Integral() const
+        {
+            return state;
+        }
+
+        Integral state;
+    };
+}
+
+using Fnv1A_32 = Fnv1ADetails::Hasher<uint32_t, 2166136261U, 16777619U>;
+using Fnv1A_64 = Fnv1ADetails::Hasher<uint64_t, 14695981039346656037Ui64, 1099511628211Ui64>;
+using Fnv1A = std::conditional<std::is_same<size_t, uint32_t>::value, Fnv1A_32, Fnv1A_64>::type;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// SipHash implementation
+
+namespace SipDetails
+{
+    #pragma region State + Rounds
+
+    struct State
+    {
+        uint64_t v0, v2, v1, v3;
+    };
+
+    inline uint64_t rotl(uint64_t x, uint64_t b)
+    {
+        return (x << b) | (x >> (64 - b));
+    }
+
+    inline void compress(State &state)
+    {
+        uint64_t &v0 = state.v0, &v2 = state.v2, &v1 = state.v1, &v3 = state.v3;
+        v0 += v1; v1 = rotl(v1, 13); v1 ^= v0;
+        v0 = rotl(v0, 32);
+        v2 += v3; v3 = rotl(v3, 16); v3 ^= v2;
+        v0 += v3; v3 = rotl(v3, 21); v3 ^= v0;
+        v2 += v1; v1 = rotl(v1, 17); v1 ^= v2;
+        v2 = rotl(v2, 32);
+    }
+
+    struct Sip13Rounds
+    {
+        static void c_rounds(State &state)
+        {
+            compress(state);
+        }
+        static void d_rounds(State &state)
+        {
+            compress(state);
+            compress(state);
+            compress(state);
+        }
+    };
+
+    struct Sip24Rounds
+    {
+        static void c_rounds(State &state)
+        {
+            compress(state);
+            compress(state);
+        }
+        static void d_rounds(State &state)
+        {
+            compress(state);
+            compress(state);
+            compress(state);
+            compress(state);
+        }
+    };
+
+    #pragma endregion
+
+    #pragma region Hasher
+
+    inline uint64_t u8to64_le(const uint8_t *buf, size_t i)
+    {
+        return
+            uint64_t(buf[0 + i]) << 0 |
+            uint64_t(buf[1 + i]) << 8 |
+            uint64_t(buf[2 + i]) << 16 |
+            uint64_t(buf[3 + i]) << 24 |
+            uint64_t(buf[4 + i]) << 32 |
+            uint64_t(buf[5 + i]) << 40 |
+            uint64_t(buf[6 + i]) << 48 |
+            uint64_t(buf[7 + i]) << 56;
+    }
+
+    inline uint64_t u8to64_le(const uint8_t *buf, size_t i, size_t len)
+    {
+        size_t t = 0;
+        uint64_t out = 0;
+        while (t < len)
+        {
+            out |= ((uint64_t)buf[t + i]) << (t * 8);
+            t += 1;
+        }
+        return out;
+    }
+
+    template <typename Rounds>
+    struct Hasher64
+    {
+        Hasher64()
+            : Hasher64(0, 0)
+        {
+        }
+
+        Hasher64(uint64_t k0, uint64_t k1)
+            : k0(k0), k1(k1)
+        {
+            reset();
+        }
+
+        void reset()
+        {
+            length = 0;
+            state.v0 = k0 ^ 0x736f6d6570736575;
+            state.v1 = k1 ^ 0x646f72616e646f6d;
+            state.v2 = k0 ^ 0x6c7967656e657261;
+            state.v3 = k1 ^ 0x7465646279746573;
+            ntail = 0;
+        }
+
+        inline void write(const uint8_t *data, size_t len)
+        {
+            write({ data, data + len });
+        }
+
+        inline void write(const void *data, size_t len)
+        {
+            auto ptr = reinterpret_cast<const uint8_t *>(data);
+            write(ptr, len);
+        }
+
+        void write(gsl::span<const uint8_t> data)
+        {
+            const uint8_t *msg = data.data();
+            size_t len = data.size();
+            length += len;
+
+            size_t needed = 0;
+
+            if (ntail != 0)
+            {
+                needed = 8 - ntail;
+                if (len < needed)
+                {
+                    tail |= u8to64_le(msg, 0, len) << 8 * ntail;
+                    ntail += len;
+                    return;
+                }
+
+                uint64_t m = tail | u8to64_le(msg, 0, needed) << 8 * ntail;
+
+                state.v3 ^= m;
+                Rounds::c_rounds(state);
+                state.v0 ^= m;
+
+                ntail = 0;
+            }
+
+            len = len - needed;
+            size_t left = len & 0b111;
+
+            size_t i;
+            for (i = needed; i < len - left; i += 8)
+            {
+                uint64_t mi = u8to64_le(msg, i);
+
+                state.v3 ^= mi;
+                Rounds::c_rounds(state);
+                state.v0 ^= mi;
+            }
+
+            tail = u8to64_le(msg, i, left);
+            ntail = left;
+        }
+
+        operator uint64_t() const
+        {
+            State end_state = state;
+
+            uint64_t b = ((uint64_t(length) & 0xff) << 56) | tail;
+
+            end_state.v3 ^= b;
+            Rounds::c_rounds(end_state);
+            end_state.v0 ^= b;
+
+            end_state.v2 ^= 0xff;
+            Rounds::d_rounds(end_state);
+
+            return end_state.v0 ^ end_state.v1 ^ end_state.v2 ^ end_state.v3;
+        }
+
+        uint64_t k0, k1;
+        size_t length;
+        State state;
+        uint64_t tail;
+        size_t ntail;
+    };
+
+    template <typename Rounds>
+    using Hasher32 = HashDetails::TruncateHash<Hasher64<Rounds>, uint64_t, uint32_t>;
+
+    template <typename Rng = std::random_device>
+    inline uint64_t rand_key(Rng &&rng = Rng())
+    {
+        return std::uniform_int_distribution<uint64_t>(
+            std::numeric_limits<uint64_t>::min(),
+            std::numeric_limits<uint64_t>::max())
+            (rng);
+    }
+
+    template <typename H>
+    struct RandomKey : public H
+    {
+        RandomKey()
+            : H(rand_key<>(), rand_key<>())
+        {
+        }
+
+        template <typename Rng>
+        RandomKey(Rng &rng)
+            : H(rand_key<Rng &>(rng), rand_key<Rng &>(rng))
+        {
+        }
+    };
+
+    #pragma endregion
+}
+
+using SipHash13_32 = SipDetails::Hasher32<SipDetails::Sip13Rounds>;
+using SipHash13_64 = SipDetails::Hasher64<SipDetails::Sip13Rounds>;
+using SipHash24_32 = SipDetails::Hasher32<SipDetails::Sip24Rounds>;
+using SipHash24_64 = SipDetails::Hasher64<SipDetails::Sip24Rounds>;
+using SipHash13 = std::conditional<std::is_same<size_t, uint32_t>::value, SipHash13_32, SipHash13_64>::type;
+using SipHash24 = std::conditional<std::is_same<size_t, uint32_t>::value, SipHash24_32, SipHash24_64>::type;
+
+using RandomSipHash13_32 = SipDetails::RandomKey<SipHash13_32>;
+using RandomSipHash24_32 = SipDetails::RandomKey<SipHash24_32>;
+using RandomSipHash13_64 = SipDetails::RandomKey<SipHash13_64>;
+using RandomSipHash24_64 = SipDetails::RandomKey<SipHash24_64>;
+using RandomSipHash13 = SipDetails::RandomKey<SipHash13>;
+using RandomSipHash24 = SipDetails::RandomKey<SipHash24>;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Wrapper to allow use of custom hashers where one would normally expect std::hash
+
+template <typename Hasher = Fnv1A>
+class StdHash
+{
+    mutable Hasher h;
+
+public:
+    template <typename T>
+    size_t operator()(const T &value) const
+    {
+        h.reset();
+        hash_apply(value, h);
+        return static_cast<size_t>(h);
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// The following is a bunch of hash_apply implementations for standard types
+
+template <typename H>
+inline void hash_apply(int8_t i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H>
+inline void hash_apply(uint8_t i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H>
+inline void hash_apply(int16_t i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H>
+inline void hash_apply(uint16_t i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H>
+inline void hash_apply(int32_t i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H>
+inline void hash_apply(uint32_t i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H>
+inline void hash_apply(int64_t i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H>
+inline void hash_apply(uint64_t i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H>
+inline void hash_apply(float i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H>
+inline void hash_apply(double i, H &h)
+{
+    h.write(&i, sizeof(i));
+}
+template <typename H, typename Ptr>
+inline void hash_apply(Ptr *p, H &h)
+{
+    h.write(&p, sizeof(Ptr *));
+}
+
+namespace std
+{
+    template <typename H, typename Elem, typename Traits, typename Alloc>
+    inline void hash_apply(const std::basic_string<Elem, Traits, Alloc> &s, H &h)
+    {
+        h.write(s.data(), s.size() * sizeof(Elem));
+    }
+
+    template <typename H, typename T, typename Alloc>
+    inline void hash_apply(const std::vector<T, Alloc> &vec, H &h)
+    {
+        for (const T &elem : vec)
+        {
+            hash_apply(elem, h);
+        }
+    }
+}
+
+namespace gsl
+{
+    template <typename H, typename Elem, ptrdiff_t Extent>
+    inline void hash_apply(gsl::basic_string_span<Elem, Extent> span, H &h)
+    {
+        h.write(span.data(), span.size_bytes());
+    }
+}

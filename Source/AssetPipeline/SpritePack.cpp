@@ -6,8 +6,8 @@ std::unique_ptr<SpritePack> SpritePack::LoadPack(
 )
 {
     std::vector<ImageLoad::Image> images;
-    std::vector<std::string> image_names;
-    std::unordered_map<std::string, uint32_t> name_map;
+    std::vector<String> image_names;
+    std::unordered_map<String, uint32_t, StdHash<Fnv1A>> name_map;
     bool has_size = false, consistent_size = true;
     uint32_t pack_width, pack_height;
 
@@ -36,8 +36,8 @@ std::unique_ptr<SpritePack> SpritePack::LoadPack(
             has_size = true;
         }
 
-        image_names.push_back(sprite_desc.name);
-        name_map.emplace(std::move(sprite_desc.name), (uint32_t)images.size());
+        name_map.emplace(std::string(sprite_desc.name), (uint32_t)images.size());
+        image_names.push_back(std::move(sprite_desc.name));
         images.emplace_back(std::move(image));
     }
 
@@ -125,6 +125,13 @@ ITexture *SpritePack::GetSprite(uint32_t index) const
     return nullptr;
 }
 
+std::optional<ITexture*> SpritePack::GetSprite(const String &name) const
+{
+    if (auto id = FindSprite(name))
+        return GetSprite(*id);
+    return{};
+}
+
 bool SpritePack::GetSpriteWindow(uint32_t index, SpriteWindow *window) const
 {
     if (windows.empty())
@@ -140,14 +147,12 @@ bool SpritePack::GetSpriteWindow(uint32_t index, SpriteWindow *window) const
     return true;
 }
 
-bool SpritePack::FindSprite(const std::string &name, uint32_t *sprite)
+std::optional<uint32_t> SpritePack::FindSprite(const String &name) const
 {
     auto it = name_map.find(name);
     if (it == name_map.end())
-        return false;
-
-    *sprite = it->second;
-    return true;
+        return std::nullopt;
+    return it->second;
 }
 
 std::unique_ptr<GifPack> GifPack::LoadGif(
@@ -180,8 +185,8 @@ std::unique_ptr<GifPack> GifPack::LoadGif(
 
     auto pack = std::unique_ptr<GifPack>{ new GifPack(std::move(gif)) };
     pack->sprite_set = std::move(set);
-    pack->sprite_names.push_back(sprite_desc.name);
-    pack->name_map.emplace(sprite_desc.name, 0);
+    pack->sprite_names.push_back(std::string(sprite_desc.name));
+    pack->name_map.emplace(std::move(sprite_desc.name), 0);
     pack->sprite_set->GetStreamingSprite(0, &pack->texture);
     return std::move(pack);
 }

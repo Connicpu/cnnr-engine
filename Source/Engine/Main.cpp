@@ -1,12 +1,14 @@
 #include <Renderer/Renderer.h>
 #include <Common/Platform.h>
-#include <AssetPipeline/SpriteLoader.h>
+#include <Common/String.h>
 #include <Common/MathLib.h>
 #include <Common/optional.h>
-#include <Renderer/StringHelpers.h>
+#include <AssetPipeline/SpriteLoader.h>
 #include <AssetPipeline/SpritePack.h>
+#include <Renderer/StringHelpers.h>
 #include <iostream>
 #include <iomanip>
+#include <unordered_map>
 
 static const wchar_t RENDERER[] = L"DX11.dll";
 
@@ -22,6 +24,13 @@ const float *NextClear()
 
 int main(int, const char *)
 {
+    std::unordered_map<String, String, StdHash<RandomSipHash13>> map;
+    map["Your mother"_s] = "Was a Hamster"_s;
+    map["Your father"_s] = "Smelt of elderberries"_s;
+
+    auto vec = Math::Vec2(1, 0);
+    auto point = Math::Point2(5, 6);
+
     while (!fs::exists(fs::current_path() / "Assets"))
         fs::current_path(fs::current_path().parent_path());
 
@@ -41,9 +50,10 @@ int main(int, const char *)
     inst->CreateDevice(&devparams, &dev);
 
     SpriteLoader loader{ dev.p };
-    loader.Load("Test");
+    auto sprites = loader.Load("Test"_s);
+    auto dickbutt = sprites->GetSprite("Dickbutt"_s);
 
-    auto gif = (GifPack *)loader.Load("TestGif");
+    auto gif = (GifPack *)loader.Load("TestGif"_s);
     auto gif_time = std::chrono::system_clock::now();
     ImageLoad::duration gif_dur;
     gif->LoadFrame(0, &gif_dur);
@@ -122,7 +132,8 @@ int main(int, const char *)
                 {
                     if (event.touch.phase != TouchPhase::Moved)
                     {
-                        std::cout << "Touch " << event.touch.id << " " << TouchPhaseName(event.touch.phase) << std::endl;
+                        std::cout << "Touch " << event.touch.id << " " << TouchPhaseName(event.touch.phase)
+                                  << " at " << event.touch.x << "," << event.touch.y << std::endl;
                     }
                     break;
                 }

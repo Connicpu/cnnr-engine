@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="Vec2F">
+        <DisplayString>&lt;{x}, {y}&gt;</DisplayString>
+    </Type>
+    <Type Name="Point2F">
+        <DisplayString>({x}, {y})</DisplayString>
+    </Type>
+    <Type Name="Size2F">
+        <DisplayString>[{x}, {y}]</DisplayString>
+    </Type>
+    <Type Name="Size2U">
+        <DisplayString>[{x}, {y}]</DisplayString>
+    </Type>
+    <Type Name="RectF">
+        <DisplayString>({left}, {top}, {right}, {bottom})</DisplayString>
+    </Type>
+</AutoVisualizer>

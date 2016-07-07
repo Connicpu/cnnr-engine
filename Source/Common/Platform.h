@@ -2,7 +2,7 @@
 
 #if defined(_MSC_VER) || defined(MSVC)
 
-#define NO_MINMAX
+#define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <atlbase.h>

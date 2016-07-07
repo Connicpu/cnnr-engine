@@ -1,6 +1,9 @@
 #pragma once
 
 #include <Common/Filesystem.h>
+#include <Common/optional.h>
+#include <Common/String.h>
+#include <Common/Hash.h>
 #include <Renderer/Renderer.h>
 #include <connorlib/serialization/toml.h>
 #include <connorlib/imageload.h>
@@ -31,16 +34,17 @@ public:
     ISpriteSet *GetSpriteSet() const;
     uint32_t GetSpriteCount() const;
     ITexture *GetSprite(uint32_t index) const;
+    std::optional<ITexture *> GetSprite(const String &name) const;
     bool GetSpriteWindow(uint32_t index, SpriteWindow *window) const;
-    bool FindSprite(const std::string &name, uint32_t *sprite);
+    std::optional<uint32_t> FindSprite(const String &name) const;
 
 protected:
     SpritePack() = default;
 
     RPtr<ISpriteSet> sprite_set;
-    std::vector<std::string> sprite_names;
+    std::vector<String> sprite_names;
     std::vector<SpriteWindow> windows;
-    std::unordered_map<std::string, uint32_t> name_map;
+    std::unordered_map<String, uint32_t, StdHash<Fnv1A>> name_map;
 };
 
 class GifPack : public SpritePack

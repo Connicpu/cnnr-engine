@@ -1,7 +1,7 @@
 #include "SpriteLoader.h"
 #include "SpritePack.h"
 #include "MMap.h"
-#include  "SpriteDesc.h"
+#include "SpriteDesc.h"
 
 #include <connorlib/serialization/toml.h>
 #include <connorlib/imageload.h>
@@ -15,7 +15,7 @@ SpriteLoader::~SpriteLoader()
 {
 }
 
-SpritePack *SpriteLoader::Load(const std::string &pack)
+SpritePack *SpriteLoader::Load(const String &pack)
 {
     auto loaded_it = loaded_packs_.find(pack);
     if (loaded_it != loaded_packs_.end())
@@ -27,9 +27,9 @@ SpritePack *SpriteLoader::Load(const std::string &pack)
     MMap mmap;
     if (!mmap.Open(desc_path))
     {
-        auto msg = "Failed to open pack `" + pack +
-            "` (" + desc_path.generic_string() + ")";
-        throw std::runtime_error{ msg };
+        auto msg = "Failed to open pack `"_s + pack +
+            "` ("_s + desc_path.generic_string() + ")"_s;
+        throw std::runtime_error{ msg.as_owned().c_str() };
     }
 
     auto config = TOML::Value::Parse((const char *)mmap.GetMemory(), mmap.GetLength());
@@ -44,7 +44,7 @@ SpritePack *SpriteLoader::Load(const std::string &pack)
     else if (pack_type_str == "AnimatedGif")
         pack_type = SpritePackType::AnimatedGif;
     else
-        throw std::runtime_error{ "Pack `" + pack + "` has an invalid Pack.Type" };
+        throw std::runtime_error{ ("Pack `"_s + pack + "` has an invalid Pack.Type"_s).as_owned().c_str() };
     
     // Read in the sprite list / animated gif
     std::unique_ptr<SpritePack> pack_ptr;

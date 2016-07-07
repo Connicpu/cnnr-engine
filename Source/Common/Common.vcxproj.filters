@@ -14,6 +14,9 @@
     <Filter Include="Header Files\TSFiller">
       <UniqueIdentifier>{e7bc6613-2c08-4d20-b476-bc8623e1e3ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Natvis">
+      <UniqueIdentifier>{0aff7106-888d-4533-8ac9-78f70df55262}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Filesystem.h">
@@ -37,5 +40,19 @@
     <ClInclude Include="optional.h">
       <Filter>Header Files\TSFiller</Filter>
     </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="String.natvis">
+      <Filter>Natvis</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>
