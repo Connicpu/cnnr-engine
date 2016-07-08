@@ -5,6 +5,8 @@
 #include <random>
 #include <stdint.h>
 #include <gsl.h>
+#include <unordered_map>
+#include <unordered_set>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Implementation helper
@@ -64,6 +66,7 @@ namespace Fnv1Details
 
         inline void reset()
         {
+            state = offset_basis;
         }
 
         inline void write(const uint8_t *data, size_t len)
@@ -114,6 +117,7 @@ namespace Fnv1ADetails
 
         inline void reset()
         {
+            state = offset_basis;
         }
 
         inline void write(const uint8_t *data, size_t len)
@@ -339,7 +343,14 @@ namespace SipDetails
     };
 
     template <typename Rounds>
-    using Hasher32 = HashDetails::TruncateHash<Hasher64<Rounds>, uint64_t, uint32_t>;
+    struct Hasher32 : public HashDetails::TruncateHash<Hasher64<Rounds>, uint64_t, uint32_t>
+    {
+        Hasher32() = default;
+        Hasher32(uint64_t k0, uint64_t k1)
+            : HashDetails::TruncateHash<Hasher64<Rounds>, uint64_t, uint32_t>(k0, k1)
+        {
+        }
+    };
 
     template <typename Rng = std::random_device>
     inline uint64_t rand_key(Rng &&rng = Rng())
@@ -350,19 +361,46 @@ namespace SipDetails
             (rng);
     }
 
-    template <typename H>
-    struct RandomKey : public H
+    template <typename H, typename Out>
+    struct RandomKey
     {
         RandomKey()
-            : H(rand_key<>(), rand_key<>())
+            : hasher(rand_key<>(), rand_key<>())
         {
         }
 
         template <typename Rng>
         RandomKey(Rng &rng)
-            : H(rand_key<Rng &>(rng), rand_key<Rng &>(rng))
+            : hasher(rand_key<Rng &>(rng), rand_key<Rng &>(rng))
         {
         }
+
+        inline void reset()
+        {
+            hasher.reset();
+        }
+
+        inline void write(const uint8_t *data, size_t len)
+        {
+            hasher.write(data, data + len);
+        }
+
+        inline void write(const void *data, size_t len)
+        {
+            hasher.write(data, len);
+        }
+
+        void write(gsl::span<const uint8_t> data)
+        {
+            hasher.write(data);
+        }
+
+        operator Out() const
+        {
+            return static_cast<Out>(hasher);
+        }
+
+        H hasher;
     };
 
     #pragma endregion
@@ -375,12 +413,12 @@ using SipHash24_64 = SipDetails::Hasher64<SipDetails::Sip24Rounds>;
 using SipHash13 = std::conditional<std::is_same<size_t, uint32_t>::value, SipHash13_32, SipHash13_64>::type;
 using SipHash24 = std::conditional<std::is_same<size_t, uint32_t>::value, SipHash24_32, SipHash24_64>::type;
 
-using RandomSipHash13_32 = SipDetails::RandomKey<SipHash13_32>;
-using RandomSipHash24_32 = SipDetails::RandomKey<SipHash24_32>;
-using RandomSipHash13_64 = SipDetails::RandomKey<SipHash13_64>;
-using RandomSipHash24_64 = SipDetails::RandomKey<SipHash24_64>;
-using RandomSipHash13 = SipDetails::RandomKey<SipHash13>;
-using RandomSipHash24 = SipDetails::RandomKey<SipHash24>;
+using RandomSipHash13_32 = SipDetails::RandomKey<SipHash13_32, uint32_t>;
+using RandomSipHash24_32 = SipDetails::RandomKey<SipHash24_32, uint32_t>;
+using RandomSipHash13_64 = SipDetails::RandomKey<SipHash13_64, uint64_t>;
+using RandomSipHash24_64 = SipDetails::RandomKey<SipHash24_64, uint64_t>;
+using RandomSipHash13 = SipDetails::RandomKey<SipHash13, size_t>;
+using RandomSipHash24 = SipDetails::RandomKey<SipHash24, size_t>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Wrapper to allow use of custom hashers where one would normally expect std::hash
@@ -485,3 +523,12 @@ namespace gsl
         h.write(span.data(), span.size_bytes());
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Other typedefs I like
+
+template <typename T, typename Hasher = RandomSipHash13>
+using HashSet = std::unordered_set<T, StdHash<Hasher>>;
+template <typename K, typename V, typename Hasher = RandomSipHash13>
+using HashMap = std::unordered_map<K, V, StdHash<Hasher>>;
+

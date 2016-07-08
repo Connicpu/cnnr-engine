@@ -24,13 +24,6 @@ const float *NextClear()
 
 int main(int, const char *)
 {
-    std::unordered_map<String, String, StdHash<RandomSipHash13>> map;
-    map["Your mother"_s] = "Was a Hamster"_s;
-    map["Your father"_s] = "Smelt of elderberries"_s;
-
-    auto vec = Math::Vec2(1, 0);
-    auto point = Math::Point2(5, 6);
-
     while (!fs::exists(fs::current_path() / "Assets"))
         fs::current_path(fs::current_path().parent_path());
 
@@ -51,7 +44,7 @@ int main(int, const char *)
 
     SpriteLoader loader{ dev.p };
     auto sprites = loader.Load("Test"_s);
-    auto dickbutt = sprites->GetSprite("Dickbutt"_s);
+    auto dickbutt = *sprites->GetSprite("Dickbutt"_s);
 
     auto gif = (GifPack *)loader.Load("TestGif"_s);
     auto gif_time = std::chrono::system_clock::now();

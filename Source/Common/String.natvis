@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
     <Type Name="String">
-        <DisplayString Condition="tag == String::Owned">{data.owned}</DisplayString>
-        <DisplayString Condition="tag == String::Ref">{data.ref.span_.data_,s}</DisplayString>
+        <DisplayString Condition="tag == String::Owned">{data.owned}_s</DisplayString>
+        <DisplayString Condition="tag == String::Ref">{data.ref.span_.data_,s}_s</DisplayString>
         <Expand>
             <Item Name="Type">tag</Item>
             <Item Name="Owned" Condition="tag == String::Owned">data.owned</Item>

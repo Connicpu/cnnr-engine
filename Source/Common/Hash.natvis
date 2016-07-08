@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="Fnv1Details::Hasher&lt;*, *, *&gt;">
+        <DisplayString>FNV-1 Hash</DisplayString>
+    </Type>
+    <Type Name="Fnv1ADetails::Hasher&lt;*, *, *&gt;">
+        <DisplayString>FNV-1A Hash</DisplayString>
+    </Type>
+    <Type Name="SipDetails::Hasher32&lt;SipDetails::Sip13Rounds&gt;">
+        <DisplayString>SipHash with 1-3 rounds (32-bit)</DisplayString>
+    </Type>
+    <Type Name="SipDetails::Hasher32&lt;SipDetails::Sip24Rounds&gt;">
+        <DisplayString>SipHash with 2-4 rounds (32-bit)</DisplayString>
+    </Type>
+    <Type Name="SipDetails::Hasher64&lt;SipDetails::Sip13Rounds&gt;">
+        <DisplayString>SipHash with 1-3 rounds (64-bit)</DisplayString>
+    </Type>
+    <Type Name="SipDetails::Hasher64&lt;SipDetails::Sip24Rounds&gt;">
+        <DisplayString>SipHash with 2-4 rounds (64-bit)</DisplayString>
+    </Type>
+    <Type Name="SipDetails::RandomKey&lt;*, *&gt;">
+        <DisplayString>Random-Key {hasher}</DisplayString>
+    </Type>
+    <Type Name="StdHash&lt;*&gt;">
+        <DisplayString>{h}</DisplayString>
+    </Type>
+</AutoVisualizer>

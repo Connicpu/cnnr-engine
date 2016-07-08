@@ -39,14 +39,31 @@ public:
 
     inline String &operator=(const String &other);
     inline String &operator=(String &&other);
+
+    inline String &operator+=(const String &rhs);
     
     inline void reset();
     static inline String to_owned(String &&str);
     inline std::string &as_owned();
     inline gsl::cstring_span<> span() const;
+    inline String &append(const String &rhs);
+
+    inline bool empty() const;
+    inline size_t length() const;
+    inline size_t size() const;
 
     inline operator gsl::cstring_span<>() const;
 };
+
+inline String::Data::Data(std::string &&owned)
+    : owned(std::move(owned))
+{
+}
+
+inline String::Data::Data(gsl::cstring_span<> ref)
+    : ref(ref)
+{
+}
 
 inline String operator ""_s(const char *str, size_t len)
 {
@@ -114,6 +131,11 @@ inline String &String::operator=(String &&other)
     return *this;
 }
 
+inline String &String::operator+=(const String &rhs)
+{
+    return append(rhs);
+}
+
 inline void String::reset()
 {
     this->String::~String();
@@ -140,6 +162,29 @@ inline gsl::cstring_span<> String::span() const
     return *this;
 }
 
+inline String &String::append(const String &rhs)
+{
+    gsl::cstring_span<> span = rhs;
+    as_owned().append(span.data(), span.size());
+    return *this;
+}
+
+inline bool String::empty() const
+{
+    return size() == 0;
+}
+
+inline size_t String::length() const
+{
+    gsl::cstring_span<> span = *this;
+    return span.size();
+}
+
+inline size_t String::size() const
+{
+    return length();
+}
+
 inline String::operator gsl::cstring_span<>() const
 {
     switch (tag)
@@ -153,17 +198,6 @@ inline String::operator gsl::cstring_span<>() const
     }
 }
 
-
-inline String::Data::Data(std::string &&owned)
-    : owned(std::move(owned))
-{
-}
-
-inline String::Data::Data(gsl::cstring_span<> ref)
-    : ref(ref)
-{
-}
-
 template<size_t len>
 inline String::String(const char str[len])
     : tag(Ref), data(gsl::cstring_span<>{ str })
@@ -172,9 +206,10 @@ inline String::String(const char str[len])
 
 inline String operator+(String &&lhs, const String &rhs)
 {
+    String temp = std::move(lhs);
     gsl::cstring_span<> rspan = rhs;
-    lhs.as_owned().append(rspan.data(), rspan.length());
-    return std::move(lhs);
+    temp.as_owned().append(rspan.data(), rspan.length());
+    return std::move(temp);
 }
 
 inline String operator+(const String &lhs, const String &rhs)
