@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BucketAllocator.h" />
     <ClInclude Include="Filesystem.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="Helpers.h" />

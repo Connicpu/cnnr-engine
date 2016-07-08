@@ -3,6 +3,7 @@
 #include <Common/String.h>
 #include <Common/MathLib.h>
 #include <Common/optional.h>
+#include <Common/BucketAllocator.h>
 #include <AssetPipeline/SpriteLoader.h>
 #include <AssetPipeline/SpritePack.h>
 #include <Renderer/StringHelpers.h>

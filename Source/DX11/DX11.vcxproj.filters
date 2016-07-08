@@ -21,9 +21,6 @@
     <ClInclude Include="DxInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DxPlatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -39,6 +36,12 @@
     <ClInclude Include="InputLayouts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DxScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DxSpriteSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HwndDisplay.cpp">
@@ -47,13 +50,16 @@
     <ClCompile Include="DxInstance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DxDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputLayouts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DxScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DxSpriteSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

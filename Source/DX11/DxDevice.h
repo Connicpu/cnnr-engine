@@ -14,6 +14,10 @@ public:
         ISpriteSet **set
     ) override;
 
+    virtual void CreateScene(
+        IScene **scene
+    ) override;
+
     ComPtr<ID3D11Device> device;
     ComPtr<ID3D11DeviceContext> context;
 };

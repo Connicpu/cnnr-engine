@@ -1,14 +1,14 @@
-#include "SpriteSet.h"
+#include "DxSpriteSet.h"
 #include "DxException.h"
 #include "DxDevice.h"
 
 const uint32_t MAX_SPRITES = 4096;
 
-SpriteSet::SpriteSet(
+DxSpriteSet::DxSpriteSet(
     DxInstance *instance, DxDevice *device,
     bool streaming, uint32_t spriteCount,
     uint32_t spriteWidth, uint32_t spriteHeight,
-    const uint8_t ** buffers)
+    const uint8_t *const * buffers)
     : ImplRenderBase<ISpriteSet, DxInstance>{ instance },
     device(device->device),
     spriteWidth(spriteWidth),
@@ -19,7 +19,7 @@ SpriteSet::SpriteSet(
     D3D11_SUBRESOURCE_DATA subresources[MAX_SPRITES];
     D3D11_SUBRESOURCE_DATA *pSubresources = nullptr;
 
-    if (spriteCount > 4096)
+    if (spriteCount > MAX_SPRITES)
         __fastfail(1);
 
     texDesc.ArraySize = spriteCount;
@@ -40,7 +40,6 @@ SpriteSet::SpriteSet(
             subresources[i].pSysMem = buffers[i];
             subresources[i].SysMemPitch = spriteWidth * 4;
             subresources[i].SysMemSlicePitch = 0;
-
         }
         pSubresources = subresources;
     }
@@ -55,23 +54,23 @@ SpriteSet::SpriteSet(
     }
 }
 
-void SpriteSet::GetSpriteSize(uint32_t *width, uint32_t *height)
+void DxSpriteSet::GetSpriteSize(uint32_t *width, uint32_t *height)
 {
     *width = spriteWidth;
     *height = spriteHeight;
 }
 
-uint32_t SpriteSet::GetSpriteCount()
+uint32_t DxSpriteSet::GetSpriteCount()
 {
     return (uint32_t)entries.size();
 }
 
-bool SpriteSet::IsStreaming()
+bool DxSpriteSet::IsStreaming()
 {
     return isStreaming;
 }
 
-bool SpriteSet::GetSprite(uint32_t index, ITexture **texture)
+bool DxSpriteSet::GetSprite(uint32_t index, ITexture **texture)
 {
     if (index >= entries.size())
         return false;
@@ -80,7 +79,7 @@ bool SpriteSet::GetSprite(uint32_t index, ITexture **texture)
     return true;
 }
 
-bool SpriteSet::GetStreamingSprite(uint32_t index, IStreamingTexture ** texture)
+bool DxSpriteSet::GetStreamingSprite(uint32_t index, IStreamingTexture ** texture)
 {
     if (index >= entries.size())
         return false;

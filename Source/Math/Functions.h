@@ -59,6 +59,11 @@ namespace Math
         return rhs * lhs;
     }
 
+    constexpr Vec2F operator/(const Vec2F lhs, const Size2F rhs)
+    {
+        return Vec2(lhs.x / rhs.width, lhs.y / rhs.height);
+    }
+
     constexpr float Dot(const Vec2F v1, const Vec2F v2)
     {
         return v1.x * v2.x + v1.y * v2.y;
