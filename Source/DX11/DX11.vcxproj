@@ -166,17 +166,19 @@
     <ClInclude Include="DxException.h" />
     <ClInclude Include="DxInstance.h" />
     <ClInclude Include="DxPlatform.h" />
+    <ClInclude Include="DxScene.h" />
     <ClInclude Include="DxTarget.h" />
     <ClInclude Include="HwndDisplay.h" />
     <ClInclude Include="InputLayouts.h" />
-    <ClInclude Include="SpriteSet.h" />
+    <ClInclude Include="DxSpriteSet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DxDevice.cpp" />
     <ClCompile Include="DxInstance.cpp" />
+    <ClCompile Include="DxScene.cpp" />
     <ClCompile Include="HwndDisplay.cpp" />
     <ClCompile Include="InputLayouts.cpp" />
-    <ClCompile Include="SpriteSet.cpp" />
+    <ClCompile Include="DxSpriteSet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Module.def" />

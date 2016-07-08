@@ -90,14 +90,14 @@ std::unique_ptr<SpritePack> SpritePack::LoadPack(
         }
     }
 
+    SpriteSetParams params;
+    params.streaming = false;
+    params.sprite_count = (uint32_t)images.size();
+    params.sprite_width = pack_width;
+    params.sprite_height = pack_height;
+    params.buffers = buffers.data();
     RPtr<ISpriteSet> set;
-    device->CreateSpriteSet(
-        false,
-        (uint32_t)images.size(),
-        pack_width, pack_height,
-        buffers.data(),
-        &set
-    );
+    device->CreateSpriteSet(&params, &set);
 
     auto pack = std::unique_ptr<SpritePack>{ new SpritePack };
     pack->sprite_set = std::move(set);
@@ -175,13 +175,14 @@ std::unique_ptr<GifPack> GifPack::LoadGif(
     const uint8_t *buffer;
     frame0.GetBuffer(&buffer);
 
+    SpriteSetParams params;
+    params.streaming = true;
+    params.sprite_count = 1;
+    params.sprite_width = width;
+    params.sprite_height = height;
+    params.buffers = &buffer;
     RPtr<ISpriteSet> set;
-    device->CreateSpriteSet(
-        true, 1,
-        width, height,
-        &buffer,
-        &set
-    );
+    device->CreateSpriteSet(&params, &set);
 
     auto pack = std::unique_ptr<GifPack>{ new GifPack(std::move(gif)) };
     pack->sprite_set = std::move(set);

@@ -12,14 +12,14 @@
 struct SpriteEntry;
 class DxDevice;
 
-class SpriteSet : public ImplRenderBase<ISpriteSet, DxInstance>
+class DxSpriteSet : public ImplRenderBase<ISpriteSet, DxInstance>
 {
 public:
-    SpriteSet(
+    DxSpriteSet(
         DxInstance *instance, DxDevice *device,
         bool streaming, uint32_t spriteCount,
         uint32_t spriteWidth, uint32_t spriteHeight,
-        const uint8_t **buffers
+        const uint8_t *const *buffers
     );
 
     // Get the width and height in pixels of each image in this set
@@ -49,7 +49,7 @@ private:
 struct SpriteEntry : public IStreamingTexture
 {
 public:
-    SpriteEntry(SpriteSet *owner, ID3D11Texture2D *backing, uint32_t i)
+    SpriteEntry(DxSpriteSet *owner, ID3D11Texture2D *backing, uint32_t i)
         : owner(owner), backingStore(backing), index(i)
     {
     }
@@ -57,8 +57,7 @@ public:
     virtual void GetSize(uint32_t *width, uint32_t *height) override;
     virtual void Update(const uint8_t *data, size_t len) override;
 
-private:
-    SpriteSet *owner;
+    DxSpriteSet *owner;
     ID3D11Texture2D *backingStore;
     uint32_t index;
 };

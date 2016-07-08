@@ -43,6 +43,9 @@ struct SpriteObjectParams
     // The texture this sprite will render with
     ITexture *texture = nullptr;
 
+    // A [0,1] subrect of the texture to use for rendering
+    RectF window = Math::Rect(0, 0, 1, 1);
+
     // The transformation applied to this sprite. You must account for
     // the aspect ratio of the texture yourself. An identity matrix will
     // render a 1x1 sprite in the center of the viewport.

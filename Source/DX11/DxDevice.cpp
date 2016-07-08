@@ -1,6 +1,7 @@
 #include "DxDevice.h"
 #include "DxException.h"
-#include "SpriteSet.h"
+#include "DxSpriteSet.h"
+#include "DxScene.h"
 
 DxDevice::DxDevice(DxInstance *inst, const DeviceParams *params)
     : ImplRenderBase<IDevice, DxInstance>(inst)
@@ -34,8 +35,14 @@ void DxDevice::CreateSpriteSet(const SpriteSetParams *params, ISpriteSet **set)
     if (!params->streaming) assert(params->buffers);
     auto inst = GetInst();
 
-    *set = MakeRenderObject<SpriteSet>(
+    *set = MakeRenderObject<DxSpriteSet>(
         inst.p, this, params->streaming, params->sprite_count, params->sprite_width,
         params->sprite_height, params->buffers
     ).Release();
+}
+
+void DxDevice::CreateScene(IScene **scene)
+{
+    auto inst = GetInst();
+    *scene = MakeRenderObject<DxScene>(inst.p, this).Release();
 }

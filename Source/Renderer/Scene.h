@@ -12,6 +12,9 @@ public:
     virtual SpriteHandle CreateSprite(const SpriteObjectParams *params) = 0;
     virtual void DestroySprite(SpriteHandle sprite) = 0;
 
+    virtual void SetWindow(SpriteHandle sprite, const RectF *window) = 0;
+    virtual void GetWindow(SpriteHandle sprite, RectF *window) = 0;
+
     virtual void SetLayer(SpriteHandle sprite, float layer) = 0;
     virtual void GetLayer(SpriteHandle sprite, float *layer) = 0;
 
