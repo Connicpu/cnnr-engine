@@ -29,17 +29,13 @@ DxDevice::DxDevice(DxInstance *inst, const DeviceParams *params)
     ));
 }
 
-void DxDevice::CreateSpriteSet(
-    bool streaming, uint32_t spriteCount,
-    uint32_t spriteWidth, uint32_t spriteHeight,
-    const uint8_t **buffers,
-    ISpriteSet **set)
+void DxDevice::CreateSpriteSet(const SpriteSetParams *params, ISpriteSet **set)
 {
-    if (!streaming) assert(buffers);
+    if (!params->streaming) assert(params->buffers);
     auto inst = GetInst();
 
     *set = MakeRenderObject<SpriteSet>(
-        inst.p, this, streaming, spriteCount, spriteWidth,
-        spriteHeight, buffers
+        inst.p, this, params->streaming, params->sprite_count, params->sprite_width,
+        params->sprite_height, params->buffers
     ).Release();
 }

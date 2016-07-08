@@ -10,9 +10,7 @@ public:
     DxDevice(DxInstance *inst, const DeviceParams *params);
 
     virtual void CreateSpriteSet(
-        bool streaming, uint32_t spriteCount,
-        uint32_t spriteWidth, uint32_t spriteHeight,
-        const uint8_t **buffers,
+        const SpriteSetParams *params,
         ISpriteSet **set
     ) override;
 

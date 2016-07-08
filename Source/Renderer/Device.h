@@ -1,9 +1,11 @@
 #pragma once
 
 #include "RenderBase.h"
+#include "Params.h"
 
 class IRenderTarget;
 class ISpriteSet;
+class IScene;
 
 class IDevice : public IRenderBase
 {
@@ -13,10 +15,12 @@ public:
     // buffers may be nullptr, or any individual buffers in that array.
     // May fail if too many sprites are requested.
     virtual void CreateSpriteSet(
-        bool streaming, uint32_t spriteCount,
-        uint32_t spriteWidth, uint32_t spriteHeight,
-        const uint8_t **buffers,
+        const SpriteSetParams *params,
         ISpriteSet **set
+    ) = 0;
+
+    virtual void CreateScene(
+        IScene **scene
     ) = 0;
 
     // TODO: Other creation functions that need a device

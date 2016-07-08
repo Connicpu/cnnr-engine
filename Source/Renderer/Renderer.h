@@ -8,4 +8,5 @@
 #include "Texture.h"
 #include "SpriteSet.h"
 #include "Device.h"
+#include "Scene.h"
 

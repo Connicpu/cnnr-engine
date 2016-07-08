@@ -150,6 +150,7 @@ int main(int, const char *)
         }
 
         display->Clear(NextClear());
+
         display->Present();
         Sleep(16);
     }

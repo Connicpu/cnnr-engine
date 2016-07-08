@@ -134,6 +134,8 @@
     <ClInclude Include="Events.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Instance.h" />
+    <ClInclude Include="Params.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="SpriteSet.h" />
     <ClInclude Include="RefCounted.h" />
     <ClInclude Include="RenderBase.h" />
