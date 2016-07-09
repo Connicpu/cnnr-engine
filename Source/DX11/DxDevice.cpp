@@ -44,5 +44,5 @@ void DxDevice::CreateSpriteSet(const SpriteSetParams *params, ISpriteSet **set)
 void DxDevice::CreateScene(IScene **scene)
 {
     auto inst = GetInst();
-    *scene = MakeRenderObject<DxScene>(inst.p, this).Release();
+    *scene = MakeRenderObject<DxScene>(inst.p, Math::SizeF(20, 20)).Release();
 }

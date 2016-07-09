@@ -50,7 +50,7 @@ struct SpriteEntry : public IStreamingTexture
 {
 public:
     SpriteEntry(DxSpriteSet *owner, ID3D11Texture2D *backing, uint32_t i)
-        : owner(owner), backingStore(backing), index(i)
+        : owner(owner), backing_store(backing), index(i)
     {
     }
 
@@ -58,6 +58,6 @@ public:
     virtual void Update(const uint8_t *data, size_t len) override;
 
     DxSpriteSet *owner;
-    ID3D11Texture2D *backingStore;
+    ID3D11Texture2D *backing_store;
     uint32_t index;
 };

@@ -106,10 +106,10 @@ void SpriteEntry::Update(const uint8_t *data, size_t len)
     owner->device->GetImmediateContext(&context);
 
     D3D11_MAPPED_SUBRESOURCE resource;
-    hr = context->Map(backingStore, subresource, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+    hr = context->Map(backing_store, subresource, D3D11_MAP_WRITE_DISCARD, 0, &resource);
     CheckHR(hr);
 
     memcpy(resource.pData, data, len);
 
-    context->Unmap(backingStore, subresource);
+    context->Unmap(backing_store, subresource);
 }

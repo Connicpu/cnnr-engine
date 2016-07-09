@@ -26,11 +26,23 @@ inline bool operator==(SegCoord lhs, SegCoord rhs)
     return lhs.x == rhs.x && lhs.y == rhs.y;
 }
 
+inline bool operator!=(SegCoord lhs, SegCoord rhs)
+{
+    return lhs.x != rhs.x || lhs.y != rhs.y;
+}
+
 template <typename H>
 inline void hash_apply(const SegCoord &coord, H &h)
 {
     h.write(&coord, sizeof(coord));
 }
+
+enum class SpriteSection
+{
+    SolidDynamic,
+    SolidStatic,
+    Translucent,
+};
 
 struct SpriteObject
 {
@@ -40,8 +52,11 @@ struct SpriteObject
     RectF window;
     ColorF tint;
 
+    SpriteSection section;
     SegCoord current_coord;
     BucketAllocation allocation;
+    bool *dirty_flag;
+    bool *sort_flag;
 
     SegCoord CalculateCoord(const Size2F segment_size);
 
@@ -57,22 +72,38 @@ struct SpriteInstance
     ColorF tint;
 };
 
-struct StaticSection
+struct SpriteBatch
 {
+    DxSpriteSet *set;
+    ComPtr<ID3D11Buffer> instance_buffer;
+    bool dirty = false;
+};
+
+struct SolidSection
+{
+    HashMap<DxSpriteSet *, HashSet<SpriteHandle, Fnv1A>, Fnv1A> sprites;
+    HashMap<DxSpriteSet *, std::unique_ptr<SpriteBatch>, Fnv1A> batches;
+};
+
+struct TranslucentSection
+{
+    std::vector<SpriteHandle> sprites;
+    std::vector<SpriteBatch> batches;
     bool dirty;
+    bool needs_sorting;
 };
 
 struct SceneSegment
 {
-    SegCoord coord;
-
-    StaticSection solid_statics;
+    SolidSection solid_sprites;
+    SolidSection solid_statics;
+    TranslucentSection translucents;
 };
 
 class DxScene : public ImplRenderBase<IScene, DxInstance>
 {
 public:
-    DxScene(DxInstance *inst, DxDevice *dev);
+    DxScene(DxInstance *inst, Size2F segment_size);
 
     virtual SpriteHandle CreateSprite(const SpriteObjectParams *params) override;
     virtual void DestroySprite(SpriteHandle sprite) override;
@@ -92,8 +123,7 @@ public:
     virtual void SetTint(SpriteHandle sprite, const ColorF *color) override;
     virtual void GetTint(SpriteHandle sprite, ColorF *color) override;
 
-    RPtr<DxDevice> device;
-    HashMap<SegCoord, SceneSegment, Fnv1A> segments;
+    HashMap<SegCoord, std::unique_ptr<SceneSegment>, Fnv1A> segments;
     TBucketAllocator<SpriteObject, 2048> object_allocator;
     Size2F segment_size;
 };
