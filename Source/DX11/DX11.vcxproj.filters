@@ -65,6 +65,9 @@
     <ClCompile Include="DxSpriteSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DxCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Module.def">

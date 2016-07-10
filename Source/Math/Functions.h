@@ -56,7 +56,7 @@ namespace Math
 
     constexpr Vec2F operator/(float lhs, const Vec2F rhs)
     {
-        return rhs * lhs;
+        return Vec2(lhs / rhs.x, lhs / rhs.y);
     }
 
     constexpr Vec2F operator/(const Vec2F lhs, const Size2F rhs)
@@ -97,6 +97,11 @@ namespace Math
         return LengthSq(v) < 1e-8;
     }
 
+    constexpr Vec2F operator-(const Vec2F v)
+    {
+        return Vec2(-v.x, -v.y);
+    }
+
     ////////////////////////////
     // Point2 functions
 
@@ -133,6 +138,11 @@ namespace Math
     constexpr Vec2F operator-(const Point2F lhs, const Point2F rhs)
     {
         return Vec2(lhs) - Vec2(rhs);
+    }
+
+    constexpr Point2F operator-(const Point2F p)
+    {
+        return Point2(-p.x, -p.y);
     }
 
     ////////////////////////////
@@ -180,7 +190,7 @@ namespace Math
 
     constexpr Size2F operator/(float lhs, const Size2F rhs)
     {
-        return rhs / lhs;
+        return SizeF(lhs / Vec2(rhs));
     }
 
     ////////////////////////////
