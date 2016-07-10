@@ -162,6 +162,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DxCamera.h" />
     <ClInclude Include="DxDevice.h" />
     <ClInclude Include="DxException.h" />
     <ClInclude Include="DxInstance.h" />

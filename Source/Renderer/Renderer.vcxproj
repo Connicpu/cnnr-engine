@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="Events.h" />
