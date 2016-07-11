@@ -163,5 +163,7 @@ int main(int, const char *)
         Sleep(16);
     }
 
+    scene->DestroySprite(dickbutt);
+
     return 0;
 }
