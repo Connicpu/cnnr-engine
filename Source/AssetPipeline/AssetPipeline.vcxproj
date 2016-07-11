@@ -153,13 +153,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="MMap.h" />
     <ClInclude Include="SpriteDesc.h" />
     <ClInclude Include="SpriteLoader.h" />
     <ClInclude Include="SpritePack.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MMap.cpp" />
     <ClCompile Include="SpriteDesc.cpp" />
     <ClCompile Include="SpriteLoader.cpp" />
     <ClCompile Include="SpritePack.cpp" />

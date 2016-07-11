@@ -45,7 +45,7 @@ int main(int, const char *)
 
     SpriteLoader loader{ dev.p };
     auto sprites = loader.Load("Test"_s);
-    auto dickbutt = *sprites->GetSprite("Dickbutt"_s);
+    auto dickbutt_tex = *sprites->GetSprite("Dickbutt"_s);
 
     auto gif = (GifPack *)loader.Load("TestGif"_s);
     auto gif_time = std::chrono::system_clock::now();
@@ -58,6 +58,13 @@ int main(int, const char *)
     disparams.window_title = "Hi there :D";
     RPtr<IDisplay> display;
     inst->CreateDisplay(&disparams, &display);
+
+    RPtr<IScene> scene;
+    dev->CreateScene(&scene);
+
+    SpriteObjectParams dickbutt_desc;
+    dickbutt_desc.texture = dickbutt_tex;
+    SpriteHandle dickbutt = scene->CreateSprite(&dickbutt_desc);
 
     bool quit = false;
     uint32_t gif_frame = 0;

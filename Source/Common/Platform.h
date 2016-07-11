@@ -2,6 +2,10 @@
 
 #if defined(_MSC_VER) || defined(MSVC)
 
+#ifndef MSVC
+#define MSVC
+#endif
+
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>

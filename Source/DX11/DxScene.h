@@ -6,13 +6,23 @@
 #include "DxInstance.h"
 #include "DxDevice.h"
 #include "DxSpriteSet.h"
+#include "DxVertexBuffer.h"
 
 struct SegCoord;
 struct SpriteObject;
 struct SpriteInstance;
+class DxCamera;
 
 struct SegCoord
 {
+    SegCoord(Point2F point, Size2F seg_size)
+    {
+        using namespace Math;
+        auto coordf = Vec2(point) / seg_size;
+        x = (uint32_t)(int32_t)std::floor(coordf.x);
+        y = (uint32_t)(int32_t)std::floor(coordf.y);
+    }
+
     SegCoord(uint32_t x, uint32_t y)
         : x(x), y(y)
     {
@@ -74,8 +84,8 @@ struct SpriteInstance
 
 struct SpriteBatch
 {
+    DxVertexBuffer<SpriteInstance> instance_buffer;
     DxSpriteSet *set;
-    ComPtr<ID3D11Buffer> instance_buffer;
     bool dirty = false;
 };
 
@@ -89,8 +99,8 @@ struct TranslucentSection
 {
     std::vector<SpriteHandle> sprites;
     std::vector<SpriteBatch> batches;
-    bool dirty;
-    bool needs_sorting;
+    bool dirty = true;
+    bool needs_sorting = true;
 };
 
 struct SceneSegment
@@ -122,6 +132,10 @@ public:
 
     virtual void SetTint(SpriteHandle sprite, const ColorF *color) override;
     virtual void GetTint(SpriteHandle sprite, ColorF *color) override;
+
+    void Draw(DxDevice *device, DxCamera *camera);
+    void DrawSegment(SegCoord coord, DxDevice *device, DxCamera *camera);
+    void DrawBatch(const SpriteBatch &batch, DxDevice *device, DxCamera *camera);
 
     HashMap<SegCoord, std::unique_ptr<SceneSegment>, Fnv1A> segments;
     TBucketAllocator<SpriteObject, 2048> object_allocator;

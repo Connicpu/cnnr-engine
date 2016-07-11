@@ -168,16 +168,19 @@
     <ClInclude Include="DxInstance.h" />
     <ClInclude Include="DxPlatform.h" />
     <ClInclude Include="DxScene.h" />
+    <ClInclude Include="DxShader.h" />
     <ClInclude Include="DxTarget.h" />
     <ClInclude Include="HwndDisplay.h" />
     <ClInclude Include="InputLayouts.h" />
     <ClInclude Include="DxSpriteSet.h" />
+    <ClInclude Include="DxVertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DxCamera.cpp" />
     <ClCompile Include="DxDevice.cpp" />
     <ClCompile Include="DxInstance.cpp" />
     <ClCompile Include="DxScene.cpp" />
+    <ClCompile Include="DxShader.cpp" />
     <ClCompile Include="HwndDisplay.cpp" />
     <ClCompile Include="InputLayouts.cpp" />
     <ClCompile Include="DxSpriteSet.cpp" />

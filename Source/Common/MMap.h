@@ -1,15 +1,44 @@
-#include "MMap.h"
+#pragma once
 
-MMap::MMap()
+#include <Common/Filesystem.h>
+#include <Common/Platform.h>
+
+class MMap
+{
+public:
+    inline MMap();
+    inline ~MMap();
+
+    inline bool Open(const fs::path &path);
+
+    inline size_t GetLength();
+    inline const uint8_t *GetMemory();
+
+    inline void Close();
+
+private:
+#ifdef MSVC
+    HANDLE file = INVALID_HANDLE_VALUE;
+    HANDLE file_view = nullptr;
+    size_t length = 0;
+    void *memory = nullptr;
+#else
+    int fd = -1;
+    size_t length = 0;
+    void *memory = MAP_FAILED;
+#endif
+};
+
+inline MMap::MMap()
 {
 }
 
-MMap::~MMap()
+inline MMap::~MMap()
 {
     Close();
 }
 
-bool MMap::Open(const fs::path &path)
+inline bool MMap::Open(const fs::path &path)
 {
     Close();
 
@@ -17,7 +46,7 @@ bool MMap::Open(const fs::path &path)
 
     auto wpath = path.generic_wstring();
     file = CreateFileW(
-        wpath.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, 
+        wpath.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr
     );
 
@@ -45,7 +74,7 @@ bool MMap::Open(const fs::path &path)
 
     auto spath = path.generic_string();
     fd = open(spath.c_str(), O_RDONLY, 0);
-    
+
     if (fd == -1)
         return false;
 
@@ -64,17 +93,17 @@ bool MMap::Open(const fs::path &path)
     return true;
 }
 
-size_t MMap::GetLength()
+inline size_t MMap::GetLength()
 {
     return length;
 }
 
-const uint8_t *MMap::GetMemory()
+inline const uint8_t *MMap::GetMemory()
 {
     return (const uint8_t *)memory;
 }
 
-void MMap::Close()
+inline void MMap::Close()
 {
 #ifdef MSVC
 
@@ -102,3 +131,5 @@ void MMap::Close()
 
 #endif
 }
+
+

@@ -1,8 +1,8 @@
 #include "SpriteLoader.h"
 #include "SpritePack.h"
-#include "MMap.h"
 #include "SpriteDesc.h"
 
+#include <Common/MMap.h>
 #include <connorlib/serialization/toml.h>
 #include <connorlib/imageload.h>
 

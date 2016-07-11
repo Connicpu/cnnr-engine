@@ -6,6 +6,7 @@
 class IRenderTarget;
 class ISpriteSet;
 class IScene;
+class ICamera;
 
 class IDevice : public IRenderBase
 {
@@ -21,6 +22,11 @@ public:
 
     virtual void CreateScene(
         IScene **scene
+    ) = 0;
+
+    virtual void DrawScene(
+        IScene *scene,
+        ICamera *camera
     ) = 0;
 
     // TODO: Other creation functions that need a device

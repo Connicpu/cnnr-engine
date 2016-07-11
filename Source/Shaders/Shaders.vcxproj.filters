@@ -12,5 +12,8 @@
     <FxCompile Include="ParticleVS.hlsl">
       <Filter>DX11</Filter>
     </FxCompile>
+    <FxCompile Include="SpritePS.hlsl">
+      <Filter>DX11</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

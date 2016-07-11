@@ -1,4 +1,6 @@
 #include "DxScene.h"
+#include "DxCamera.h"
+#include "DxException.h"
 
 using namespace Math;
 
@@ -315,14 +317,174 @@ void DxScene::GetTint(SpriteHandle sprite, ColorF *color)
     *color = sprite->tint;
 }
 
+void DxScene::Draw(DxDevice *device, DxCamera *camera)
+{
+    camera->Upload(device->device, device->context);
+
+    const int32_t CULL_MARGIN = 2;
+    RectF viewport;
+    camera->GetViewRect(&viewport);
+    SegCoord top_left{ Point2(viewport.left, viewport.top), segment_size };
+    SegCoord bottom_right{ Point2(viewport.right, viewport.bottom), segment_size };
+    uint32_t x_min = std::min(int32_t(top_left.x), int32_t(bottom_right.x)) - CULL_MARGIN;
+    uint32_t x_max = std::max(int32_t(top_left.x), int32_t(bottom_right.x)) + CULL_MARGIN;
+    uint32_t y_min = std::min(int32_t(top_left.y), int32_t(bottom_right.y)) - CULL_MARGIN;
+    uint32_t y_max = std::max(int32_t(top_left.y), int32_t(bottom_right.y)) + CULL_MARGIN;
+
+    for (uint32_t y = y_min; y <= y_max; ++y)
+    {
+        for (uint32_t x = x_min; x <= x_max; ++x)
+        {
+            SegCoord coord{ uint32_t(x), uint32_t(y) };
+            DrawSegment(coord, device, camera);
+        }
+    }
+}
+
+void DxScene::DrawSegment(SegCoord coord, DxDevice *device, DxCamera *camera)
+{
+    auto segment_iter = segments.find(coord);
+    if (segment_iter == segments.end())
+        return;
+    auto &segment = *segment_iter->second;
+
+    if (segment.solid_sprites.sprites.empty() &&
+        segment.solid_statics.sprites.empty() &&
+        segment.translucents.sprites.empty())
+    {
+        segments.erase(segment_iter);
+        return;
+    }
+
+    // Draw all of the solid sprites
+    for (auto &section : { &segment.solid_statics, &segment.solid_sprites })
+    {
+        if (section->sprites.empty())
+            continue;
+
+        std::vector<DxSpriteSet *> batch_kill_list;
+        for (auto &pair : section->batches)
+        {
+            auto &key = pair.first;
+            auto &batch = *pair.second;
+            auto &sprites = section->sprites[key];
+
+            if (sprites.empty())
+            {
+                batch_kill_list.push_back(pair.first);
+                continue;
+            }
+
+            if (pair.second->dirty)
+            {
+                // Ensure our instance buffer has enough room for all these sprites
+                batch.instance_buffer.Reserve(device->device, uint32_t(sprites.size()));
+
+                // Upload the sprites into the instance buffer
+                auto upload = batch.instance_buffer.BeginUpload(device->context);
+                for (auto *sprite : sprites)
+                {
+                    batch.instance_buffer.Push(*sprite, upload);
+                }
+                batch.instance_buffer.EndUpload(upload);
+                pair.second->dirty = false;
+            }
+
+            // Draw the batch :3
+            DrawBatch(batch, device, camera);
+        }
+
+        // Remove empty batches
+        for (auto &kill : batch_kill_list)
+        {
+            section->sprites.erase(kill);
+            section->batches.erase(kill);
+        }
+    }
+
+    // Draw all of the translucent sprites
+    if (!segment.translucents.sprites.empty())
+    {
+        auto &section = segment.translucents;
+
+        // Resort the sprites if any layers have changed in this region
+        if (section.needs_sorting)
+        {
+            std::sort(section.sprites.begin(), section.sprites.end());
+            section.needs_sorting = false;
+            section.dirty = true;
+        }
+
+        // Upload the sprites if anything has changed
+        if (section.dirty)
+        {
+            auto old_batches = std::move(section.batches);
+            DxSpriteSet *run_set = nullptr;
+            std::vector<SpriteHandle> current_run;
+
+            // Subroutine to pop an item from the batch queue or create a new one
+            auto next_batch = [&]
+            {
+                if (old_batches.empty())
+                {
+                    return SpriteBatch{};
+                }
+                else
+                {
+                    auto batch = std::move(old_batches.back());
+                    old_batches.pop_back();
+                    return std::move(batch);
+                }
+            };
+
+            // Subroutine to push the current list of sprites into the batch list
+            auto commit_run = [&]
+            {
+                auto batch = next_batch();
+
+                auto &buffer = batch.instance_buffer;
+                batch.set = run_set;
+                batch.dirty = false;
+                buffer.Reserve(device->device, uint32_t(current_run.size()));
+
+                auto upload = buffer.BeginUpload(device->context);
+                for (auto *sprite : current_run)
+                {
+                    buffer.Push(*sprite, upload);
+                }
+                buffer.EndUpload(upload);
+                section.batches.push_back(std::move(batch));
+                current_run.clear();
+            };
+
+            // Put all of the sprites into runs
+            for (auto *sprite : section.sprites)
+            {
+                auto set = sprite->texture->owner;
+                if (run_set && run_set != set)
+                    commit_run();
+                run_set = set;
+                current_run.push_back(sprite);
+            }
+            commit_run();
+
+            section.dirty = false;
+        }
+
+        for (auto &batch : section.batches)
+        {
+            DrawBatch(batch, device, camera);
+        }
+    }
+}
+
+void DxScene::DrawBatch(const SpriteBatch &batch, DxDevice *device, DxCamera *camera)
+{
+}
+
 SegCoord SpriteObject::CalculateCoord(const Size2F segment_size)
 {
-    auto coordf = Vec2(transform.m31, transform.m32) / segment_size;
-    return
-    {
-        (uint32_t)(int32_t)std::floor(coordf.x),
-        (uint32_t)(int32_t)std::floor(coordf.y),
-    };
+    return{ Point2(transform.m31, transform.m32), segment_size };
 }
 
 SpriteObject::operator SpriteInstance() const

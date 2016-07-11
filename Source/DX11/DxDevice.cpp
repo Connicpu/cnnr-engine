@@ -2,6 +2,14 @@
 #include "DxException.h"
 #include "DxSpriteSet.h"
 #include "DxScene.h"
+#include "DxCamera.h"
+#include "InputLayouts.h"
+
+#ifdef NDEBUG
+#define SHADER_FOLDER "Assets/Shaders/DX11/Release/"
+#else
+#define SHADER_FOLDER "Assets/Shaders/DX11/Debug/"
+#endif
 
 DxDevice::DxDevice(DxInstance *inst, const DeviceParams *params)
     : ImplRenderBase<IDevice, DxInstance>(inst)
@@ -12,7 +20,7 @@ DxDevice::DxDevice(DxInstance *inst, const DeviceParams *params)
 
     static const D3D_FEATURE_LEVEL feature_levels[] =
     {
-        D3D_FEATURE_LEVEL_10_0,
+        D3D_FEATURE_LEVEL_10_1,
     };
 
     D3D_FEATURE_LEVEL feature_level;
@@ -28,6 +36,13 @@ DxDevice::DxDevice(DxInstance *inst, const DeviceParams *params)
         &feature_level,
         &context
     ));
+
+    sprite_shader.Load(device, DxShaderDesc
+    {
+        SHADER_FOLDER "SpriteVS.cso"_s,
+        SHADER_FOLDER "SpritePS.cso"_s,
+        { SpriteVSLayout, (int)SpriteVSLayoutCount },
+    });
 }
 
 void DxDevice::CreateSpriteSet(const SpriteSetParams *params, ISpriteSet **set)
@@ -45,4 +60,9 @@ void DxDevice::CreateScene(IScene **scene)
 {
     auto inst = GetInst();
     *scene = MakeRenderObject<DxScene>(inst.p, Math::SizeF(20, 20)).Release();
+}
+
+void DxDevice::DrawScene(IScene *scene, ICamera *camera)
+{
+    static_cast<DxScene *>(scene)->Draw(this, static_cast<DxCamera *>(camera));
 }

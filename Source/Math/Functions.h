@@ -97,6 +97,11 @@ namespace Math
         return LengthSq(v) < 1e-8;
     }
 
+    inline bool IsInfinite(const Vec2F v)
+    {
+        return !std::isfinite(LengthSq(v));
+    }
+
     constexpr Vec2F operator-(const Vec2F v)
     {
         return Vec2(-v.x, -v.y);

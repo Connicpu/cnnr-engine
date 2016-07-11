@@ -46,7 +46,11 @@ public:
     static inline String to_owned(String &&str);
     inline std::string &as_owned();
     inline gsl::cstring_span<> span() const;
+    inline fs::path path() const;
     inline String &append(const String &rhs);
+
+    const char *begin() const;
+    const char *end() const;
 
     inline bool empty() const;
     inline size_t length() const;
@@ -162,11 +166,25 @@ inline gsl::cstring_span<> String::span() const
     return *this;
 }
 
+inline fs::path String::path() const
+{
+    return fs::path{ begin(), end() };
+}
+
 inline String &String::append(const String &rhs)
 {
-    gsl::cstring_span<> span = rhs;
-    as_owned().append(span.data(), span.size());
+    as_owned().append(rhs.begin(), rhs.end());
     return *this;
+}
+
+inline const char *String::begin() const
+{
+    return span().data();
+}
+
+inline const char *String::end() const
+{
+    return span().data() + span().size();
 }
 
 inline bool String::empty() const
@@ -207,8 +225,7 @@ inline String::String(const char str[len])
 inline String operator+(String &&lhs, const String &rhs)
 {
     String temp = std::move(lhs);
-    gsl::cstring_span<> rspan = rhs;
-    temp.as_owned().append(rspan.data(), rspan.length());
+    temp.as_owned().append(rhs.begin(), rhs.end());
     return std::move(temp);
 }
 
@@ -250,8 +267,7 @@ inline bool operator>=(const String &lhs, const String &rhs)
 inline fs::path operator/(fs::path &&lhs, const String &rhs)
 {
     fs::path temp = std::move(lhs);
-    gsl::cstring_span<> span = rhs;
-    temp.append(span.data(), span.data() + span.size());
+    temp.append(rhs.begin(), rhs.end());
     return std::move(temp);
 }
 

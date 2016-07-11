@@ -4,7 +4,7 @@
 #include <Renderer/RenderHelpers.h>
 #include "DxInstance.h"
 
-class DxCamera : public ImplRenderBase<ICamera, DxInstance>
+class DxCamera final : public ImplRenderBase<ICamera, DxInstance>
 {
 public:
     virtual void SetViewport(Size2F viewport) override;
@@ -21,10 +21,13 @@ public:
     virtual void UnTransformPoint(Point2F point, Point2F *out) override;
 
     void Calculate();
+    void Upload(ID3D11Device *device, ID3D11DeviceContext *context);
 
-    Size2F viewport = Math::SizeF(1, 1);
+    Size2F viewport = Math::SizeF(1, -1);
     Point2F center = Math::Point2();
     Math::Matrix3x2 camera_matrix = Math::Matrix3x2::Identity();
     Math::Matrix3x2 inv_camera = Math::Matrix3x2::Identity();
+    ComPtr<ID3D11Buffer> buffer;
+    bool changed = true;
 };
 
