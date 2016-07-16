@@ -9,12 +9,16 @@ class DxVertexBuffer
 public:
     struct UploadContext;
 
+    void CreateImmutable(ID3D11Device *device, uint32_t count, const Vert *vertices);
     void Reserve(ID3D11Device *device, uint32_t count);
 
     UploadContext BeginUpload(ID3D11DeviceContext *context);
     void Push(const Vert &vert, UploadContext &upload_ctx);
     void Push(const Vert *verts, uint32_t count, UploadContext &upload_ctx);
     void EndUpload(const UploadContext &upload_ctx);
+
+    ID3D11Buffer *Get() const;
+    uint32_t Count() const;
 
 private:
     ComPtr<ID3D11Buffer> buffer_;
@@ -34,6 +38,27 @@ private:
 };
 
 template<typename Vert>
+inline void DxVertexBuffer<Vert>::CreateImmutable(ID3D11Device *device, uint32_t count, const Vert *vertices)
+{
+    buffer_.Release();
+
+    D3D11_BUFFER_DESC desc;
+    desc.ByteWidth = count * sizeof(Vert);
+    desc.StructureByteStride = sizeof(Vert);
+    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    desc.Usage = D3D11_USAGE_IMMUTABLE;
+    desc.CPUAccessFlags = 0;
+    desc.MiscFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA data = { 0 };
+    data.pSysMem = vertices;
+
+    CheckHR(device->CreateBuffer(&desc, &data, &buffer_));
+    size_ = count;
+    requested_size_ = 0;
+}
+
+template<typename Vert>
 inline void DxVertexBuffer<Vert>::Reserve(ID3D11Device *device, uint32_t count)
 {
     const uint32_t RIDICULOUS_EXCESS = 5; // If we're using this much more memory than we need
@@ -49,8 +74,8 @@ inline void DxVertexBuffer<Vert>::Reserve(ID3D11Device *device, uint32_t count)
         buffer_.Release();
         uint32_t creation_count = uint32_t(float(count) * CREATION_HEADROOM);
         D3D11_BUFFER_DESC desc;
-        desc.ByteWidth = creation_count * sizeof(SpriteInstance);
-        desc.StructureByteStride = sizeof(SpriteInstance);
+        desc.ByteWidth = creation_count * sizeof(Vert);
+        desc.StructureByteStride = sizeof(Vert);
         desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
         desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -80,6 +105,7 @@ inline void DxVertexBuffer<Vert>::Push(const Vert & vert, UploadContext &upload_
 template<typename Vert>
 inline void DxVertexBuffer<Vert>::Push(const Vert *verts, uint32_t count, UploadContext &upload_ctx)
 {
+    assert(upload_ctx.pos + count <= requested_size_);
     memcpy(upload_ctx.subres.pData, verts, count * sizeof(Vert));
     upload_ctx.pos += count;
 }
@@ -89,4 +115,16 @@ inline void DxVertexBuffer<Vert>::EndUpload(const UploadContext &upload_ctx)
 {
     upload_ctx.context->Unmap(buffer_, 0);
     assert(upload_ctx.pos == requested_size_);
+}
+
+template<typename Vert>
+inline ID3D11Buffer * DxVertexBuffer<Vert>::Get() const
+{
+    return buffer_;
+}
+
+template<typename Vert>
+inline uint32_t DxVertexBuffer<Vert>::Count() const
+{
+    return requested_size_;
 }

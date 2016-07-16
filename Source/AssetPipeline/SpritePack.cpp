@@ -194,10 +194,16 @@ std::unique_ptr<GifPack> GifPack::LoadGif(
 
 bool GifPack::LoadFrame(uint32_t frame, ImageLoad::duration *duration)
 {
+    bool result = true;
     if (cache_future.valid())
+    {
         if (!cache_future.get())
+        {
             frame = 0;
-    return InternalLoadFrame(frame, duration);
+            result = false;
+        }
+    }
+    return InternalLoadFrame(frame, duration) && result;
 }
 
 void GifPack::CacheNextThreaded(uint32_t frame)
@@ -216,9 +222,15 @@ void GifPack::CacheNextThreaded(uint32_t frame)
 
 bool GifPack::InternalLoadFrame(uint32_t frame, ImageLoad::duration *duration)
 {
+    auto device = texture->GetDevice();
+    device->Lock();
+
     ImageLoad::Frame frame_buf;
     if (!gif.GetFrame(frame, &frame_buf, duration))
+    {
+        device->Unlock();
         return false; // `frame` >= the number of frames inside the file
+    }
 
     uint32_t width, height;
     gif.GetSize(&width, &height);
@@ -227,7 +239,9 @@ bool GifPack::InternalLoadFrame(uint32_t frame, ImageLoad::duration *duration)
 
     // Size is required here as a sanity check. Comparing some numbers
     // is miniscule compared to copying an entire image to the GPU :P
+
     texture->Update(buffer, width * height * 4);
 
+    device->Unlock();
     return true; // the requested frame existed in the file!
 }

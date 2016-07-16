@@ -9,4 +9,4 @@
 #include "SpriteSet.h"
 #include "Device.h"
 #include "Scene.h"
-
+#include "Camera.h"

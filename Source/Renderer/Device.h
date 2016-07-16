@@ -24,10 +24,12 @@ public:
         IScene **scene
     ) = 0;
 
-    virtual void DrawScene(
-        IScene *scene,
-        ICamera *camera
+    virtual void CreateCamera(
+        ICamera **camera
     ) = 0;
+
+    virtual void Lock() = 0;
+    virtual void Unlock() = 0;
 
     // TODO: Other creation functions that need a device
 };

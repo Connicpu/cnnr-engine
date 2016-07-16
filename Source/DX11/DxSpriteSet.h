@@ -36,13 +36,16 @@ public:
     // fail and return false if index is out of bounds or this sprite set is not
     // set up for streaming.
     virtual bool GetStreamingSprite(uint32_t index, IStreamingTexture **texture) override;
+    
+    ID3D11ShaderResourceView *const &GetView() const;
 
 private:
     std::vector<SpriteEntry> entries;
-    ComPtr<ID3D11Texture2D> backingStore;
-    ComPtr<ID3D11Device> device;
-    uint32_t spriteWidth, spriteHeight;
-    bool isStreaming;
+    RPtr<DxDevice> device;
+    ComPtr<ID3D11Texture2D> backing_store;
+    ComPtr<ID3D11ShaderResourceView> sr_view;
+    uint32_t sprite_width, sprite_height;
+    bool is_streaming;
     friend struct SpriteEntry;
 };
 
@@ -54,6 +57,7 @@ public:
     {
     }
 
+    virtual IDevice *GetDevice() override;
     virtual void GetSize(uint32_t *width, uint32_t *height) override;
     virtual void Update(const uint8_t *data, size_t len) override;
 

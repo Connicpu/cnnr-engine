@@ -62,7 +62,18 @@ void DxDevice::CreateScene(IScene **scene)
     *scene = MakeRenderObject<DxScene>(inst.p, Math::SizeF(20, 20)).Release();
 }
 
-void DxDevice::DrawScene(IScene *scene, ICamera *camera)
+void DxDevice::CreateCamera(ICamera **camera)
 {
-    static_cast<DxScene *>(scene)->Draw(this, static_cast<DxCamera *>(camera));
+    auto inst = GetInst();
+    *camera = MakeRenderObject<DxCamera>(inst.p).Release();
+}
+
+void DxDevice::Lock()
+{
+    AcquireSRWLockExclusive(&lock);
+}
+
+void DxDevice::Unlock()
+{
+    ReleaseSRWLockExclusive(&lock);
 }

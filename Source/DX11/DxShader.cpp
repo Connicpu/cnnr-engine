@@ -34,3 +34,10 @@ void DxShader::Load(ID3D11Device *device, const DxShaderDesc &desc)
         mmap.GetMemory(), mmap.GetLength(),
         nullptr, &pixel_shader));
 }
+
+void DxShader::Bind(ID3D11DeviceContext *context)
+{
+    context->VSSetShader(vertex_shader, nullptr, 0);
+    context->PSSetShader(pixel_shader, nullptr, 0);
+    context->IASetInputLayout(input_layout);
+}

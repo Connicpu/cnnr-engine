@@ -3,6 +3,12 @@
 
 using namespace Math;
 
+DxCamera::DxCamera(DxInstance *inst)
+    : ImplRenderBase<ICamera, DxInstance>(inst)
+{
+    Calculate();
+}
+
 void DxCamera::SetViewport(Size2F vp)
 {
     if (IsZero(Vec2(vp)) || IsInfinite(Vec2(vp)))
@@ -50,6 +56,7 @@ void DxCamera::UnTransformPoint(Point2F point, Point2F *out)
 
 void DxCamera::Calculate()
 {
+    changed = true;
     camera_matrix = Matrix3x2::Translation(-center) * Matrix3x2::Scale(2 / viewport);
     if (!camera_matrix.Inverse(inv_camera))
         __fastfail(1);
@@ -74,8 +81,8 @@ void DxCamera::Upload(ID3D11Device *device, ID3D11DeviceContext *context)
     else
     {
         D3D11_BUFFER_DESC desc = { 0 };
-        desc.ByteWidth = sizeof(Matrix3x2F);
-        desc.StructureByteStride = sizeof(Matrix3x2F);
+        desc.ByteWidth = 32;
+        desc.StructureByteStride = 32;
         desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
         desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;

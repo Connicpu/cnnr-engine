@@ -20,6 +20,7 @@ struct DxShaderDesc
 struct DxShader
 {
     void Load(ID3D11Device *device, const DxShaderDesc &desc);
+    void Bind(ID3D11DeviceContext *context);
 
     ComPtr<ID3D11VertexShader> vertex_shader;
     ComPtr<ID3D11PixelShader> pixel_shader;

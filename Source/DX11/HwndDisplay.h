@@ -28,11 +28,17 @@ public:
     // IDxTarget
     virtual void GetRTV(ID3D11RenderTargetView **rtv) override;
 
+    virtual void DrawScene(
+        IScene *scene,
+        ICamera *camera
+    ) override;
+
 private:
     static LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 
     void InitializeWindow(LPCWSTR title);
     void InitializeSwap();
+    void InitializeDepth();
 
     static void RegisterWindowClass(HINSTANCE hinst);
 
@@ -45,6 +51,10 @@ private:
     ComPtr<IDXGISwapChain1> swap_chain;
     ComPtr<ID3D11Texture2D> back_buffer;
     ComPtr<ID3D11RenderTargetView> render_target;
+
+    ComPtr<ID3D11Texture2D> depth_buffer;
+    ComPtr<ID3D11DepthStencilView> depth_view;
+    ComPtr<ID3D11DepthStencilState> depth_state;
 
     bool occluded = false;
     bool closed = false;
