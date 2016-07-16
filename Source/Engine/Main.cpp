@@ -43,16 +43,6 @@ int main(int, const char *)
     RPtr<IDevice> device;
     inst->CreateDevice(&devparams, &device);
 
-    SpriteLoader loader{ device.p };
-    auto sprites = loader.Load("Test"_s);
-    auto dickbutt_tex = *sprites->GetSprite("Dickbutt"_s);
-
-    auto gif = (GifPack *)loader.Load("TestGif"_s);
-    auto gif_time = std::chrono::system_clock::now();
-    ImageLoad::duration gif_dur;
-    gif->LoadFrame(0, &gif_dur);
-    gif->CacheNextThreaded(1);
-
     DisplayParams disparams;
     disparams.device = device.p;
     disparams.window_title = "Hi there :D";
@@ -65,9 +55,25 @@ int main(int, const char *)
     RPtr<ICamera> camera;
     device->CreateCamera(&camera);
 
+    SpriteLoader loader{ device.p };
+    auto sprites = loader.Load("Test"_s);
+    auto dickbutt_tex = *sprites->GetSprite("Dickbutt"_s);
+
+    auto gif = (GifPack *)loader.Load("TestGif"_s);
+    auto gif_time = std::chrono::system_clock::now();
+    ImageLoad::duration gif_dur;
+    gif->LoadFrame(0, &gif_dur);
+    gif->CacheNextThreaded(1);
+
     SpriteObjectParams dickbutt_desc;
     dickbutt_desc.texture = dickbutt_tex;
+    dickbutt_desc.transform = Math::Matrix3x2::Translation(-0.5f, 0);
     SpriteHandle dickbutt = scene->CreateSprite(&dickbutt_desc);
+
+    SpriteObjectParams gif_desc;
+    gif_desc.texture = gif->GetSprite(0);
+    gif_desc.transform = Math::Matrix3x2::Translation(0.5f, 0);
+    SpriteHandle gif_sprite = scene->CreateSprite(&gif_desc);
 
     bool quit = false;
     uint32_t gif_frame = 0;
@@ -81,7 +87,7 @@ int main(int, const char *)
                 case EventType::Resized:
                 {
                     auto aspect = event.resized.width / (float)event.resized.height;
-                    camera->SetViewport(Math::SizeF(aspect, 1));
+                    camera->SetViewport(Math::SizeF(aspect * 2, 2));
                     break;
                 }
 
@@ -153,7 +159,7 @@ int main(int, const char *)
         }
 
         auto now = std::chrono::system_clock::now();
-        if (gif_time + gif_dur >= now)
+        if (gif_time + gif_dur <= now)
         {
             gif_time = now;
             gif_frame++;
@@ -171,6 +177,7 @@ int main(int, const char *)
         Sleep(16);
     }
 
+    scene->DestroySprite(gif_sprite);
     scene->DestroySprite(dickbutt);
 
     return 0;

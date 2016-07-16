@@ -39,7 +39,7 @@ DxSpriteSet::DxSpriteSet(
         {
             subresources[i].pSysMem = buffers[i];
             subresources[i].SysMemPitch = spriteWidth * 4;
-            subresources[i].SysMemSlicePitch = 0;
+            subresources[i].SysMemSlicePitch = spriteWidth * spriteHeight * 4;
         }
         pSubresources = subresources;
     }
@@ -125,7 +125,13 @@ void SpriteEntry::Update(const uint8_t *data, size_t len)
     hr = context->Map(backing_store, subresource, D3D11_MAP_WRITE_DISCARD, 0, &resource);
     CheckHR(hr);
 
-    memcpy(resource.pData, data, len);
+    for (uint32_t y = 0; y < owner->sprite_height; ++y)
+    {
+        auto dx_data = reinterpret_cast<char *>(resource.pData);
+        auto dx_offset = dx_data + y * resource.RowPitch;
+        auto data_offset = data + y * owner->sprite_width * 4;
+        memcpy(dx_offset, data_offset, owner->sprite_width * 4);
+    }
 
     context->Unmap(backing_store, subresource);
 }

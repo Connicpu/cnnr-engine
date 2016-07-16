@@ -17,6 +17,7 @@ namespace Math
         constexpr static Matrix3x2 Identity();
         constexpr static Matrix3x2 Translation(Vec2F vec);
         constexpr static Matrix3x2 Translation(Point2F point);
+        constexpr static Matrix3x2 Translation(float x, float y);
         constexpr static Matrix3x2 Scale(Size2F scale, Point2F center = Point2());
         inline static Matrix3x2 Rotation(float angle, Point2F center = Point2());
         constexpr static Matrix3x2 RotationCx(float angle, Point2F center = Point2());
@@ -65,6 +66,11 @@ constexpr Math::Matrix3x2 Math::Matrix3x2::Translation(const Vec2F vec)
 constexpr Math::Matrix3x2 Math::Matrix3x2::Translation(const Point2F point)
 {
     return Translation(Vec2(point));
+}
+
+inline constexpr Math::Matrix3x2 Math::Matrix3x2::Translation(float x, float y)
+{
+    return Translation(Vec2(x, y));
 }
 
 constexpr Math::Matrix3x2 Math::Matrix3x2::Scale(const Size2F scale, const Point2F center)
