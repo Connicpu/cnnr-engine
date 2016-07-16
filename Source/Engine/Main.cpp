@@ -40,10 +40,10 @@ int main(int, const char *)
 
     DeviceParams devparams;
     devparams.debug = true;
-    RPtr<IDevice> dev;
-    inst->CreateDevice(&devparams, &dev);
+    RPtr<IDevice> device;
+    inst->CreateDevice(&devparams, &device);
 
-    SpriteLoader loader{ dev.p };
+    SpriteLoader loader{ device.p };
     auto sprites = loader.Load("Test"_s);
     auto dickbutt_tex = *sprites->GetSprite("Dickbutt"_s);
 
@@ -54,13 +54,16 @@ int main(int, const char *)
     gif->CacheNextThreaded(1);
 
     DisplayParams disparams;
-    disparams.device = dev.p;
+    disparams.device = device.p;
     disparams.window_title = "Hi there :D";
     RPtr<IDisplay> display;
     inst->CreateDisplay(&disparams, &display);
 
     RPtr<IScene> scene;
-    dev->CreateScene(&scene);
+    device->CreateScene(&scene);
+
+    RPtr<ICamera> camera;
+    device->CreateCamera(&camera);
 
     SpriteObjectParams dickbutt_desc;
     dickbutt_desc.texture = dickbutt_tex;
@@ -77,6 +80,8 @@ int main(int, const char *)
             {
                 case EventType::Resized:
                 {
+                    auto aspect = event.resized.width / (float)event.resized.height;
+                    camera->SetViewport(Math::SizeF(aspect, 1));
                     break;
                 }
 
@@ -157,9 +162,12 @@ int main(int, const char *)
             gif->CacheNextThreaded(gif_frame + 1);
         }
 
+        device->Lock();
         display->Clear(NextClear());
-
+        display->DrawScene(scene.p, camera.p);
         display->Present();
+        device->Unlock();
+
         Sleep(16);
     }
 

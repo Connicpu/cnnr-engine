@@ -2,9 +2,12 @@
 
 #include "RenderBase.h"
 
+class IDevice;
+
 class ITexture
 {
 public:
+    virtual IDevice *GetDevice() = 0;
     virtual void GetSize(uint32_t *width, uint32_t *height) = 0;
 };
 

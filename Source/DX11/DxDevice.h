@@ -19,12 +19,18 @@ public:
         IScene **scene
     ) override;
 
-    virtual void DrawScene(
-        IScene *scene,
-        ICamera *camera
+    virtual void CreateCamera(
+        ICamera **camera
     ) override;
+
+
+    virtual void Lock() override;
+    virtual void Unlock() override;
 
     ComPtr<ID3D11Device> device;
     ComPtr<ID3D11DeviceContext> context;
     DxShader sprite_shader;
+
+private:
+    SRWLOCK lock;
 };

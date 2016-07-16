@@ -89,6 +89,17 @@ struct SpriteBatch
     bool dirty = false;
 };
 
+struct SpriteVertex
+{
+    inline SpriteVertex(Vec2F pos, Vec2F uv)
+        : pos(pos), uv(uv)
+    {
+    }
+
+    Vec2F pos;
+    Vec2F uv;
+};
+
 struct SolidSection
 {
     HashMap<DxSpriteSet *, HashSet<SpriteHandle, Fnv1A>, Fnv1A> sprites;
@@ -139,5 +150,14 @@ public:
 
     HashMap<SegCoord, std::unique_ptr<SceneSegment>, Fnv1A> segments;
     TBucketAllocator<SpriteObject, 2048> object_allocator;
+    DxVertexBuffer<SpriteVertex> sprite_vertices;
+    ComPtr<ID3D11RasterizerState> rasterizer;
+    ComPtr<ID3D11BlendState> blender;
+    ComPtr<ID3D11SamplerState> sampler;
     Size2F segment_size;
+
+private:
+    void InitializeRasterizer(ID3D11Device *device);
+    void InitializeBlender(ID3D11Device *device);
+    void InitializeSampler(ID3D11Device *device);
 };

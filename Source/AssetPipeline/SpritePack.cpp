@@ -227,7 +227,12 @@ bool GifPack::InternalLoadFrame(uint32_t frame, ImageLoad::duration *duration)
 
     // Size is required here as a sanity check. Comparing some numbers
     // is miniscule compared to copying an entire image to the GPU :P
+
+    auto device = texture->GetDevice();
+
+    device->Lock();
     texture->Update(buffer, width * height * 4);
+    device->Unlock();
 
     return true; // the requested frame existed in the file!
 }

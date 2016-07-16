@@ -4,6 +4,17 @@
 
 using namespace Math;
 
+static SpriteVertex SpriteVertices[] =
+{
+    { Vec2(-0.5f, 0.5f), Vec2(0, 0) },
+    { Vec2(-0.5f, -0.5f), Vec2(0, 1) },
+    { Vec2(0.5f, -0.5f), Vec2(1, 1) },
+
+    { Vec2(-0.5f, 0.5f), Vec2(0, 0) },
+    { Vec2(0.5f, -0.5f), Vec2(1, 1) },
+    { Vec2(0.5f, 0.5f), Vec2(1, 0) },
+};
+
 DxScene::DxScene(DxInstance *inst, Size2F segment_size)
     : ImplRenderBase<IScene, DxInstance>(inst), segment_size(segment_size)
 {
@@ -319,21 +330,40 @@ void DxScene::GetTint(SpriteHandle sprite, ColorF *color)
 
 void DxScene::Draw(DxDevice *device, DxCamera *camera)
 {
+    if (!rasterizer)
+        InitializeRasterizer(device->device);
+    if (!blender)
+        InitializeBlender(device->device);
+    if (!sampler)
+        InitializeSampler(device->device);
+
+    if (!sprite_vertices.Get())
+    {
+        sprite_vertices.CreateImmutable(
+            device->device,
+            ARRAYSIZE(SpriteVertices),
+            SpriteVertices);
+    }
+
     camera->Upload(device->device, device->context);
+
+    device->context->RSSetState(rasterizer);
+    device->context->OMSetBlendState(blender, nullptr, 0xFFFFFF);
+    device->context->PSSetSamplers(0, 1, &sampler.p);
 
     const int32_t CULL_MARGIN = 2;
     RectF viewport;
     camera->GetViewRect(&viewport);
     SegCoord top_left{ Point2(viewport.left, viewport.top), segment_size };
     SegCoord bottom_right{ Point2(viewport.right, viewport.bottom), segment_size };
-    uint32_t x_min = std::min(int32_t(top_left.x), int32_t(bottom_right.x)) - CULL_MARGIN;
-    uint32_t x_max = std::max(int32_t(top_left.x), int32_t(bottom_right.x)) + CULL_MARGIN;
-    uint32_t y_min = std::min(int32_t(top_left.y), int32_t(bottom_right.y)) - CULL_MARGIN;
-    uint32_t y_max = std::max(int32_t(top_left.y), int32_t(bottom_right.y)) + CULL_MARGIN;
+    int32_t x_min = std::min(int32_t(top_left.x), int32_t(bottom_right.x)) - CULL_MARGIN;
+    int32_t x_max = std::max(int32_t(top_left.x), int32_t(bottom_right.x)) + CULL_MARGIN;
+    int32_t y_min = std::min(int32_t(top_left.y), int32_t(bottom_right.y)) - CULL_MARGIN;
+    int32_t y_max = std::max(int32_t(top_left.y), int32_t(bottom_right.y)) + CULL_MARGIN;
 
-    for (uint32_t y = y_min; y <= y_max; ++y)
+    for (int32_t y = y_min; y <= y_max; ++y)
     {
-        for (uint32_t x = x_min; x <= x_max; ++x)
+        for (int32_t x = x_min; x <= x_max; ++x)
         {
             SegCoord coord{ uint32_t(x), uint32_t(y) };
             DrawSegment(coord, device, camera);
@@ -480,6 +510,66 @@ void DxScene::DrawSegment(SegCoord coord, DxDevice *device, DxCamera *camera)
 
 void DxScene::DrawBatch(const SpriteBatch &batch, DxDevice *device, DxCamera *camera)
 {
+    ID3D11Buffer *const vert_buffers[] = { sprite_vertices.Get(), batch.instance_buffer.Get() };
+    const UINT vert_strides[] = { sizeof(SpriteVertex), sizeof(SpriteInstance) };
+    const UINT vert_offsets[] = { 0, 0 };
+
+    ID3D11DeviceContext *context = device->context;
+    device->sprite_shader.Bind(context);
+    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    context->IASetVertexBuffers(0, 2, vert_buffers, vert_strides, vert_offsets);
+    context->VSSetConstantBuffers(0, 1, &camera->buffer.p);
+    context->PSSetShaderResources(0, 1, &batch.set->GetView());
+
+    context->DrawInstanced(ARRAYSIZE(SpriteVertices), batch.instance_buffer.Count(), 0, 0);
+}
+
+void DxScene::InitializeRasterizer(ID3D11Device *device)
+{
+    D3D11_RASTERIZER_DESC desc;
+    desc.FillMode = D3D11_FILL_SOLID;
+    desc.CullMode = D3D11_CULL_NONE;
+    desc.FrontCounterClockwise = true;
+    desc.DepthBias = 0;
+    desc.DepthBiasClamp = 0.0f;
+    desc.SlopeScaledDepthBias = 0.0f;
+    desc.DepthClipEnable = false;
+    desc.ScissorEnable = false;
+    desc.MultisampleEnable = true;
+    desc.AntialiasedLineEnable = true;
+    CheckHR(device->CreateRasterizerState(&desc, &rasterizer));
+}
+
+void DxScene::InitializeBlender(ID3D11Device *device)
+{
+    D3D11_BLEND_DESC desc;
+    desc.AlphaToCoverageEnable = TRUE;
+    desc.IndependentBlendEnable = FALSE;
+    desc.RenderTarget[0].BlendEnable = TRUE;
+    desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+    desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
+    desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+    CheckHR(device->CreateBlendState(&desc, &blender));
+}
+
+void DxScene::InitializeSampler(ID3D11Device *device)
+{
+    D3D11_SAMPLER_DESC desc;
+    desc.Filter = D3D11_FILTER_ANISOTROPIC;
+    desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    desc.MipLODBias = 0;
+    desc.MaxAnisotropy = 8;
+    desc.MinLOD = -FLT_MAX;
+    desc.MaxLOD = FLT_MAX;
+    desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    *(ColorF *)desc.BorderColor = Color(1, 1, 1);
+    CheckHR(device->CreateSamplerState(&desc, &sampler));
 }
 
 SegCoord SpriteObject::CalculateCoord(const Size2F segment_size)

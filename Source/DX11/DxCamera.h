@@ -7,6 +7,8 @@
 class DxCamera final : public ImplRenderBase<ICamera, DxInstance>
 {
 public:
+    DxCamera(DxInstance *inst);
+
     virtual void SetViewport(Size2F viewport) override;
     virtual void GetViewport(Size2F *viewport) override;
     virtual void SetCenter(Point2F center) override;
@@ -23,7 +25,7 @@ public:
     void Calculate();
     void Upload(ID3D11Device *device, ID3D11DeviceContext *context);
 
-    Size2F viewport = Math::SizeF(1, -1);
+    Size2F viewport = Math::SizeF(1, 1);
     Point2F center = Math::Point2();
     Math::Matrix3x2 camera_matrix = Math::Matrix3x2::Identity();
     Math::Matrix3x2 inv_camera = Math::Matrix3x2::Identity();
