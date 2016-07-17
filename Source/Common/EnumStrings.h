@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Hash.h"
+#include "CxHash.h"
+#include "String.h"
+
 #define BEGIN_STRING_TO_ENUM(str) \
     using namespace cx; \
     switch (StdHash<Fnv1A_64>{}(str)) \
@@ -15,3 +19,4 @@
         default: break; \
     } \
     return std::nullopt;
+
