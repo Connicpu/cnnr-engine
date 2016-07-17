@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Events.h"
+#include <Common/EnumStrings.h>
+#include <Common/String.h>
 
 inline const char *EventTypeName(EventType event)
 {
@@ -22,21 +24,21 @@ inline const char *EventTypeName(EventType event)
     }
 }
 
-inline std::optional<EventType> ParseEventType(const char *name)
+inline std::optional<EventType> ParseEventType(const String &name)
 {
-    if (strcmp(name, "Resized") == 0) { return EventType::Resized; }
-    if (strcmp(name, "Moved") == 0) { return EventType::Moved; }
-    if (strcmp(name, "Closed") == 0) { return EventType::Closed; }
-    if (strcmp(name, "DroppedFile") == 0) { return EventType::DroppedFile; }
-    if (strcmp(name, "ReceivedCharacter") == 0) { return EventType::ReceivedCharacter; }
-    if (strcmp(name, "Focused") == 0) { return EventType::Focused; }
-    if (strcmp(name, "KeyboardInput") == 0) { return EventType::KeyboardInput; }
-    if (strcmp(name, "MouseMoved") == 0) { return EventType::MouseMoved; }
-    if (strcmp(name, "MouseWheel") == 0) { return EventType::MouseWheel; }
-    if (strcmp(name, "MouseInput") == 0) { return EventType::MouseInput; }
-    if (strcmp(name, "Touch") == 0) { return EventType::Touch; }
-
-    return std::nullopt;
+    BEGIN_STRING_TO_ENUM(name);
+    RETURN_STRING_ENUM(name, "Resized", EventType::Resized);
+    RETURN_STRING_ENUM(name, "Moved", EventType::Moved);
+    RETURN_STRING_ENUM(name, "Closed", EventType::Closed);
+    RETURN_STRING_ENUM(name, "DroppedFile", EventType::DroppedFile);
+    RETURN_STRING_ENUM(name, "ReceivedCharacter", EventType::ReceivedCharacter);
+    RETURN_STRING_ENUM(name, "Focused", EventType::Focused);
+    RETURN_STRING_ENUM(name, "KeyboardInput", EventType::KeyboardInput);
+    RETURN_STRING_ENUM(name, "MouseMoved", EventType::MouseMoved);
+    RETURN_STRING_ENUM(name, "MouseWheel", EventType::MouseWheel);
+    RETURN_STRING_ENUM(name, "MouseInput", EventType::MouseInput);
+    RETURN_STRING_ENUM(name, "Touch", EventType::Touch);
+    END_STRING_TO_ENUM();
 }
 
 inline const char *TouchPhaseName(TouchPhase phase)
@@ -52,14 +54,14 @@ inline const char *TouchPhaseName(TouchPhase phase)
     }
 }
 
-inline std::optional<TouchPhase> ParseTouchPhase(const char *name)
+inline std::optional<TouchPhase> ParseTouchPhase(const String &name)
 {
-    if (strcmp(name, "Started") == 0) { return TouchPhase::Started; }
-    if (strcmp(name, "Moved") == 0) { return TouchPhase::Moved; }
-    if (strcmp(name, "Ended") == 0) { return TouchPhase::Ended; }
-    if (strcmp(name, "Cancelled") == 0) { return TouchPhase::Cancelled; }
-
-    return std::nullopt;
+    BEGIN_STRING_TO_ENUM(name);
+    RETURN_STRING_ENUM(name, "Started", TouchPhase::Started);
+    RETURN_STRING_ENUM(name, "Moved", TouchPhase::Moved);
+    RETURN_STRING_ENUM(name, "Ended", TouchPhase::Ended);
+    RETURN_STRING_ENUM(name, "Cancelled", TouchPhase::Cancelled);
+    END_STRING_TO_ENUM();
 }
 
 inline const char *VirtualKeyCodeName(VirtualKeyCode code)
@@ -230,166 +232,166 @@ inline const char *VirtualKeyCodeName(VirtualKeyCode code)
     }
 }
 
-inline std::optional<VirtualKeyCode> ParseVirtualKeyCode(const char *name)
+inline std::optional<VirtualKeyCode> ParseVirtualKeyCode(const String &name)
 {
-    if (strcmp(name, "Key0") == 0) { return VirtualKeyCode::Key0; }
-    if (strcmp(name, "Key1") == 0) { return VirtualKeyCode::Key1; }
-    if (strcmp(name, "Key2") == 0) { return VirtualKeyCode::Key2; }
-    if (strcmp(name, "Key3") == 0) { return VirtualKeyCode::Key3; }
-    if (strcmp(name, "Key4") == 0) { return VirtualKeyCode::Key4; }
-    if (strcmp(name, "Key5") == 0) { return VirtualKeyCode::Key5; }
-    if (strcmp(name, "Key6") == 0) { return VirtualKeyCode::Key6; }
-    if (strcmp(name, "Key7") == 0) { return VirtualKeyCode::Key7; }
-    if (strcmp(name, "Key8") == 0) { return VirtualKeyCode::Key8; }
-    if (strcmp(name, "Key9") == 0) { return VirtualKeyCode::Key9; }
+    BEGIN_STRING_TO_ENUM(name);
+    RETURN_STRING_ENUM(name, "Key0", VirtualKeyCode::Key0);
+    RETURN_STRING_ENUM(name, "Key1", VirtualKeyCode::Key1);
+    RETURN_STRING_ENUM(name, "Key2", VirtualKeyCode::Key2);
+    RETURN_STRING_ENUM(name, "Key3", VirtualKeyCode::Key3);
+    RETURN_STRING_ENUM(name, "Key4", VirtualKeyCode::Key4);
+    RETURN_STRING_ENUM(name, "Key5", VirtualKeyCode::Key5);
+    RETURN_STRING_ENUM(name, "Key6", VirtualKeyCode::Key6);
+    RETURN_STRING_ENUM(name, "Key7", VirtualKeyCode::Key7);
+    RETURN_STRING_ENUM(name, "Key8", VirtualKeyCode::Key8);
+    RETURN_STRING_ENUM(name, "Key9", VirtualKeyCode::Key9);
 
-    if (strcmp(name, "A") == 0) { return VirtualKeyCode::A; }
-    if (strcmp(name, "B") == 0) { return VirtualKeyCode::B; }
-    if (strcmp(name, "C") == 0) { return VirtualKeyCode::C; }
-    if (strcmp(name, "D") == 0) { return VirtualKeyCode::D; }
-    if (strcmp(name, "E") == 0) { return VirtualKeyCode::E; }
-    if (strcmp(name, "F") == 0) { return VirtualKeyCode::F; }
-    if (strcmp(name, "G") == 0) { return VirtualKeyCode::G; }
-    if (strcmp(name, "H") == 0) { return VirtualKeyCode::H; }
-    if (strcmp(name, "I") == 0) { return VirtualKeyCode::I; }
-    if (strcmp(name, "J") == 0) { return VirtualKeyCode::J; }
-    if (strcmp(name, "K") == 0) { return VirtualKeyCode::K; }
-    if (strcmp(name, "L") == 0) { return VirtualKeyCode::L; }
-    if (strcmp(name, "M") == 0) { return VirtualKeyCode::M; }
-    if (strcmp(name, "N") == 0) { return VirtualKeyCode::N; }
-    if (strcmp(name, "O") == 0) { return VirtualKeyCode::O; }
-    if (strcmp(name, "P") == 0) { return VirtualKeyCode::P; }
-    if (strcmp(name, "Q") == 0) { return VirtualKeyCode::Q; }
-    if (strcmp(name, "R") == 0) { return VirtualKeyCode::R; }
-    if (strcmp(name, "S") == 0) { return VirtualKeyCode::S; }
-    if (strcmp(name, "T") == 0) { return VirtualKeyCode::T; }
-    if (strcmp(name, "U") == 0) { return VirtualKeyCode::U; }
-    if (strcmp(name, "V") == 0) { return VirtualKeyCode::V; }
-    if (strcmp(name, "W") == 0) { return VirtualKeyCode::W; }
-    if (strcmp(name, "X") == 0) { return VirtualKeyCode::X; }
-    if (strcmp(name, "Y") == 0) { return VirtualKeyCode::Y; }
-    if (strcmp(name, "Z") == 0) { return VirtualKeyCode::Z; }
+    RETURN_STRING_ENUM(name, "A", VirtualKeyCode::A);
+    RETURN_STRING_ENUM(name, "B", VirtualKeyCode::B);
+    RETURN_STRING_ENUM(name, "C", VirtualKeyCode::C);
+    RETURN_STRING_ENUM(name, "D", VirtualKeyCode::D);
+    RETURN_STRING_ENUM(name, "E", VirtualKeyCode::E);
+    RETURN_STRING_ENUM(name, "F", VirtualKeyCode::F);
+    RETURN_STRING_ENUM(name, "G", VirtualKeyCode::G);
+    RETURN_STRING_ENUM(name, "H", VirtualKeyCode::H);
+    RETURN_STRING_ENUM(name, "I", VirtualKeyCode::I);
+    RETURN_STRING_ENUM(name, "J", VirtualKeyCode::J);
+    RETURN_STRING_ENUM(name, "K", VirtualKeyCode::K);
+    RETURN_STRING_ENUM(name, "L", VirtualKeyCode::L);
+    RETURN_STRING_ENUM(name, "M", VirtualKeyCode::M);
+    RETURN_STRING_ENUM(name, "N", VirtualKeyCode::N);
+    RETURN_STRING_ENUM(name, "O", VirtualKeyCode::O);
+    RETURN_STRING_ENUM(name, "P", VirtualKeyCode::P);
+    RETURN_STRING_ENUM(name, "Q", VirtualKeyCode::Q);
+    RETURN_STRING_ENUM(name, "R", VirtualKeyCode::R);
+    RETURN_STRING_ENUM(name, "S", VirtualKeyCode::S);
+    RETURN_STRING_ENUM(name, "T", VirtualKeyCode::T);
+    RETURN_STRING_ENUM(name, "U", VirtualKeyCode::U);
+    RETURN_STRING_ENUM(name, "V", VirtualKeyCode::V);
+    RETURN_STRING_ENUM(name, "W", VirtualKeyCode::W);
+    RETURN_STRING_ENUM(name, "X", VirtualKeyCode::X);
+    RETURN_STRING_ENUM(name, "Y", VirtualKeyCode::Y);
+    RETURN_STRING_ENUM(name, "Z", VirtualKeyCode::Z);
 
-    if (strcmp(name, "Escape") == 0) { return VirtualKeyCode::Escape; }
+    RETURN_STRING_ENUM(name, "Escape", VirtualKeyCode::Escape);
 
-    if (strcmp(name, "F1") == 0) { return VirtualKeyCode::F1; }
-    if (strcmp(name, "F2") == 0) { return VirtualKeyCode::F2; }
-    if (strcmp(name, "F3") == 0) { return VirtualKeyCode::F3; }
-    if (strcmp(name, "F4") == 0) { return VirtualKeyCode::F4; }
-    if (strcmp(name, "F5") == 0) { return VirtualKeyCode::F5; }
-    if (strcmp(name, "F6") == 0) { return VirtualKeyCode::F6; }
-    if (strcmp(name, "F7") == 0) { return VirtualKeyCode::F7; }
-    if (strcmp(name, "F8") == 0) { return VirtualKeyCode::F8; }
-    if (strcmp(name, "F9") == 0) { return VirtualKeyCode::F9; }
-    if (strcmp(name, "F10") == 0) { return VirtualKeyCode::F10; }
-    if (strcmp(name, "F11") == 0) { return VirtualKeyCode::F11; }
-    if (strcmp(name, "F12") == 0) { return VirtualKeyCode::F12; }
-    if (strcmp(name, "F13") == 0) { return VirtualKeyCode::F13; }
-    if (strcmp(name, "F14") == 0) { return VirtualKeyCode::F14; }
-    if (strcmp(name, "F15") == 0) { return VirtualKeyCode::F15; }
+    RETURN_STRING_ENUM(name, "F1", VirtualKeyCode::F1);
+    RETURN_STRING_ENUM(name, "F2", VirtualKeyCode::F2);
+    RETURN_STRING_ENUM(name, "F3", VirtualKeyCode::F3);
+    RETURN_STRING_ENUM(name, "F4", VirtualKeyCode::F4);
+    RETURN_STRING_ENUM(name, "F5", VirtualKeyCode::F5);
+    RETURN_STRING_ENUM(name, "F6", VirtualKeyCode::F6);
+    RETURN_STRING_ENUM(name, "F7", VirtualKeyCode::F7);
+    RETURN_STRING_ENUM(name, "F8", VirtualKeyCode::F8);
+    RETURN_STRING_ENUM(name, "F9", VirtualKeyCode::F9);
+    RETURN_STRING_ENUM(name, "F10", VirtualKeyCode::F10);
+    RETURN_STRING_ENUM(name, "F11", VirtualKeyCode::F11);
+    RETURN_STRING_ENUM(name, "F12", VirtualKeyCode::F12);
+    RETURN_STRING_ENUM(name, "F13", VirtualKeyCode::F13);
+    RETURN_STRING_ENUM(name, "F14", VirtualKeyCode::F14);
+    RETURN_STRING_ENUM(name, "F15", VirtualKeyCode::F15);
 
-    if (strcmp(name, "Snapshot") == 0) { return VirtualKeyCode::Snapshot; }
-    if (strcmp(name, "Scroll") == 0) { return VirtualKeyCode::Scroll; }
-    if (strcmp(name, "Pause") == 0) { return VirtualKeyCode::Pause; }
+    RETURN_STRING_ENUM(name, "Snapshot", VirtualKeyCode::Snapshot);
+    RETURN_STRING_ENUM(name, "Scroll", VirtualKeyCode::Scroll);
+    RETURN_STRING_ENUM(name, "Pause", VirtualKeyCode::Pause);
 
-    if (strcmp(name, "Insert") == 0) { return VirtualKeyCode::Insert; }
-    if (strcmp(name, "Home") == 0) { return VirtualKeyCode::Home; }
-    if (strcmp(name, "Delete") == 0) { return VirtualKeyCode::Delete; }
-    if (strcmp(name, "End") == 0) { return VirtualKeyCode::End; }
-    if (strcmp(name, "PageDown") == 0) { return VirtualKeyCode::PageDown; }
-    if (strcmp(name, "PageUp") == 0) { return VirtualKeyCode::PageUp; }
+    RETURN_STRING_ENUM(name, "Insert", VirtualKeyCode::Insert);
+    RETURN_STRING_ENUM(name, "Home", VirtualKeyCode::Home);
+    RETURN_STRING_ENUM(name, "Delete", VirtualKeyCode::Delete);
+    RETURN_STRING_ENUM(name, "End", VirtualKeyCode::End);
+    RETURN_STRING_ENUM(name, "PageDown", VirtualKeyCode::PageDown);
+    RETURN_STRING_ENUM(name, "PageUp", VirtualKeyCode::PageUp);
 
-    if (strcmp(name, "Left") == 0) { return VirtualKeyCode::Left; }
-    if (strcmp(name, "Up") == 0) { return VirtualKeyCode::Up; }
-    if (strcmp(name, "Right") == 0) { return VirtualKeyCode::Right; }
-    if (strcmp(name, "Down") == 0) { return VirtualKeyCode::Down; }
+    RETURN_STRING_ENUM(name, "Left", VirtualKeyCode::Left);
+    RETURN_STRING_ENUM(name, "Up", VirtualKeyCode::Up);
+    RETURN_STRING_ENUM(name, "Right", VirtualKeyCode::Right);
+    RETURN_STRING_ENUM(name, "Down", VirtualKeyCode::Down);
 
-    if (strcmp(name, "Back") == 0) { return VirtualKeyCode::Back; }
-    if (strcmp(name, "Return") == 0) { return VirtualKeyCode::Return; }
-    if (strcmp(name, "Space") == 0) { return VirtualKeyCode::Space; }
+    RETURN_STRING_ENUM(name, "Back", VirtualKeyCode::Back);
+    RETURN_STRING_ENUM(name, "Return", VirtualKeyCode::Return);
+    RETURN_STRING_ENUM(name, "Space", VirtualKeyCode::Space);
 
-    if (strcmp(name, "Numlock") == 0) { return VirtualKeyCode::Numlock; }
-    if (strcmp(name, "Numpad0") == 0) { return VirtualKeyCode::Numpad0; }
-    if (strcmp(name, "Numpad1") == 0) { return VirtualKeyCode::Numpad1; }
-    if (strcmp(name, "Numpad2") == 0) { return VirtualKeyCode::Numpad2; }
-    if (strcmp(name, "Numpad3") == 0) { return VirtualKeyCode::Numpad3; }
-    if (strcmp(name, "Numpad4") == 0) { return VirtualKeyCode::Numpad4; }
-    if (strcmp(name, "Numpad5") == 0) { return VirtualKeyCode::Numpad5; }
-    if (strcmp(name, "Numpad6") == 0) { return VirtualKeyCode::Numpad6; }
-    if (strcmp(name, "Numpad7") == 0) { return VirtualKeyCode::Numpad7; }
-    if (strcmp(name, "Numpad8") == 0) { return VirtualKeyCode::Numpad8; }
-    if (strcmp(name, "Numpad9") == 0) { return VirtualKeyCode::Numpad9; }
+    RETURN_STRING_ENUM(name, "Numlock", VirtualKeyCode::Numlock);
+    RETURN_STRING_ENUM(name, "Numpad0", VirtualKeyCode::Numpad0);
+    RETURN_STRING_ENUM(name, "Numpad1", VirtualKeyCode::Numpad1);
+    RETURN_STRING_ENUM(name, "Numpad2", VirtualKeyCode::Numpad2);
+    RETURN_STRING_ENUM(name, "Numpad3", VirtualKeyCode::Numpad3);
+    RETURN_STRING_ENUM(name, "Numpad4", VirtualKeyCode::Numpad4);
+    RETURN_STRING_ENUM(name, "Numpad5", VirtualKeyCode::Numpad5);
+    RETURN_STRING_ENUM(name, "Numpad6", VirtualKeyCode::Numpad6);
+    RETURN_STRING_ENUM(name, "Numpad7", VirtualKeyCode::Numpad7);
+    RETURN_STRING_ENUM(name, "Numpad8", VirtualKeyCode::Numpad8);
+    RETURN_STRING_ENUM(name, "Numpad9", VirtualKeyCode::Numpad9);
 
-    if (strcmp(name, "AbntC1") == 0) { return VirtualKeyCode::AbntC1; }
-    if (strcmp(name, "AbntC2") == 0) { return VirtualKeyCode::AbntC2; }
-    if (strcmp(name, "Add") == 0) { return VirtualKeyCode::Add; }
-    if (strcmp(name, "Apostrophe") == 0) { return VirtualKeyCode::Apostrophe; }
-    if (strcmp(name, "Apps") == 0) { return VirtualKeyCode::Apps; }
-    if (strcmp(name, "At") == 0) { return VirtualKeyCode::At; }
-    if (strcmp(name, "Ax") == 0) { return VirtualKeyCode::Ax; }
-    if (strcmp(name, "Backslash") == 0) { return VirtualKeyCode::Backslash; }
-    if (strcmp(name, "Calculator") == 0) { return VirtualKeyCode::Calculator; }
-    if (strcmp(name, "Capital") == 0) { return VirtualKeyCode::Capital; }
-    if (strcmp(name, "Colon") == 0) { return VirtualKeyCode::Colon; }
-    if (strcmp(name, "Comma") == 0) { return VirtualKeyCode::Comma; }
-    if (strcmp(name, "Convert") == 0) { return VirtualKeyCode::Convert; }
-    if (strcmp(name, "Decimal") == 0) { return VirtualKeyCode::Decimal; }
-    if (strcmp(name, "Divide") == 0) { return VirtualKeyCode::Divide; }
-    if (strcmp(name, "Equals") == 0) { return VirtualKeyCode::Equals; }
-    if (strcmp(name, "Grave") == 0) { return VirtualKeyCode::Grave; }
-    if (strcmp(name, "Kana") == 0) { return VirtualKeyCode::Kana; }
-    if (strcmp(name, "Kanji") == 0) { return VirtualKeyCode::Kanji; }
-    if (strcmp(name, "LAlt") == 0) { return VirtualKeyCode::LAlt; }
-    if (strcmp(name, "LBracket") == 0) { return VirtualKeyCode::LBracket; }
-    if (strcmp(name, "LControl") == 0) { return VirtualKeyCode::LControl; }
-    if (strcmp(name, "LMenu") == 0) { return VirtualKeyCode::LMenu; }
-    if (strcmp(name, "LShift") == 0) { return VirtualKeyCode::LShift; }
-    if (strcmp(name, "LWin") == 0) { return VirtualKeyCode::LWin; }
-    if (strcmp(name, "Mail") == 0) { return VirtualKeyCode::Mail; }
-    if (strcmp(name, "MediaSelect") == 0) { return VirtualKeyCode::MediaSelect; }
-    if (strcmp(name, "MediaStop") == 0) { return VirtualKeyCode::MediaStop; }
-    if (strcmp(name, "Minus") == 0) { return VirtualKeyCode::Minus; }
-    if (strcmp(name, "Multiply") == 0) { return VirtualKeyCode::Multiply; }
-    if (strcmp(name, "Mute") == 0) { return VirtualKeyCode::Mute; }
-    if (strcmp(name, "MyComputer") == 0) { return VirtualKeyCode::MyComputer; }
-    if (strcmp(name, "NavigateForward") == 0) { return VirtualKeyCode::NavigateForward; }
-    if (strcmp(name, "NavigateBackward") == 0) { return VirtualKeyCode::NavigateBackward; }
-    if (strcmp(name, "NextTrack") == 0) { return VirtualKeyCode::NextTrack; }
-    if (strcmp(name, "NoConvert") == 0) { return VirtualKeyCode::NoConvert; }
-    if (strcmp(name, "NumpadComma") == 0) { return VirtualKeyCode::NumpadComma; }
-    if (strcmp(name, "NumpadEnter") == 0) { return VirtualKeyCode::NumpadEnter; }
-    if (strcmp(name, "NumpadEquals") == 0) { return VirtualKeyCode::NumpadEquals; }
-    if (strcmp(name, "OEM102") == 0) { return VirtualKeyCode::OEM102; }
-    if (strcmp(name, "Period") == 0) { return VirtualKeyCode::Period; }
-    if (strcmp(name, "PlayPause") == 0) { return VirtualKeyCode::PlayPause; }
-    if (strcmp(name, "Power") == 0) { return VirtualKeyCode::Power; }
-    if (strcmp(name, "PrevTrack") == 0) { return VirtualKeyCode::PrevTrack; }
-    if (strcmp(name, "RAlt") == 0) { return VirtualKeyCode::RAlt; }
-    if (strcmp(name, "RBracket") == 0) { return VirtualKeyCode::RBracket; }
-    if (strcmp(name, "RControl") == 0) { return VirtualKeyCode::RControl; }
-    if (strcmp(name, "RMenu") == 0) { return VirtualKeyCode::RMenu; }
-    if (strcmp(name, "RShift") == 0) { return VirtualKeyCode::RShift; }
-    if (strcmp(name, "RWin") == 0) { return VirtualKeyCode::RWin; }
-    if (strcmp(name, "Semicolon") == 0) { return VirtualKeyCode::Semicolon; }
-    if (strcmp(name, "Slash") == 0) { return VirtualKeyCode::Slash; }
-    if (strcmp(name, "Sleep") == 0) { return VirtualKeyCode::Sleep; }
-    if (strcmp(name, "Stop") == 0) { return VirtualKeyCode::Stop; }
-    if (strcmp(name, "Subtract") == 0) { return VirtualKeyCode::Subtract; }
-    if (strcmp(name, "Sysrq") == 0) { return VirtualKeyCode::Sysrq; }
-    if (strcmp(name, "Tab") == 0) { return VirtualKeyCode::Tab; }
-    if (strcmp(name, "Underline") == 0) { return VirtualKeyCode::Underline; }
-    if (strcmp(name, "Unlabeled") == 0) { return VirtualKeyCode::Unlabeled; }
-    if (strcmp(name, "VolumeDown") == 0) { return VirtualKeyCode::VolumeDown; }
-    if (strcmp(name, "VolumeUp") == 0) { return VirtualKeyCode::VolumeUp; }
-    if (strcmp(name, "Wake") == 0) { return VirtualKeyCode::Wake; }
-    if (strcmp(name, "WebBack") == 0) { return VirtualKeyCode::WebBack; }
-    if (strcmp(name, "WebFavorites") == 0) { return VirtualKeyCode::WebFavorites; }
-    if (strcmp(name, "WebForward") == 0) { return VirtualKeyCode::WebForward; }
-    if (strcmp(name, "WebHome") == 0) { return VirtualKeyCode::WebHome; }
-    if (strcmp(name, "WebRefresh") == 0) { return VirtualKeyCode::WebRefresh; }
-    if (strcmp(name, "WebSearch") == 0) { return VirtualKeyCode::WebSearch; }
-    if (strcmp(name, "WebStop") == 0) { return VirtualKeyCode::WebStop; }
-    if (strcmp(name, "Yen") == 0) { return VirtualKeyCode::Yen; }
-
-    return std::nullopt;
+    RETURN_STRING_ENUM(name, "AbntC1", VirtualKeyCode::AbntC1);
+    RETURN_STRING_ENUM(name, "AbntC2", VirtualKeyCode::AbntC2);
+    RETURN_STRING_ENUM(name, "Add", VirtualKeyCode::Add);
+    RETURN_STRING_ENUM(name, "Apostrophe", VirtualKeyCode::Apostrophe);
+    RETURN_STRING_ENUM(name, "Apps", VirtualKeyCode::Apps);
+    RETURN_STRING_ENUM(name, "At", VirtualKeyCode::At);
+    RETURN_STRING_ENUM(name, "Ax", VirtualKeyCode::Ax);
+    RETURN_STRING_ENUM(name, "Backslash", VirtualKeyCode::Backslash);
+    RETURN_STRING_ENUM(name, "Calculator", VirtualKeyCode::Calculator);
+    RETURN_STRING_ENUM(name, "Capital", VirtualKeyCode::Capital);
+    RETURN_STRING_ENUM(name, "Colon", VirtualKeyCode::Colon);
+    RETURN_STRING_ENUM(name, "Comma", VirtualKeyCode::Comma);
+    RETURN_STRING_ENUM(name, "Convert", VirtualKeyCode::Convert);
+    RETURN_STRING_ENUM(name, "Decimal", VirtualKeyCode::Decimal);
+    RETURN_STRING_ENUM(name, "Divide", VirtualKeyCode::Divide);
+    RETURN_STRING_ENUM(name, "Equals", VirtualKeyCode::Equals);
+    RETURN_STRING_ENUM(name, "Grave", VirtualKeyCode::Grave);
+    RETURN_STRING_ENUM(name, "Kana", VirtualKeyCode::Kana);
+    RETURN_STRING_ENUM(name, "Kanji", VirtualKeyCode::Kanji);
+    RETURN_STRING_ENUM(name, "LAlt", VirtualKeyCode::LAlt);
+    RETURN_STRING_ENUM(name, "LBracket", VirtualKeyCode::LBracket);
+    RETURN_STRING_ENUM(name, "LControl", VirtualKeyCode::LControl);
+    RETURN_STRING_ENUM(name, "LMenu", VirtualKeyCode::LMenu);
+    RETURN_STRING_ENUM(name, "LShift", VirtualKeyCode::LShift);
+    RETURN_STRING_ENUM(name, "LWin", VirtualKeyCode::LWin);
+    RETURN_STRING_ENUM(name, "Mail", VirtualKeyCode::Mail);
+    RETURN_STRING_ENUM(name, "MediaSelect", VirtualKeyCode::MediaSelect);
+    RETURN_STRING_ENUM(name, "MediaStop", VirtualKeyCode::MediaStop);
+    RETURN_STRING_ENUM(name, "Minus", VirtualKeyCode::Minus);
+    RETURN_STRING_ENUM(name, "Multiply", VirtualKeyCode::Multiply);
+    RETURN_STRING_ENUM(name, "Mute", VirtualKeyCode::Mute);
+    RETURN_STRING_ENUM(name, "MyComputer", VirtualKeyCode::MyComputer);
+    RETURN_STRING_ENUM(name, "NavigateForward", VirtualKeyCode::NavigateForward);
+    RETURN_STRING_ENUM(name, "NavigateBackward", VirtualKeyCode::NavigateBackward);
+    RETURN_STRING_ENUM(name, "NextTrack", VirtualKeyCode::NextTrack);
+    RETURN_STRING_ENUM(name, "NoConvert", VirtualKeyCode::NoConvert);
+    RETURN_STRING_ENUM(name, "NumpadComma", VirtualKeyCode::NumpadComma);
+    RETURN_STRING_ENUM(name, "NumpadEnter", VirtualKeyCode::NumpadEnter);
+    RETURN_STRING_ENUM(name, "NumpadEquals", VirtualKeyCode::NumpadEquals);
+    RETURN_STRING_ENUM(name, "OEM102", VirtualKeyCode::OEM102);
+    RETURN_STRING_ENUM(name, "Period", VirtualKeyCode::Period);
+    RETURN_STRING_ENUM(name, "PlayPause", VirtualKeyCode::PlayPause);
+    RETURN_STRING_ENUM(name, "Power", VirtualKeyCode::Power);
+    RETURN_STRING_ENUM(name, "PrevTrack", VirtualKeyCode::PrevTrack);
+    RETURN_STRING_ENUM(name, "RAlt", VirtualKeyCode::RAlt);
+    RETURN_STRING_ENUM(name, "RBracket", VirtualKeyCode::RBracket);
+    RETURN_STRING_ENUM(name, "RControl", VirtualKeyCode::RControl);
+    RETURN_STRING_ENUM(name, "RMenu", VirtualKeyCode::RMenu);
+    RETURN_STRING_ENUM(name, "RShift", VirtualKeyCode::RShift);
+    RETURN_STRING_ENUM(name, "RWin", VirtualKeyCode::RWin);
+    RETURN_STRING_ENUM(name, "Semicolon", VirtualKeyCode::Semicolon);
+    RETURN_STRING_ENUM(name, "Slash", VirtualKeyCode::Slash);
+    RETURN_STRING_ENUM(name, "Sleep", VirtualKeyCode::Sleep);
+    RETURN_STRING_ENUM(name, "Stop", VirtualKeyCode::Stop);
+    RETURN_STRING_ENUM(name, "Subtract", VirtualKeyCode::Subtract);
+    RETURN_STRING_ENUM(name, "Sysrq", VirtualKeyCode::Sysrq);
+    RETURN_STRING_ENUM(name, "Tab", VirtualKeyCode::Tab);
+    RETURN_STRING_ENUM(name, "Underline", VirtualKeyCode::Underline);
+    RETURN_STRING_ENUM(name, "Unlabeled", VirtualKeyCode::Unlabeled);
+    RETURN_STRING_ENUM(name, "VolumeDown", VirtualKeyCode::VolumeDown);
+    RETURN_STRING_ENUM(name, "VolumeUp", VirtualKeyCode::VolumeUp);
+    RETURN_STRING_ENUM(name, "Wake", VirtualKeyCode::Wake);
+    RETURN_STRING_ENUM(name, "WebBack", VirtualKeyCode::WebBack);
+    RETURN_STRING_ENUM(name, "WebFavorites", VirtualKeyCode::WebFavorites);
+    RETURN_STRING_ENUM(name, "WebForward", VirtualKeyCode::WebForward);
+    RETURN_STRING_ENUM(name, "WebHome", VirtualKeyCode::WebHome);
+    RETURN_STRING_ENUM(name, "WebRefresh", VirtualKeyCode::WebRefresh);
+    RETURN_STRING_ENUM(name, "WebSearch", VirtualKeyCode::WebSearch);
+    RETURN_STRING_ENUM(name, "WebStop", VirtualKeyCode::WebStop);
+    RETURN_STRING_ENUM(name, "Yen", VirtualKeyCode::Yen);
+    END_STRING_TO_ENUM();
 }

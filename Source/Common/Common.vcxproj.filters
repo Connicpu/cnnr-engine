@@ -55,6 +55,9 @@
     <ClInclude Include="CxHash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnumStrings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

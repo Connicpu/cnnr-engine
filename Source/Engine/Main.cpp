@@ -24,44 +24,8 @@ const float *NextClear()
     return &color.r;
 }
 
-enum class Test
-{
-    Thing1,
-    Thing2,
-    CatInHat,
-};
-
-static std::optional<Test> ParseTest(const String &text)
-{
-    using namespace cx;
-    auto hash = StdHash<Fnv1A>{}(text);
-    switch (hash)
-    {
-        case "Thing1"_fnv1a:
-            if (text == "Thing1"_s)
-                return Test::Thing1;
-            break;
-
-        case "Thing2"_fnv1a:
-            if (text == "Thing2"_s)
-                return Test::Thing2;
-            break;
-
-        case "CatInHat"_fnv1a:
-            if (text == "CatInHat"_s)
-                return Test::CatInHat;
-            break;
-
-        default:
-            break;
-    }
-    return std::nullopt;
-}
-
 int main(int, const char *)
 {
-    auto t = ParseTest("CatInHat"_s);
-
     while (!fs::exists(fs::current_path() / "Assets"))
         fs::current_path(fs::current_path().parent_path());
 
