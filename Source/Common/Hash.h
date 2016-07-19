@@ -438,6 +438,30 @@ public:
     }
 };
 
+template <typename Algo, typename T>
+inline size_t simple_hash(const T &value)
+{
+    Algo hasher;
+    hash_apply(value, hasher);
+    return static_cast<size_t>(hasher);
+}
+
+template <typename Algo, typename T>
+inline uint32_t simple_hash_32(const T &value)
+{
+    Algo hasher;
+    hash_apply(value, hasher);
+    return static_cast<uint32_t>(hasher);
+}
+
+template <typename Algo, typename T>
+inline uint64_t simple_hash_64(const T &value)
+{
+    Algo hasher;
+    hash_apply(value, hasher);
+    return static_cast<uint64_t>(hasher);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // The following is a bunch of hash_apply implementations for standard types
 

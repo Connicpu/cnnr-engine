@@ -44,13 +44,13 @@ struct SpriteObjectParams
     ITexture *texture = nullptr;
 
     // A [0,1] subrect of the texture to use for rendering
-    RectF window = Math::Rect(0, 0, 1, 1);
+    Math::RectF window = Math::Rect(0, 0, 1, 1);
 
     // The transformation applied to this sprite. You must account for
     // the aspect ratio of the texture yourself. An identity matrix will
     // render a 1x1 sprite in the center of the viewport.
-    Matrix3x2F transform = Math::Matrix3x2::Identity();
+    Math::Matrix3x2F transform = Math::Matrix3x2::Identity();
 
     // The tint applied to this sprite
-    ColorF tint = Math::Color(1.0f, 1.0f, 1.0f);
+    Math::ColorF tint = Math::Color(1.0f, 1.0f, 1.0f);
 };

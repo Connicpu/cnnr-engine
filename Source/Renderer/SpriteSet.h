@@ -14,6 +14,8 @@ public:
     virtual uint32_t GetSpriteCount() = 0;
     // Get whether images can be streamed
     virtual bool IsStreaming() = 0;
+    // Sets whether these textures should be sampled normally or treated as pixel art
+    virtual void SetPixelArt(bool pa) = 0;
 
     // Get the regular non-streaming sprite pointer for image number `index`. This
     // function will fail and return false if index is out of bounds.

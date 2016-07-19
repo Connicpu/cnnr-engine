@@ -1,9 +1,10 @@
 [Pack]
-Name = "Test"
+Name = "TestPixel"
 Type = "Sprites"
+PixelArt = true
 
 [[Sprite]]
-Name = "Dickbutt"
-Path = "Dickbutt.png"
+Name = "Test"
+Path = "Test.png"
 Size = 1.0
 Format = "PNG" # optional because Path ends with .png

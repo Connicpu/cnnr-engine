@@ -325,14 +325,14 @@ namespace Math
             return t < 0
                 ? hue_to_rgb(p, q, t + 1)
                 : t > 1
-                    ? hue_to_rgb(p, q, t - 1)
-                    : t < 1 / 6.f
-                        ? p + (q - p) * 6 * t
-                        : t < 1 / 2.f
-                            ? q
-                            : t < 2 / 3.f
-                                ? p + (q - p) * 6 * (2 / 3.f - t)
-                                : p;
+                ? hue_to_rgb(p, q, t - 1)
+                : t < 1 / 6.f
+                ? p + (q - p) * 6 * t
+                : t < 1 / 2.f
+                ? q
+                : t < 2 / 3.f
+                ? p + (q - p) * 6 * (2 / 3.f - t)
+                : p;
         }
 
         constexpr bool rgb_max_r(ColorF rgb)
@@ -355,8 +355,8 @@ namespace Math
             return rgb.r >= rgb.g && rgb.r >= rgb.b
                 ? rgb.r
                 : rgb.g >= rgb.b
-                    ? rgb.g
-                    : rgb.b;
+                ? rgb.g
+                : rgb.b;
         }
 
         constexpr float rgb_min(ColorF rgb)
@@ -364,8 +364,8 @@ namespace Math
             return rgb.r <= rgb.g && rgb.r <= rgb.b
                 ? rgb.r
                 : rgb.g <= rgb.b
-                    ? rgb.g
-                    : rgb.b;
+                ? rgb.g
+                : rgb.b;
         }
 
         constexpr float rgb_l(ColorF rgb)
@@ -405,8 +405,8 @@ namespace Math
             return (rgb_max_r(rgb)
                 ? rgb_h_r(rgb)
                 : rgb_max_g(rgb)
-                    ? rgb_h_g(rgb)
-                    : rgb_h_b(rgb))
+                ? rgb_h_g(rgb)
+                : rgb_h_b(rgb))
                 / 6.0f;
         }
     }
@@ -435,5 +435,105 @@ namespace Math
                 rgb_l(rgb),
                 rgb.a
             );
+    }
+
+    ////////////////////////////
+    // Angles
+
+    namespace details
+    {
+        constexpr float PI = 3.141592653589793f;
+        constexpr float RADIANS_TO_DEGREES = 180.0f / PI;
+        constexpr float DEGREES_TO_RADIANS = PI / 180.0f;
+    }
+
+    constexpr Radians Rads(float r)
+    {
+        return Radians{ r };
+    }
+
+    constexpr Radians Rads(Radians r)
+    {
+        return r;
+    }
+
+    constexpr Radians Rads(Degrees d)
+    {
+        return Radians{ d.deg * details::DEGREES_TO_RADIANS };
+    }
+
+    constexpr Degrees Degs(float d)
+    {
+        return Degrees{ d };
+    }
+
+    constexpr Degrees Degs(Degrees d)
+    {
+        return d;
+    }
+
+    constexpr Degrees Degs(Radians r)
+    {
+        return Degrees{ r.rad * details::RADIANS_TO_DEGREES };
+    }
+
+    constexpr Radians operator""_rad(long double r)
+    {
+        return Rads(static_cast<float>(r));
+    }
+
+    constexpr Degrees operator""_deg(long double d)
+    {
+        return Degs(static_cast<float>(d));
+    }
+
+    constexpr Radians operator+(Radians lhs, Radians rhs)
+    {
+        return Rads(lhs.rad + rhs.rad);
+    }
+
+    constexpr Radians operator-(Radians lhs, Radians rhs)
+    {
+        return Rads(lhs.rad - rhs.rad);
+    }
+
+    constexpr Radians operator*(Radians lhs, float rhs)
+    {
+        return Rads(lhs.rad * rhs);
+    }
+
+    constexpr Radians operator*(float lhs, Radians rhs)
+    {
+        return Rads(lhs * rhs.rad);
+    }
+
+    constexpr Radians operator/(Radians lhs, float rhs)
+    {
+        return Rads(lhs.rad / rhs);
+    }
+
+    constexpr Degrees operator+(Degrees lhs, Degrees rhs)
+    {
+        return Degs(lhs.deg + rhs.deg);
+    }
+
+    constexpr Degrees operator-(Degrees lhs, Degrees rhs)
+    {
+        return Degs(lhs.deg - rhs.deg);
+    }
+
+    constexpr Degrees operator*(Degrees lhs, float rhs)
+    {
+        return Degs(lhs.deg * rhs);
+    }
+
+    constexpr Degrees operator*(float lhs, Degrees rhs)
+    {
+        return Degs(lhs * rhs.deg);
+    }
+
+    constexpr Degrees operator/(Degrees lhs, float rhs)
+    {
+        return Degs(lhs.deg / rhs);
     }
 }

@@ -77,6 +77,11 @@ bool DxSpriteSet::IsStreaming()
     return is_streaming;
 }
 
+void DxSpriteSet::SetPixelArt(bool pa)
+{
+    is_pixel_art = pa;
+}
+
 bool DxSpriteSet::GetSprite(uint32_t index, ITexture **texture)
 {
     if (index >= entries.size())

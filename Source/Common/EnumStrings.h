@@ -6,7 +6,7 @@
 
 #define BEGIN_STRING_TO_ENUM(str) \
     using namespace cx; \
-    switch (StdHash<Fnv1A_64>{}(str)) \
+    switch (simple_hash_64<Fnv1A_64>(str)) \
     {
 
 #define RETURN_STRING_ENUM(str, value, result) \

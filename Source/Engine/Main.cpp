@@ -12,6 +12,8 @@
 #include <iomanip>
 #include <unordered_map>
 
+using namespace Math;
+
 static const wchar_t RENDERER[] = L"DX11.dll";
 
 const float *NextClear()

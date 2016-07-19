@@ -2,6 +2,7 @@
 
 #include "Structures.h"
 #include "Functions.h"
+#include <Common/optional.h>
 #include <initializer_list>
 #include <cassert>
 #include <cstring>
@@ -19,17 +20,20 @@ namespace Math
         constexpr static Matrix3x2 Translation(Point2F point);
         constexpr static Matrix3x2 Translation(float x, float y);
         constexpr static Matrix3x2 Scale(Size2F scale, Point2F center = Point2());
-        inline static Matrix3x2 Rotation(float angle, Point2F center = Point2());
-        constexpr static Matrix3x2 RotationCx(float angle, Point2F center = Point2());
-        inline static Matrix3x2 Skew(float angle_x, float angle_y, Point2F center = Point2());
-        constexpr static Matrix3x2 SkewCx(float angle_x, float angle_y, Point2F center = Point2());
+        inline static Matrix3x2 Rotation(Radians angle, Point2F center = Point2());
+        inline static Matrix3x2 Rotation(Degrees angle, Point2F center = Point2());
+        constexpr static Matrix3x2 RotationCx(Radians angle, Point2F center = Point2());
+        constexpr static Matrix3x2 RotationCx(Degrees angle, Point2F center = Point2());
+        inline static Matrix3x2 Skew(Radians angle_x, Radians angle_y, Point2F center = Point2());
+        inline static Matrix3x2 Skew(Degrees angle_x, Degrees angle_y, Point2F center = Point2());
+        constexpr static Matrix3x2 SkewCx(Radians angle_x, Radians angle_y, Point2F center = Point2());
+        constexpr static Matrix3x2 SkewCx(Degrees angle_x, Degrees angle_y, Point2F center = Point2());
 
         constexpr float Determinant() const;
         constexpr bool IsInvertible() const;
         constexpr Matrix3x2F InverseCx() const;
         inline bool Inverse(Matrix3x2F &result) const;
-        inline std::pair<bool, Matrix3x2F> Inverse() const;
-
+        inline std::optional<Matrix3x2F> Inverse() const;
     };
 }
 
@@ -83,10 +87,10 @@ constexpr Math::Matrix3x2 Math::Matrix3x2::Scale(const Size2F scale, const Point
     };
 }
 
-inline Math::Matrix3x2 Math::Matrix3x2::Rotation(float angle, Point2F center)
+inline Math::Matrix3x2 Math::Matrix3x2::Rotation(Radians angle, Point2F center)
 {
-    const float cos = std::cos(angle);
-    const float sin = std::sin(angle);
+    const float cos = std::cos(angle.rad);
+    const float sin = std::sin(angle.rad);
     const float x = center.x;
     const float y = center.y;
     const float tx = x - cos*x - sin*y;
@@ -100,21 +104,31 @@ inline Math::Matrix3x2 Math::Matrix3x2::Rotation(float angle, Point2F center)
     };
 }
 
-constexpr Math::Matrix3x2 Math::Matrix3x2::RotationCx(float angle, Point2F center)
+inline Math::Matrix3x2 Math::Matrix3x2::Rotation(Degrees angle, Point2F center)
+{
+    return Matrix3x2::Rotation(Rads(angle), center);
+}
+
+constexpr Math::Matrix3x2 Math::Matrix3x2::RotationCx(Radians angle, Point2F center)
 {
     return Matrix3x2F
     {
-        cx::cos(angle), -cx::sin(angle),
-        cx::sin(angle),  cx::cos(angle),
-        center.x - cx::cos(angle)*center.x - cx::sin(angle)*center.y,
-        center.y - cx::cos(angle)*center.y - cx::sin(angle)*center.x,
+        cx::cos(angle.rad), -cx::sin(angle.rad),
+        cx::sin(angle.rad),  cx::cos(angle.rad),
+        center.x - cx::cos(angle.rad)*center.x - cx::sin(angle.rad)*center.y,
+        center.y - cx::cos(angle.rad)*center.y - cx::sin(angle.rad)*center.x,
     };
 }
 
-inline Math::Matrix3x2 Math::Matrix3x2::Skew(float angle_x, float angle_y, Point2F center)
+inline constexpr Math::Matrix3x2 Math::Matrix3x2::RotationCx(Degrees angle, Point2F center)
 {
-    const float tanx = std::tan(angle_x);
-    const float tany = std::tan(angle_y);
+    return Matrix3x2::RotationCx(Rads(angle), center);
+}
+
+inline Math::Matrix3x2 Math::Matrix3x2::Skew(Radians angle_x, Radians angle_y, Point2F center)
+{
+    const float tanx = std::tan(angle_x.rad);
+    const float tany = std::tan(angle_y.rad);
     const float x = center.x, y = center.y;
 
     return Matrix3x2F
@@ -125,14 +139,24 @@ inline Math::Matrix3x2 Math::Matrix3x2::Skew(float angle_x, float angle_y, Point
     };
 }
 
-constexpr Math::Matrix3x2 Math::Matrix3x2::SkewCx(float angle_x, float angle_y, Point2F center)
+inline Math::Matrix3x2 Math::Matrix3x2::Skew(Degrees angle_x, Degrees angle_y, Point2F center)
+{
+    return Matrix3x2::Skew(Rads(angle_x), Rads(angle_y), center);
+}
+
+constexpr Math::Matrix3x2 Math::Matrix3x2::SkewCx(Radians angle_x, Radians angle_y, Point2F center)
 {
     return Matrix3x2F
     {
-        1.0f, cx::tan(angle_x),
-        cx::tan(angle_y), 1.0f,
-        -center.y * cx::tan(angle_y), -center.x * cx::tan(angle_x),
+        1.0f, cx::tan(angle_x.rad),
+        cx::tan(angle_y.rad), 1.0f,
+        -center.y * cx::tan(angle_y.rad), -center.x * cx::tan(angle_x.rad),
     };
+}
+
+inline constexpr Math::Matrix3x2 Math::Matrix3x2::SkewCx(Degrees angle_x, Degrees angle_y, Point2F center)
+{
+    return Matrix3x2::SkewCx(Rads(angle_x), Rads(angle_y), center);
 }
 
 constexpr float Math::Matrix3x2::Determinant() const
@@ -145,7 +169,7 @@ constexpr bool Math::Matrix3x2::IsInvertible() const
     return cx::abs(Determinant()) > 0;
 }
 
-constexpr Matrix3x2F Math::Matrix3x2::InverseCx() const
+constexpr Math::Matrix3x2F Math::Matrix3x2::InverseCx() const
 {
     return !IsInvertible()
         ? (throw std::logic_error{ "Inverse attempted of non-invertible matrix as a constexpr" })
@@ -177,10 +201,11 @@ inline bool Math::Matrix3x2::Inverse(Matrix3x2F &result) const
     return true;
 }
 
-inline std::pair<bool, Matrix3x2F> Math::Matrix3x2::Inverse() const
+inline std::optional<Math::Matrix3x2F> Math::Matrix3x2::Inverse() const
 {
-    std::pair<bool, Matrix3x2F> result;
-    result.first = Inverse(result.second);
-    return result;
+    Matrix3x2F temp;
+    if (Inverse(temp))
+        return temp;
+    return{};
 }
 

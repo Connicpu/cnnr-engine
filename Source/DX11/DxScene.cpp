@@ -437,10 +437,11 @@ void DxScene::DrawSegment(SegCoord coord, DxDevice *device, DxCamera *camera)
     {
         auto &section = segment.translucents;
 
-        // Resort the sprites if any layers have changed in this region
+        // Resort the sprites if any layers have changed in this region.
+        // Presumably this list will be small *crosses fingers*
         if (section.needs_sorting)
         {
-            std::sort(section.sprites.begin(), section.sprites.end());
+            std::stable_sort(section.sprites.begin(), section.sprites.end());
             section.needs_sorting = false;
             section.dirty = true;
         }

@@ -28,6 +28,7 @@ public:
     virtual uint32_t GetSpriteCount() override;
     // Get whether images can be streamed
     virtual bool IsStreaming() override;
+    virtual void SetPixelArt(bool pa) override;
 
     // Get the regular non-streaming sprite pointer for image number `index`. This
     // function will fail and return false if index is out of bounds.
@@ -38,6 +39,8 @@ public:
     virtual bool GetStreamingSprite(uint32_t index, IStreamingTexture **texture) override;
     
     ID3D11ShaderResourceView *const &GetView() const;
+
+    bool is_pixel_art = false;
 
 private:
     std::vector<SpriteEntry> entries;

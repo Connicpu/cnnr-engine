@@ -2,9 +2,12 @@
 
 #include <Common/Platform.h>
 #include <Common/String.h>
+#include <Common/MathLib.h>
 #include <d3d11.h>
 #include <dxgi1_2.h>
 #include <codecvt>
+
+using namespace Math;
 
 inline std::wstring widen(const String &str)
 {

@@ -17,7 +17,6 @@ struct SegCoord
 {
     SegCoord(Point2F point, Size2F seg_size)
     {
-        using namespace Math;
         auto coordf = Vec2(point) / seg_size;
         x = (uint32_t)(int32_t)std::floor(coordf.x);
         y = (uint32_t)(int32_t)std::floor(coordf.y);

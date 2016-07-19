@@ -4,6 +4,11 @@
 #include <Common/EnumStrings.h>
 #include <Common/String.h>
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4307)
+#endif
+
 inline const char *EventTypeName(EventType event)
 {
     switch (event)
@@ -395,3 +400,7 @@ inline std::optional<VirtualKeyCode> ParseVirtualKeyCode(const String &name)
     RETURN_STRING_ENUM(name, "Yen", VirtualKeyCode::Yen);
     END_STRING_TO_ENUM();
 }
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
