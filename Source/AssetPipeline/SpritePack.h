@@ -54,6 +54,8 @@ public:
         IDevice *device, const fs::path &pack_folder, const TOML::Table &config_root
     );
 
+    ~GifPack();
+
     bool LoadFrame(uint32_t frame, ImageLoad::duration *duration);
     void CacheNextThreaded(uint32_t frame);
 

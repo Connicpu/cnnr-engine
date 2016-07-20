@@ -192,6 +192,12 @@ std::unique_ptr<GifPack> GifPack::LoadGif(
     return std::move(pack);
 }
 
+GifPack::~GifPack()
+{
+    if (cache_future.valid())
+        cache_future.get();
+}
+
 bool GifPack::LoadFrame(uint32_t frame, ImageLoad::duration *duration)
 {
     bool result = true;
