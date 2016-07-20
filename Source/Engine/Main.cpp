@@ -183,8 +183,5 @@ int main(int, const char *)
     scene->DestroySprite(gif_sprite);
     scene->DestroySprite(dickbutt);
 
-    // Ensure it's not still loading
-    gif->LoadFrame(gif_frame + 1, &gif_dur);
-
     return 0;
 }
