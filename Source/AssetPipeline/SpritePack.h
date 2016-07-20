@@ -27,6 +27,8 @@ struct SpriteWindow
 class SpritePack
 {
 public:
+    inline virtual ~SpritePack() {}
+
     static std::unique_ptr<SpritePack> LoadPack(
         IDevice *device, const fs::path &pack_folder, const TOML::Table &config_root
     );

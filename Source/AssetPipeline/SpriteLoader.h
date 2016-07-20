@@ -16,6 +16,7 @@ public:
     ~SpriteLoader();
 
     SpritePack *Load(const String &pack);
+    void Clear();
 
 private:
     RPtr<IDevice> device_;

@@ -62,3 +62,8 @@ SpritePack *SpriteLoader::Load(const String &pack)
 
     return ppack;
 }
+
+void SpriteLoader::Clear()
+{
+    loaded_packs_.clear();
+}

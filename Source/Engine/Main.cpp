@@ -164,7 +164,7 @@ int main(int, const char *)
         auto now = std::chrono::system_clock::now();
         if (gif_time + gif_dur <= now)
         {
-            gif_time = now;
+            gif_time += gif_dur;
             gif_frame++;
             if (!gif->LoadFrame(gif_frame, &gif_dur))
                 gif_frame = 0;
@@ -177,11 +177,12 @@ int main(int, const char *)
         display->Present();
         device->Unlock();
 
-        Sleep(16);
+        Sleep(5);
     }
 
     scene->DestroySprite(gif_sprite);
     scene->DestroySprite(dickbutt);
+    loader.Clear();
 
     return 0;
 }
