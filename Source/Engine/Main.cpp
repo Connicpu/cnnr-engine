@@ -5,6 +5,7 @@
 #include <Common/optional.h>
 #include <Common/BucketAllocator.h>
 #include <Common/CxHash.h>
+#include <Common/Helpers.h>
 #include <AssetPipeline/SpriteLoader.h>
 #include <AssetPipeline/SpritePack.h>
 #include <Renderer/StringHelpers.h>

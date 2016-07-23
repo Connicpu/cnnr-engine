@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <vector>
 
 template <typename T, typename U>
 inline T *checked_cast(U *ptr)
@@ -13,4 +14,3 @@ inline T *checked_cast(U *ptr)
     return new_ptr;
 #endif
 }
-
