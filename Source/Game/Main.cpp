@@ -45,7 +45,7 @@ int main(int argc, char **argv)
         }
     }
     
-        Run(backend);
+    Run(backend);
 
     return 0;
 }
