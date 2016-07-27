@@ -3,7 +3,7 @@
 #include <Common/MathLib.h>
 #include <Renderer/Renderer.h>
 
-void RealRunEngine(const EngineOptions &options)
+extern "C" void RunEngine(const EngineOptions &options)
 {
     RPtr<IRenderInstance> instance;
     CreateInstParams inst_params;
@@ -45,24 +45,4 @@ void RealRunEngine(const EngineOptions &options)
         display->Clear(&color.r);
         display->Present();
     }
-}
-
-void ExRunEngine(const EngineOptions &options)
-{
-    try
-    {
-        RealRunEngine(options);
-    }
-    catch (const std::exception &ex)
-    {
-        size_t len = strlen(ex.what());
-        char *str = new char[len + 1];
-        memcpy(str, ex.what(), len + 1);
-        throw static_cast<const char *>(str);
-    }
-}
-
-extern "C" void RunEngine(const EngineOptions &options)
-{
-    ExRunEngine(options);
 }
