@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RefCounted.h"
+#include <Common/LibLoading.h>
 
 class IDisplay;
 class IDevice;
@@ -10,7 +11,11 @@ struct CreateInstParams;
 struct DeviceParams;
 struct DisplayParams;
 
-using PCreateRenderInstance = void(*)(const CreateInstParams *params, IRenderInstance **inst);
+using PFCreateRenderInstance = void(*)(const CreateInstParams *params, IRenderInstance **inst);
+inline void CallCreateRenderInstance(const DynamicLibrary &backend, const CreateInstParams *params, IRenderInstance **inst)
+{
+    backend.Call<PFCreateRenderInstance>("CreateRenderInstance", params, inst);
+}
 
 class IRenderInstance : public RefCounted
 {

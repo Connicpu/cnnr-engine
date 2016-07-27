@@ -21,8 +21,8 @@ SpritePack *SpriteLoader::Load(const String &pack)
     if (loaded_it != loaded_packs_.end())
         return loaded_it->second.get();
 
-    fs::path pack_folder = fs::current_path() / "Assets" / "Sprites" / pack;
-    fs::path desc_path = pack_folder / "Pack.toml";
+    fs::path pack_folder = fs::current_path() / "Assets"_s / "Sprites"_s / pack;
+    fs::path desc_path = pack_folder / "Pack.toml"_s;
 
     MMap mmap;
     if (!mmap.Open(desc_path))

@@ -19,8 +19,8 @@ public:
 
     template <typename T>
     static const LuaBinding *Build(lua_State *L, const LuaBindingBuilder<T> &&builder);
-    static void RegisterBinding(std::type_index index, const LuaBinding *binding);
-    static std::optional<const LuaBinding *> GetBinding(std::type_index index);
+    static void RegisterBinding(lua_State *L, std::type_index index, const LuaBinding *binding);
+    static std::optional<const LuaBinding *> GetBinding(lua_State *L, std::type_index index);
 
     std::optional<Callback> GetCallback(const String &name) const;
     void SetMetatable(lua_State *L) const;
@@ -76,14 +76,15 @@ inline void LuaObjectHelper<Self>::InitializeBindings(LuaBindingBuilder<Self> &)
 template<typename Self>
 inline const LuaBinding *LuaObjectHelper<Self>::GetBinding(lua_State *L)
 {
-    if (auto binding = LuaBinding::GetBinding(typeid(Self)))
+    if (auto binding = LuaBinding::GetBinding(L, typeid(Self)))
         return *binding;
 
     LuaBindingBuilder<Self> builder;
     Self::InitializeBindings(builder);
-    auto binding = LuaBinding::Build<Self>(L, builder);
+    auto *binding = LuaBinding::Build<Self>(L, builder);
+    LuaBinding::RegisterBinding(L, typeid(Self), binding);
 
-    return NULL;
+    return binding;
 }
 
 template<typename T>

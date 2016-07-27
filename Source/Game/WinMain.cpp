@@ -1,11 +1,21 @@
 #include <Common/Platform.h>
+#include <Common/String.h>
 
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
     int argc = __argc;
     char **argv = __argv;
 
-    //if (argc >= 2 && strcmp(argv[1], "-console") == 0)
+    bool console = false;
+    for (int i = 1; i < argc; ++i)
+    {
+        if (argv[i] == "--console"_s)
+        {
+            console = true;
+        }
+    }
+
+    if (console)
     {
         AllocConsole();
         FILE *f;

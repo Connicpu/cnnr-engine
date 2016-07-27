@@ -29,6 +29,8 @@ public:
     inline String(const String &other);
     inline String(String &&other);
 
+    // Refer to a cstr
+    inline String(const char *cstr);
     // Copy a reference
     inline String(gsl::cstring_span<> str);
     // Takes ownership
@@ -45,12 +47,15 @@ public:
     inline void reset();
     static inline String to_owned(String &&str);
     inline std::string &as_owned();
+    inline std::string copy_owned() const;
     inline gsl::cstring_span<> span() const;
     inline fs::path path() const;
     inline String &append(const String &rhs);
 
     const char *begin() const;
     const char *end() const;
+
+    const char *c_str();
 
     inline bool empty() const;
     inline size_t length() const;
@@ -102,6 +107,11 @@ inline String::String(String &&other)
         new (&data.owned) std::string(std::move(other.data.owned));
     else
         data.ref = other.data.ref;
+}
+
+inline String::String(const char *cstr)
+    : String(gsl::cstring_span<>{ cstr, (ptrdiff_t)strlen(cstr) })
+{
 }
 
 inline String::String(gsl::cstring_span<> str)
@@ -161,6 +171,11 @@ inline std::string &String::as_owned()
     return data.owned;
 }
 
+inline std::string String::copy_owned() const
+{
+    return std::move(String(*this).as_owned());
+}
+
 inline gsl::cstring_span<> String::span() const
 {
     return *this;
@@ -185,6 +200,11 @@ inline const char *String::begin() const
 inline const char *String::end() const
 {
     return span().data() + span().size();
+}
+
+inline const char *String::c_str()
+{
+    return as_owned().c_str();
 }
 
 inline bool String::empty() const
@@ -237,6 +257,16 @@ inline String operator+(const String &lhs, const String &rhs)
 inline bool operator==(const String &lhs, const String &rhs)
 {
     return static_cast<gsl::cstring_span<>>(lhs) == static_cast<gsl::cstring_span<>>(rhs);
+}
+
+inline bool operator==(const String &lhs, const char *rhs)
+{
+    return lhs == String(rhs);
+}
+
+inline bool operator==(const char *lhs, const String &rhs)
+{
+    return String(lhs) == rhs;
 }
 
 inline bool operator!=(const String &lhs, const String &rhs)

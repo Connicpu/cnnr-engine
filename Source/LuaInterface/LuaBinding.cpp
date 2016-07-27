@@ -1,7 +1,11 @@
 #include "LuaBinding.h"
 #include <unordered_map>
+#include <Common/Hash.h>
 
-static std::unordered_map<std::type_index, const LuaBinding *> REGISTERED_BINDINGS;
+static HashMap<
+    lua_State *,
+    std::unordered_map<std::type_index, const LuaBinding *>
+> REGISTERED_BINDINGS;
 
 LuaBinding::LuaBinding(lua_State *L, HashMap<String, Callback> &&callbacks, PopSelf pop_self)
     : callbacks(callbacks), pop_self(pop_self)
@@ -9,15 +13,16 @@ LuaBinding::LuaBinding(lua_State *L, HashMap<String, Callback> &&callbacks, PopS
     BuildMeta(L);
 }
 
-void LuaBinding::RegisterBinding(std::type_index index, const LuaBinding *binding)
+void LuaBinding::RegisterBinding(lua_State *L, std::type_index index, const LuaBinding *binding)
 {
-    REGISTERED_BINDINGS.emplace(index, binding);
+    REGISTERED_BINDINGS[L].emplace(index, binding);
 }
 
-std::optional<const LuaBinding*> LuaBinding::GetBinding(std::type_index index)
+std::optional<const LuaBinding*> LuaBinding::GetBinding(lua_State *L, std::type_index index)
 {
-    auto it = REGISTERED_BINDINGS.find(index);
-    if (it != REGISTERED_BINDINGS.end())
+    auto &bindings = REGISTERED_BINDINGS[L];
+    auto it = bindings.find(index);
+    if (it != bindings.end())
         return it->second;
     return std::nullopt;
 }
