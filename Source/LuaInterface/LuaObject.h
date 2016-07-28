@@ -17,6 +17,19 @@ public:
         const LuaBinding *binding;
     };
 
+    LuaObject(const LuaObject &) = delete;
+    LuaObject(LuaObject &&move)
+    {
+
+    }
+
+    LuaObject &operator=(const LuaObject &) = delete;
+    LuaObject &operator=(LuaObject &&move)
+    {
+        this->~LuaObject();
+        this->LuaObject::LuaObject(std::move(move));
+    }
+
     virtual ~LuaObject();
     virtual const LuaBinding *GetBinding(lua_State *L) = 0;
 
