@@ -9,15 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\Entity">
-      <UniqueIdentifier>{c40c8f58-e66c-48cb-8e01-f55113ca76d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Component">
-      <UniqueIdentifier>{7c39a8b2-0cea-4bbc-9d13-d209326fb7c2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\System">
-      <UniqueIdentifier>{d0cf9261-ec45-46d0-b930-dba87c819189}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -26,31 +17,8 @@
     <ClCompile Include="WinMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentList.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentListImpls.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="DataComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

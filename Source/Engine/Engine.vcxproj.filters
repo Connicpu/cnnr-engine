@@ -9,6 +9,24 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Header Files\Entity">
+      <UniqueIdentifier>{8d190ca0-72ff-4d3a-83b1-de6b913296a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Component">
+      <UniqueIdentifier>{0933d958-04ce-4657-917b-e60f5ac99baf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System">
+      <UniqueIdentifier>{41d5931c-d5ea-4ac2-8730-eb0098a75254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{34dd753a-e44b-4951-b2b3-4d17aba917ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Component">
+      <UniqueIdentifier>{52640e4f-c10f-4e0f-885c-59942e9d1f16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System">
+      <UniqueIdentifier>{5e51401a-e6f2-415f-895f-509a14297e24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -20,10 +38,34 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityManager.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentList.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentListImpls.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="DataComponent.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

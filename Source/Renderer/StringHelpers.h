@@ -3,6 +3,7 @@
 #include "Events.h"
 #include <Common/EnumStrings.h>
 #include <Common/String.h>
+#include <Common/optional.h>
 
 #ifdef _MSC_VER
 #pragma warning(push)

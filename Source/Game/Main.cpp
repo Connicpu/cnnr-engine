@@ -5,11 +5,11 @@
 
 void Run(const char *backend_name)
 {
+    DynamicLibrary backend(backend_name);
+    DynamicLibrary engine("engine");
+
     while (!fs::exists(fs::current_path() / "Assets"))
         fs::current_path(fs::current_path().parent_path());
-
-    DynamicLibrary engine("engine");
-    DynamicLibrary backend(backend_name);
 
     try
     {
@@ -45,7 +45,18 @@ int main(int argc, char **argv)
         }
     }
     
-    Run(backend);
+    try
+    {
+        Run(backend);
+    }
+    catch (const std::exception &ex)
+    {
+        std::cerr << ex.what() << std::endl;
+#ifdef MSVC
+        MessageBoxA(nullptr, ex.what(), "FATAL ERROR", MB_ICONERROR);
+#endif
+        _exit(1);
+    }
 
     return 0;
 }

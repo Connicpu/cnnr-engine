@@ -2,6 +2,7 @@
 
 #include <Common/Platform.h>
 #include <Common/Filesystem.h>
+#include <LuaInterface/IncludeLua.h>
 #include <string>
 #include <gsl.h>
 #include "Hash.h"
@@ -46,6 +47,7 @@ public:
     
     inline void reset();
     static inline String to_owned(String &&str);
+    inline String into_owned() && ;
     inline std::string &as_owned();
     inline std::string copy_owned() const;
     inline gsl::cstring_span<> span() const;
@@ -62,6 +64,9 @@ public:
     inline size_t size() const;
 
     inline operator gsl::cstring_span<>() const;
+
+    inline void push_lua(lua_State *L) const;
+    inline static String from_lua(lua_State *L, int idx);
 };
 
 inline String::Data::Data(std::string &&owned)
@@ -165,6 +170,11 @@ inline String String::to_owned(String &&str)
     return String(std::string{ span.begin(), span.end() });
 }
 
+inline String String::into_owned() &&
+{
+    return String::to_owned(std::move(*this));
+}
+
 inline std::string &String::as_owned()
 {
     *this = to_owned(std::move(*this));
@@ -234,6 +244,18 @@ inline String::operator gsl::cstring_span<>() const
         default:
             unreachable();
     }
+}
+
+inline void String::push_lua(lua_State *L) const
+{
+    lua_pushlstring(L, span().data(), span().size());
+}
+
+inline String String::from_lua(lua_State * L, int idx)
+{
+    size_t len;
+    const char *str = lua_tolstring(L, idx, &len);
+    return String{ gsl::cstring_span<>{ str, (ptrdiff_t)len } };
 }
 
 template<size_t len>

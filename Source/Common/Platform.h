@@ -11,6 +11,7 @@
 #include <Windows.h>
 #include <atlbase.h>
 #include <Shellapi.h>
+#include <comdef.h>
 
 template <typename T>
 using ComPtr = ATL::CComPtr<T>;
@@ -24,7 +25,7 @@ using ComPtr = ATL::CComPtr<T>;
 #define unreachable() ((assert(false && "Unreachable statement reached")), (__assume(0)))
 #endif
 
-#else
+#else /* ifdef MSVC */
 
 #ifdef NDEBUG
 #define unreachable() (__builtin_unreachable())
@@ -33,4 +34,4 @@ using ComPtr = ATL::CComPtr<T>;
 #define unreachable() ((assert(false && "Unreachable statement reached")), (__builtin_unreachable()))
 #endif
 
-#endif
+#endif /* ifdef MSVC */

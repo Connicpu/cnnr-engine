@@ -23,7 +23,13 @@ public:
 #endif
         if (!library)
         {
-            throw std::runtime_error{ ("Failed to load library "_s + String(str)).c_str() };
+#ifdef MSVC
+            _com_error err(HRESULT_FROM_WIN32(GetLastError()));
+            auto extra = " ("_s + String(err.ErrorMessage()) + ")"_s;
+#else
+            auto extra = ""_s;
+#endif
+            throw std::runtime_error{ ("Failed to load library `"_s + String(str) + "`"_s + extra).c_str() };
         }
     }
 

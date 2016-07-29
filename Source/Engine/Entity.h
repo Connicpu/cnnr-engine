@@ -18,6 +18,10 @@ private:
     uint32_t index_;
 };
 
+struct IndexedEntity
+{
+    uint32_t index;
+};
 
 inline Entity::Entity(uint64_t id, uint32_t index)
     : id_(id), index_(index)
@@ -33,8 +37,3 @@ Entity::operator IndexedEntity() const
 {
     return IndexedEntity{ index_ };
 }
-
-struct IndexedEntity
-{
-    uint32_t index;
-};

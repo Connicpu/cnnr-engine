@@ -1,6 +1,28 @@
 #include "LuaObject.h"
 #include "LuaBinding.h"
 
+LuaObject::LuaObject(LuaObject &&move)
+    : userdata_(std::move(move.userdata_))
+{
+    if (userdata_)
+    {
+        auto L = userdata_->state();
+        userdata_->push();
+
+        auto data = (UserdataRepr *)lua_touserdata(L, -1);
+        data->obj = this;
+
+        lua_pop(L, 1);
+    }
+}
+
+LuaObject &LuaObject::operator=(LuaObject &&move)
+{
+    userdata_.~optional();
+    this->LuaObject::LuaObject(std::move(move));
+    return *this;
+}
+
 LuaObject::~LuaObject()
 {
     if (userdata_)
