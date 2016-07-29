@@ -34,7 +34,7 @@ inline void HotComponentList<T>::insert(const Entity &e, Component &&component)
 {
     auto index = static_cast<IndexedEntity>(e).index;
     if (index >= components_.size())
-        components_.resize(size_t(index * 1.5f));
+        components_.resize(size_t((index + 1) * 1.5f));
 
     components_[index] = std::make_optional(dynamic_cast<T &&>(component));
 }
