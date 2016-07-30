@@ -1,7 +1,15 @@
 #include "EntityManager.h"
+#include "GameData.h"
+#include "EntityEvent.h"
 
 struct EntityStatus
 {
+    EntityStatus() = default;
+    EntityStatus(bool alive, uint64_t id)
+        : alive(alive), id(id)
+    {
+    }
+
     bool alive = false;
     uint64_t id;
 };
@@ -17,7 +25,7 @@ EntityManager::~EntityManager()
 
 Entity EntityManager::CreateEntity()
 {
-    uint32_t id = next_id_++;
+    uint64_t id = next_id_++;
     uint32_t index;
     if (free_list_.empty())
     {
@@ -38,14 +46,55 @@ Entity EntityManager::CreateEntity()
 
 void EntityManager::RemoveEntity(Entity e)
 {
-    if (!is_alive(e))
+    if (!is_alive(e) || removing_.find(e) != removing_.end())
         throw std::runtime_error{ "Tried to double-delete an entity" };
 
     added_.erase(e);
     modified_.erase(e);
-    removed_.insert(e);
-    free_list_.push_back(static_cast<IndexedEntity>(e).index);
-    status(e).alive = false;
+    removing_.insert(e);
+}
+
+void EntityManager::OnModified(Entity e)
+{
+    if (!is_alive(e))
+        throw std::runtime_error{ "Tried to call OnModified for a dead entity" };
+
+    if (added_.find(e) != added_.end())
+        return;
+    if (removing_.find(e) != removing_.end())
+        return;
+
+    modified_.insert(e);
+}
+
+void EntityManager::FlushQueue(GameData &data)
+{
+    for (Entity e : added_)
+    {
+        EntityEvent event(EntityEvent::EntityAdded, e);
+        data.systems.OnEvent(data, event);
+    }
+
+    for (Entity e : modified_)
+    {
+        EntityEvent event(EntityEvent::EntityModified, e);
+        data.systems.OnEvent(data, event);
+    }
+
+    for (Entity e : removing_)
+    {
+        EntityEvent event(EntityEvent::EntityRemoved, e);
+        data.systems.OnEvent(data, event);
+    }
+
+    for (Entity e : removing_)
+    {
+        status(e).alive = false;
+    }
+
+    added_.clear();
+    modified_.clear();
+    removing_.clear();
 }
 
 EntityStatus &EntityManager::status(Entity e)

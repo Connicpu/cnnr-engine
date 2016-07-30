@@ -499,6 +499,35 @@ namespace std {
                 return TR2_OPTIONAL_ASSERTED_EXPRESSION(initialized(), dataptr());
             }
 
+            // CONNOR ADDITION :D
+            std::optional<T &> as_ref()
+            {
+                if (*this)
+                    return **this;
+                return{};
+            }
+            template <typename U>
+            std::optional<U &> as_ref()
+            {
+                if (*this)
+                    return static_cast<U &>(**this);
+                return{};
+            }
+            std::optional<const T &> as_ref() const
+            {
+                if (*this)
+                    return **this;
+                return{};
+            }
+            template <typename U>
+            std::optional<const U &> as_ref() const
+            {
+                if (*this)
+                    return static_cast<U &>(**this);
+                return{};
+            }
+            // END CONNOR ADDITION
+
 # if OPTIONAL_HAS_MOVE_ACCESSORS == 1
 
             OPTIONAL_MUTABLE_CONSTEXPR T* operator ->() {
@@ -690,11 +719,11 @@ namespace std {
                 return ref != nullptr;
             }
 
-            template <class V>
+            /*template <class V>
             constexpr typename decay<T>::type value_or(V&& v) const
             {
                 return *this ? **this : detail_::convert<typename decay<T>::type>(constexpr_forward<V>(v));
-            }
+            }*/
         };
 
 

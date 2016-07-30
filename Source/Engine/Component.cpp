@@ -5,7 +5,7 @@
 
 static HashMap<lua_State *, std::unordered_map<std::type_index, LuaValue>> NO_BINDING;
 
-String Component::GetName()
+String Component::GetName() const
 {
     return "Unnamed component"_s;
 }

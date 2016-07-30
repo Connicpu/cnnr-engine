@@ -27,6 +27,15 @@
     <Filter Include="Source Files\System">
       <UniqueIdentifier>{5e51401a-e6f2-415f-895f-509a14297e24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Services">
+      <UniqueIdentifier>{5919fae1-82a8-4679-b81b-7747e25cb999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Component\Components">
+      <UniqueIdentifier>{e11c3378-b816-4a8f-b62a-f9447719da8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System\Systems">
+      <UniqueIdentifier>{a39d4ea7-fd31-4b9b-952d-52358d7f151b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -51,9 +60,21 @@
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="ComponentList.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Component</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -87,6 +108,21 @@
     </ClInclude>
     <ClInclude Include="EntityEvent.h">
       <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="GameData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceManager.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemManager.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentManager.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files\Component\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

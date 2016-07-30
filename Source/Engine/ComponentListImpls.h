@@ -9,28 +9,64 @@ template <typename T>
 class HotComponentList final : public ComponentList
 {
 public:
-    virtual void insert(const Entity &e, Component &&component) override;
-    virtual void remove(const Entity &e) override;
-    virtual std::optional<Component &> get(const Entity &e) override;
+    HotComponentList(EntityManager *entities)
+        : ComponentList(entities)
+    {
+    }
+
+    inline std::optional<T &> get(const Entity &e)
+    {
+        if (auto val = ComponentList::get(e))
+            return static_cast<T &>(*val);
+        return std::nullopt;
+    }
+
+    inline T &operator[](const Entity &e)
+    {
+        return static_cast<T &>(ComponentList::operator[](e));
+    }
+
+protected:
+    virtual void do_insert(const Entity &e, Component &&component) override;
+    virtual void do_remove(const Entity &e) override;
+    virtual std::optional<Component &> do_get(const Entity &e) const override;
 
 private:
-    std::vector<std::optional<T>> components_;
+    mutable std::vector<std::optional<T>> components_;
 };
 
 template <typename T>
 class ColdComponentList final : public ComponentList
 {
 public:
-    virtual void insert(const Entity &e, Component &&component) override;
-    virtual void remove(const Entity &e) override;
-    virtual std::optional<Component &> get(const Entity &e) override;
+    ColdComponentList(EntityManager *entities)
+        : ComponentList(entities)
+    {
+    }
+
+    inline std::optional<T &> get(const Entity &e)
+    {
+        if (auto val = ComponentList::get(e))
+            return static_cast<T &>(*val);
+        return std::nullopt;
+    }
+
+    inline T &operator[](const Entity &e)
+    {
+        return static_cast<T &>(ComponentList::operator[](e));
+    }
+
+protected:
+    virtual void do_insert(const Entity &e, Component &&component) override;
+    virtual void do_remove(const Entity &e) override;
+    virtual std::optional<Component &> do_get(const Entity &e) const override;
 
 private:
-    HashMap<uint32_t, T> components_;
+    mutable HashMap<uint32_t, T> components_;
 };
 
 template<typename T>
-inline void HotComponentList<T>::insert(const Entity &e, Component &&component)
+inline void HotComponentList<T>::do_insert(const Entity &e, Component &&component)
 {
     auto index = static_cast<IndexedEntity>(e).index;
     if (index >= components_.size())
@@ -40,7 +76,7 @@ inline void HotComponentList<T>::insert(const Entity &e, Component &&component)
 }
 
 template<typename T>
-inline void HotComponentList<T>::remove(const Entity &e)
+inline void HotComponentList<T>::do_remove(const Entity &e)
 {
     auto index = static_cast<IndexedEntity>(e).index;
     if (index < components_.size())
@@ -48,29 +84,34 @@ inline void HotComponentList<T>::remove(const Entity &e)
 }
 
 template<typename T>
-inline std::optional<Component&> HotComponentList<T>::get(const Entity &e)
+inline std::optional<Component&> HotComponentList<T>::do_get(const Entity &e) const
 {
     auto index = static_cast<IndexedEntity>(e).index;
     if (index < components_.size())
-        return components_[index];
+        return components_[index].as_ref<Component>();
     return std::nullopt;
 }
 
 template<typename T>
-inline void ColdComponentList<T>::insert(const Entity &e, Component &&component)
+inline void ColdComponentList<T>::do_insert(const Entity &e, Component &&component)
 {
-    using namespace std;
     auto index = static_cast<IndexedEntity>(e).index;
-    components_.insert_or_assign(index, dynamic_cast<T &&>(component)));
+    components_.insert_or_assign(index, dynamic_cast<T &&>(component));
 }
 
 template<typename T>
-inline void ColdComponentList<T>::remove(const Entity & e)
+inline void ColdComponentList<T>::do_remove(const Entity &e)
 {
+    auto index = static_cast<IndexedEntity>(e).index;
+    components_.erase(index);
 }
 
 template<typename T>
-inline std::optional<Component&> ColdComponentList<T>::get(const Entity & e)
+inline std::optional<Component&> ColdComponentList<T>::do_get(const Entity &e) const
 {
-    return std::optional<Component&>();
+    auto index = static_cast<IndexedEntity>(e).index;
+    auto it = components_.find(index);
+    if (it != components_.end())
+        return it->second;
+    return std::nullopt;
 }

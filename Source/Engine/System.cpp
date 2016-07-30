@@ -1,5 +1,5 @@
 #include "System.h"
 
-void System::OnEntityEvent(const EntityEvent &)
+void System::OnEntityEvent(const GameData &, const EntityEvent &)
 {
 }

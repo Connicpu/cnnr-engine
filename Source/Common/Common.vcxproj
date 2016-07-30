@@ -138,6 +138,7 @@
     <ClInclude Include="InitOnce.h" />
     <ClInclude Include="LibLoading.h" />
     <ClInclude Include="MathLib.h" />
+    <ClInclude Include="MaybeOwned.h" />
     <ClInclude Include="MMap.h" />
     <ClInclude Include="optional.h" />
     <ClInclude Include="Platform.h" />

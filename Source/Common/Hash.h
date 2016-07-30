@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <memory>
 #include <stdint.h>
 #include <gsl.h>
 #include <unordered_map>
@@ -536,6 +537,12 @@ namespace std
         {
             hash_apply(elem, h);
         }
+    }
+
+    template <typename H, typename T, typename D>
+    inline void hash_apply(const std::unique_ptr<T, D> &ptr, H &h)
+    {
+        hash_apply(ptr.get(), h);
     }
 }
 

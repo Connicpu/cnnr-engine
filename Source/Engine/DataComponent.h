@@ -18,9 +18,6 @@ public:
 
     virtual String GetName() const override
     {
-        return name_.span();
+        return component_name<T>::value;
     }
-
-private:
-    String name_;
 };
