@@ -10,7 +10,10 @@ struct EntityEvent;
 class SystemManager
 {
 public:
+    void RegisterSystem(String name, SystemPtr system);
+
     void OnEvent(const GameData &data, const EntityEvent &event);
+    void Process(GameData &data);
 
     template <typename T = System>
     std::optional<T&> get(const String &name);
@@ -21,7 +24,7 @@ public:
     const System &operator[](const String &name) const;
 
 private:
-    HashMap<String, std::pair<SystemPtr, int>> systems_;
+    HashMap<String, SystemPtr> systems_;
     std::vector<System *> execution_queue_;
 };
 
@@ -30,7 +33,7 @@ inline std::optional<T&> SystemManager::get(const String &name)
 {
     auto it = systems_.find(name);
     if (it != systems_.end())
-        return dynamic_cast<T&>(*it->second.first);
+        return dynamic_cast<T&>(*it->second);
     return std::nullopt;
 }
 
@@ -39,6 +42,6 @@ inline std::optional<T const&> SystemManager::get(const String &name) const
 {
     auto it = systems_.find(name);
     if (it != systems_.end())
-        return dynamic_cast<T const&>(*it->second.first);
+        return dynamic_cast<T const&>(*it->second);
     return std::nullopt;
 }

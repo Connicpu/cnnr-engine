@@ -2,20 +2,7 @@
 #include "GameData.h"
 #include "EntityEvent.h"
 
-struct EntityStatus
-{
-    EntityStatus() = default;
-    EntityStatus(bool alive, uint64_t id)
-        : alive(alive), id(id)
-    {
-    }
-
-    bool alive = false;
-    uint64_t id;
-};
-
 EntityManager::EntityManager()
-    : next_id_(1), next_index_(0)
 {
 }
 
@@ -40,6 +27,7 @@ Entity EntityManager::CreateEntity()
     Entity entity{ id, index };
     status(entity) = { true, id };
 
+    living_++;
     added_.insert(entity);
     return entity;
 }
@@ -89,6 +77,7 @@ void EntityManager::FlushQueue(GameData &data)
 
     for (Entity e : removing_)
     {
+        living_--;
         status(e).alive = false;
     }
 
@@ -97,11 +86,21 @@ void EntityManager::FlushQueue(GameData &data)
     removing_.clear();
 }
 
+EntityManager::iterator EntityManager::begin() const
+{
+    return iterator::make_begin(this);
+}
+
+EntityManager::iterator EntityManager::end() const
+{
+    return iterator::make_end(this);
+}
+
 EntityStatus &EntityManager::status(Entity e)
 {
     auto index = static_cast<IndexedEntity>(e).index;
     if (index >= statuses_.size())
-        statuses_.resize(size_t((index + 1) * 1.5f));
+        statuses_.resize(size_t(index + 1));
     return statuses_[index];
 }
 
@@ -111,4 +110,24 @@ bool EntityManager::is_alive(Entity e) const
     if (index >= statuses_.size())
         return false;
     return statuses_[index].alive && statuses_[index].id == e.GetId();
+}
+
+EntityManager::iterator EntityManager::iterator::make_begin(const EntityManager *manager)
+{
+    iterator it;
+    it.manager_ = manager;
+    it.index_ = 0;
+
+    if (manager->next_index_ > 0 && !manager->statuses_[0].alive)
+        ++it;
+
+    return it;
+}
+
+EntityManager::iterator EntityManager::iterator::make_end(const EntityManager *manager)
+{
+    iterator it;
+    it.manager_ = manager;
+    it.index_ = manager->next_index_;
+    return it;
 }

@@ -12,7 +12,8 @@ public:
     inline bool Open(const fs::path &path);
 
     inline size_t GetLength();
-    inline const uint8_t *GetMemory();
+    template <typename T = uint8_t>
+    inline const T *GetMemory();
 
     inline void Close();
 
@@ -98,9 +99,10 @@ inline size_t MMap::GetLength()
     return length;
 }
 
-inline const uint8_t *MMap::GetMemory()
+template <typename T>
+inline const T *MMap::GetMemory()
 {
-    return (const uint8_t *)memory;
+    return (const T *)memory;
 }
 
 inline void MMap::Close()

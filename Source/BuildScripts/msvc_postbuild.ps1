@@ -23,9 +23,9 @@ function Copy-Libraries($target, $configuration)
     }
 }
 
-Copy-Libraries("x86", "Debug")
-Copy-Libraries("x86", "Release")
-Copy-Libraries("x64", "Debug")
-Copy-Libraries("x64", "Release")
+Copy-Libraries "x86" "Debug"
+Copy-Libraries "x86" "Release"
+Copy-Libraries "x64" "Debug"
+Copy-Libraries "x64" "Release"
 
 Pop-Location

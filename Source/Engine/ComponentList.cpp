@@ -12,6 +12,12 @@ void ComponentList::insert(const Entity &e, Component &&component)
     entities_->OnModified(e);
 }
 
+void ComponentList::insert(const Entity &e)
+{
+    do_insert(e);
+    entities_->OnModified(e);
+}
+
 void ComponentList::remove(const Entity &e)
 {
     do_remove(e);
@@ -23,7 +29,7 @@ std::optional<Component&> ComponentList::get(const Entity &e) const
     return do_get(e);
 }
 
-inline Component &ComponentList::operator[](const Entity &e) const
+Component &ComponentList::operator[](const Entity &e) const
 {
     if (auto c = get(e))
         return *c;

@@ -11,18 +11,14 @@ void Run(const char *backend_name)
     while (!fs::exists(fs::current_path() / "Assets"))
         fs::current_path(fs::current_path().parent_path());
 
-    try
-    {
-        EngineOptions options;
-        options.backend = &backend;
+    EngineOptions options;
+    options.backend = &backend;
 
-        engine.Call<PFRunEngine>("RunEngine", options);
-    }
-    catch (const std::exception &ex)
+    if (auto ex = engine.Call<PFRunEngine>("RunEngine", options))
     {
-        std::cerr << ex.what() << std::endl;
+        std::cerr << ex << std::endl;
 #ifdef MSVC
-        MessageBoxA(nullptr, ex.what(), "FATAL ERROR", MB_ICONERROR);
+        MessageBoxA(nullptr, ex, "FATAL ERROR", MB_ICONERROR);
 #endif
         _exit(1);
     }
@@ -45,18 +41,7 @@ int main(int argc, char **argv)
         }
     }
     
-    try
-    {
-        Run(backend);
-    }
-    catch (const std::exception &ex)
-    {
-        std::cerr << ex.what() << std::endl;
-#ifdef MSVC
-        MessageBoxA(nullptr, ex.what(), "FATAL ERROR", MB_ICONERROR);
-#endif
-        _exit(1);
-    }
+    Run(backend);
 
     return 0;
 }

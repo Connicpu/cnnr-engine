@@ -6,13 +6,15 @@ template <typename T>
 class DataComponent : public T, public Component
 {
 public:
-    DataComponent(String component_name, const T &data)
-        : T(data), name_(std::move(component_name))
+    DataComponent() = default;
+
+    DataComponent(const T &data)
+        : T(data)
     {
     }
 
-    DataComponent(String component_name, T &&data)
-        : T(data), name_(std::move(component_name))
+    DataComponent(T &&data)
+        : T(data)
     {
     }
 

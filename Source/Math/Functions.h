@@ -487,6 +487,11 @@ namespace Math
         return Degs(static_cast<float>(d));
     }
 
+    constexpr Degrees operator""_deg(unsigned long long i)
+    {
+        return Degs(static_cast<float>(i));
+    }
+
     constexpr Radians operator+(Radians lhs, Radians rhs)
     {
         return Rads(lhs.rad + rhs.rad);

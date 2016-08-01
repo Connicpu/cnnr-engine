@@ -21,7 +21,7 @@ protected:
     {
         RPtr<Inst> inst;
         bool res = inst_.Upgrade(inst);
-        assert(res);
+        assert(res); res;
         return std::move(inst);
     }
 

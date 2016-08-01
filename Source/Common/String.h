@@ -1,11 +1,12 @@
 #pragma once
 
+#include <LuaInterface/IncludeLua.h>
 #include <Common/Platform.h>
 #include <Common/Filesystem.h>
-#include <LuaInterface/IncludeLua.h>
+#include <Common/Hash.h>
 #include <string>
 #include <gsl.h>
-#include "Hash.h"
+#include <iostream>
 
 class String
 {
@@ -47,12 +48,15 @@ public:
     
     inline void reset();
     static inline String to_owned(String &&str);
-    inline String into_owned() && ;
+    inline String into_owned() &&;
+    inline String clone();
+    inline std::string into_stdstring() &&;
     inline std::string &as_owned();
     inline std::string copy_owned() const;
     inline gsl::cstring_span<> span() const;
     inline fs::path path() const;
     inline String &append(const String &rhs);
+    inline String &replace(char from, char to);
 
     const char *begin() const;
     const char *end() const;
@@ -100,6 +104,7 @@ inline String::String(const String &other)
 {
     if (other.tag == Owned)
     {
+        tag = Owned;
         new (&data.owned) std::string(other.data.owned);
     }
 }
@@ -175,6 +180,16 @@ inline String String::into_owned() &&
     return String::to_owned(std::move(*this));
 }
 
+inline String String::clone()
+{
+    return String(span()).into_owned();
+}
+
+inline std::string String::into_stdstring() &&
+{
+    return std::move(std::move(*this).into_owned().data.owned);
+}
+
 inline std::string &String::as_owned()
 {
     *this = to_owned(std::move(*this));
@@ -199,6 +214,13 @@ inline fs::path String::path() const
 inline String &String::append(const String &rhs)
 {
     as_owned().append(rhs.begin(), rhs.end());
+    return *this;
+}
+
+inline String &String::replace(char from, char to)
+{
+    auto &s = as_owned();
+    std::transform(s.begin(), s.end(), s.begin(), [from, to](char c) { return c == from ? to : c; });
     return *this;
 }
 
@@ -314,6 +336,12 @@ inline bool operator<=(const String &lhs, const String &rhs)
 inline bool operator>=(const String &lhs, const String &rhs)
 {
     return static_cast<gsl::cstring_span<>>(lhs) >= static_cast<gsl::cstring_span<>>(rhs);
+}
+
+inline std::ostream &operator<<(std::ostream &lhs, const String &rhs)
+{
+    lhs.write(rhs.span().data(), rhs.span().size());
+    return lhs;
 }
 
 inline fs::path operator/(fs::path &&lhs, const String &rhs)

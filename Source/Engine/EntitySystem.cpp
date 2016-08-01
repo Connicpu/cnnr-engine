@@ -2,8 +2,8 @@
 #include "Entity.h"
 #include "EntityEvent.h"
 
-EntitySystem::EntitySystem(std::unique_ptr<EntityFilter> filter)
-    : filter_(std::move(filter))
+EntitySystem::EntitySystem(int priority, std::unique_ptr<EntityFilter> filter)
+    : System(priority), filter_(std::move(filter))
 {
 }
 

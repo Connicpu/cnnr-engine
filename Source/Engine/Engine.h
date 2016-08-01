@@ -7,5 +7,5 @@ struct EngineOptions
     const DynamicLibrary *backend;
 };
 
-extern "C" void RunEngine(const EngineOptions &options);
+extern "C" const char *RunEngine(const EngineOptions &options);
 using PFRunEngine = decltype(RunEngine)*;

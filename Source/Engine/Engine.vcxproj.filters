@@ -36,6 +36,12 @@
     <Filter Include="Header Files\System\Systems">
       <UniqueIdentifier>{a39d4ea7-fd31-4b9b-952d-52358d7f151b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Component\Components">
+      <UniqueIdentifier>{6d09aaa2-7f7a-4d04-b8db-7bf4e665e0f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Services">
+      <UniqueIdentifier>{213a235c-1235-467a-b215-5ba7f8848364}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -65,17 +71,20 @@
     <ClCompile Include="EntityManager.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentManager.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
     <ClCompile Include="SystemManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceManager.cpp">
+      <Filter>Source Files\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Source Files\Component\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +132,12 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Header Files\Component\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformUpdate.h">
+      <Filter>Header Files\System\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkerComponent.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

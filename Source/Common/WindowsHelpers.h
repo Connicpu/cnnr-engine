@@ -12,7 +12,7 @@ inline HINSTANCE GetHinstanceFromFn(FnPtr *pFn)
         GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (LPCWSTR)pFn,
         &handle
-    );
+    ); result;
     assert(result);
     return (HINSTANCE)handle;
 }

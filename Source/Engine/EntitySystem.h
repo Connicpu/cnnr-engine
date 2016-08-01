@@ -16,7 +16,7 @@ public:
 class EntitySystem : public System
 {
 public:
-    EntitySystem(std::unique_ptr<EntityFilter> filter);
+    EntitySystem(int priority, std::unique_ptr<EntityFilter> filter);
 
     virtual void Process(GameData &data) final override;
     virtual void OnEntityEvent(const GameData &data, const EntityEvent &event) override;

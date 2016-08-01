@@ -121,7 +121,7 @@ void SpriteEntry::Update(const uint8_t *data, size_t len)
 {
     HRESULT hr;
     assert(owner->is_streaming);
-    assert(len == (owner->sprite_width * owner->sprite_height * 4));
+    assert(len == (owner->sprite_width * owner->sprite_height * 4)); len;
 
     uint32_t subresource = D3D11CalcSubresource(0, index, 1);
     auto *context = owner->device->context.p;
