@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "LuaState.h"
 #include "RequireLoader.h"
 
@@ -34,7 +35,8 @@ void LuaState::load(const String &file)
     file.push_lua(L);
     if (lua_pcall(L, 1, 0, 0))
     {
-        throw std::runtime_error{ String::from_lua(L, -1).into_stdstring() };
+        auto msg = String::from_lua(L, -1).into_stdstring();
+        throw std::runtime_error{ msg };
     }
 }
 

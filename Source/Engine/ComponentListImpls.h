@@ -98,7 +98,7 @@ inline std::optional<Component&> HotComponentList<T>::do_get(const Entity &e) co
 {
     auto index = static_cast<IndexedEntity>(e).index;
     if (index < components_.size())
-        return components_[index].as_ref<Component>();
+        return components_[index].template as_ref<Component>();
     return std::nullopt;
 }
 

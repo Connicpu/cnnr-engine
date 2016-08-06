@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "LuaValue.h"
 
 LuaValue::LuaValue()
@@ -90,11 +91,4 @@ void LuaValue::reset()
 
     lua_state_ = nullptr;
     handle_ = LUA_NOREF;
-}
-
-template <>
-void std::swap<LuaValue>(LuaValue &lhs, LuaValue &rhs)
-{
-    std::swap(lhs.lua_state_, rhs.lua_state_);
-    std::swap(lhs.handle_, rhs.handle_);
 }

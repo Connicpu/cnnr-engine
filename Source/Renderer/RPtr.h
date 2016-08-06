@@ -33,7 +33,7 @@ public:
 
     inline RPtr(const RPtr &copy)
     {
-        _Assign(copy.p)
+        _Assign(copy.p);
     }
 
     inline RPtr(RPtr &&move)

@@ -6,11 +6,14 @@
 
 struct GameData;
 struct EntityEvent;
+class ComponentManager;
 
 class SystemManager
 {
 public:
-    void RegisterSystem(String name, SystemPtr system);
+    SystemManager(const ComponentManager &components);
+
+    void RegisterSystem(SystemPtr system);
 
     void OnEvent(const GameData &data, const EntityEvent &event);
     void Process(GameData &data);

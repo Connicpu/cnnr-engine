@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "LuaBinding.h"
 #include <unordered_map>
 #include <Common/Hash.h>

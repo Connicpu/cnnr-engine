@@ -13,9 +13,14 @@ class RPtr;
 template <typename T>
 class RWeak;
 
-class RefCounted abstract
+class RefCounted
 {
 public:
+    RefCounted()
+        : strong_(0), weak_(0)
+    {
+    }
+
     inline void IncRef()
     {
         strong_.fetch_add(1, std::memory_order_relaxed);
@@ -63,8 +68,8 @@ public:
     }
 
 protected:
-    std::atomic<uint32_t> strong_ = 0;
-    std::atomic<uint32_t> weak_ = 0;
+    std::atomic<uint32_t> strong_;
+    std::atomic<uint32_t> weak_;
     inline virtual ~RefCounted() {}
 
     inline void Drop()

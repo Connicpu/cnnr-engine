@@ -4,7 +4,7 @@
 
 class IRenderInstance;
 
-class IRenderBase abstract : public RefCounted
+class IRenderBase : public RefCounted
 {
 public:
     virtual bool GetInstance(IRenderInstance **instance) = 0;

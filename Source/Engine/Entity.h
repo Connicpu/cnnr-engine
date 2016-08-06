@@ -1,6 +1,8 @@
 #pragma once
 
 #include <stdint.h>
+#include <Common/optional.h>
+#include <LuaInterface/IncludeLua.h>
 
 struct IndexedEntity;
 
@@ -22,6 +24,9 @@ public:
     {
         return !(*this == rhs);
     }
+
+    static void PushLua(lua_State *L, Entity e);
+    static std::optional<Entity> FromLua(lua_State *L, int idx);
 
 private:
     template <typename H>

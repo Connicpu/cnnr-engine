@@ -100,7 +100,7 @@ namespace Fnv1Details
 }
 
 using Fnv1_32 = Fnv1Details::Hasher<uint32_t, 2166136261U, 16777619U>;
-using Fnv1_64 = Fnv1Details::Hasher<uint64_t, 14695981039346656037Ui64, 1099511628211Ui64>;
+using Fnv1_64 = Fnv1Details::Hasher<uint64_t, 14695981039346656037U, 1099511628211U>;
 using Fnv1 = std::conditional<std::is_same<size_t, uint32_t>::value, Fnv1_32, Fnv1_64>::type;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,7 @@ namespace Fnv1ADetails
 }
 
 using Fnv1A_32 = Fnv1ADetails::Hasher<uint32_t, 2166136261U, 16777619U>;
-using Fnv1A_64 = Fnv1ADetails::Hasher<uint64_t, 14695981039346656037Ui64, 1099511628211Ui64>;
+using Fnv1A_64 = Fnv1ADetails::Hasher<uint64_t, 14695981039346656037U, 1099511628211>;
 using Fnv1A = std::conditional<std::is_same<size_t, uint32_t>::value, Fnv1A_32, Fnv1A_64>::type;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

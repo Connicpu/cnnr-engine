@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include <Common/Hash.h>
+#include <Common/String.h>
 #include <stdint.h>
 #include <vector>
 
@@ -17,6 +18,9 @@ public:
     Entity CreateEntity();
     void RemoveEntity(Entity e);
     void OnModified(Entity e);
+
+    void SetName(Entity e, String name);
+    String GetName(Entity e) const;
 
     void FlushQueue(GameData &data);
 
@@ -34,6 +38,7 @@ private:
     std::vector<EntityStatus> statuses_;
     std::vector<uint32_t> free_list_;
     HashSet<Entity> added_, modified_, removing_;
+    HashMap<Entity, String> names_;
 };
 
 class EntityManager::iterator

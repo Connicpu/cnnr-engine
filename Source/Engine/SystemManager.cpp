@@ -1,7 +1,15 @@
+#include "pch.h"
 #include "SystemManager.h"
+#include "TransformUpdate.h"
 
-void SystemManager::RegisterSystem(String name, SystemPtr system)
+SystemManager::SystemManager(const ComponentManager &components)
 {
+    RegisterSystem(SystemPtr(new TransformUpdate(components)));
+}
+
+void SystemManager::RegisterSystem(SystemPtr system)
+{
+    auto name = system->GetName();
     execution_queue_.push_back(system.get());
     systems_.insert_or_assign(std::move(name), std::move(system));
 

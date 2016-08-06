@@ -3,14 +3,6 @@
 #include "IncludeLua.h"
 #include <Common/optional.h>
 
-class LuaValue;
-
-namespace std
-{
-    template <>
-    void swap<LuaValue>(LuaValue &lhs, LuaValue &rhs);
-}
-
 class LuaValue
 {
 public:
@@ -30,8 +22,6 @@ public:
     void reset();
 
 private:
-    friend void std::swap(LuaValue &lhs, LuaValue &rhs);
-
     lua_State *lua_state_;
     int handle_;
 };

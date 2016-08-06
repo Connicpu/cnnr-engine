@@ -1,0 +1,16 @@
+Prio - System
+-------------------------
+ 100 - WindowHandler❎
+ 200 - KeyboardHandler❎
+ 300 - MouseHandler❎
+-------------------------
+ 500 - SpinEntities
+-------------------------
+ 900 - PhysicsUpdate❎
+-------------------------
+1000 - TransformUpdate
+1100 - SpriteUpdate❎
+-------------------------
+1500 - BeginDraw❎
+1600 - SceneDraw❎
+1700 - EndDraw❎

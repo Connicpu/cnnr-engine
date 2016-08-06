@@ -49,7 +49,7 @@ public:
     inline void reset();
     static inline String to_owned(String &&str);
     inline String into_owned() &&;
-    inline String clone();
+    inline String clone() const;
     inline std::string into_stdstring() &&;
     inline std::string &as_owned();
     inline std::string copy_owned() const;
@@ -143,7 +143,7 @@ inline String &String::operator=(const String &other)
     else
     {
         this->String::~String();
-        this->String::String(other);
+        new (this) String(other);
     }
     return *this;
 }
@@ -151,7 +151,7 @@ inline String &String::operator=(const String &other)
 inline String &String::operator=(String &&other)
 {
     this->String::~String();
-    this->String::String(std::move(other));
+    new (this) String(std::move(other));
     return *this;
 }
 
@@ -163,7 +163,7 @@ inline String &String::operator+=(const String &rhs)
 inline void String::reset()
 {
     this->String::~String();
-    this->String::String();
+    new (this) String();
 }
 
 inline String String::to_owned(String &&str)
@@ -180,7 +180,7 @@ inline String String::into_owned() &&
     return String::to_owned(std::move(*this));
 }
 
-inline String String::clone()
+inline String String::clone() const
 {
     return String(span()).into_owned();
 }

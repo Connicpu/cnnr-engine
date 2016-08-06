@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "RequireLoader.h"
 #include <Common/String.h>
 #include <Common/MMap.h>
@@ -118,6 +119,12 @@ static bool try_load(lua_State *L, String path)
         }
     }
 
+    if (lua_pcall(L, 0, 1, 0))
+    {
+        auto msg = String::from_lua(L, -1).into_stdstring();
+        throw std::runtime_error{ msg };
+    }
+
     return 1;
 }
 
@@ -164,7 +171,6 @@ static int require(lua_State *L)
     catch (const std::exception &ex)
     {
         ("An error occurred while loading module `"_s + module + "`.\n"_s + ex.what()).push_lua(L);
-        module = ""_s; // We have to free module before letting lua do a longjmp
         return lua_error(L);
     }
 
@@ -172,7 +178,6 @@ static int require(lua_State *L)
     if (module_whitelist.find(module) == module_whitelist.end())
     {
         ("Failed to find module "_s + module).push_lua(L);
-        module = ""_s; // We have to free module before letting lua do a longjmp
         return lua_error(L);
     }
 

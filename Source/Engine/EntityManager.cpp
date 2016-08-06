@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "EntityManager.h"
 #include "GameData.h"
 #include "EntityEvent.h"
@@ -53,6 +54,19 @@ void EntityManager::OnModified(Entity e)
         return;
 
     modified_.insert(e);
+}
+
+void EntityManager::SetName(Entity e, String name)
+{
+    names_.insert_or_assign(e, std::move(name).into_owned());
+}
+
+String EntityManager::GetName(Entity e) const
+{
+    auto it = names_.find(e);
+    if (it != names_.end())
+        return it->second.span();
+    return "UNNAMED"_s;
 }
 
 void EntityManager::FlushQueue(GameData &data)

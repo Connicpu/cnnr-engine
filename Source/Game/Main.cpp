@@ -1,5 +1,4 @@
 #include <Common/LibLoading.h>
-#include <Common/CxHash.h>
 #include <Engine/Engine.h>
 #include <iostream>
 
@@ -8,17 +7,21 @@ void Run(const char *backend_name)
     DynamicLibrary backend(backend_name);
     DynamicLibrary engine("engine");
 
-    while (!fs::exists(fs::current_path() / "Assets"))
-        fs::current_path(fs::current_path().parent_path());
-
-    EngineOptions options;
-    options.backend = &backend;
-
-    if (auto ex = engine.Call<PFRunEngine>("RunEngine", options))
+    try
     {
-        std::cerr << ex << std::endl;
+        while (!fs::exists(fs::current_path() / "Assets"))
+            fs::current_path(fs::current_path().parent_path());
+
+        EngineOptions options;
+        options.backend = &backend;
+
+        engine.Call<PFRunEngine>("RunEngine", options);
+    }
+    catch (std::exception &ex)
+    {
+        std::cerr << ex.what() << std::endl;
 #ifdef MSVC
-        MessageBoxA(nullptr, ex, "FATAL ERROR", MB_ICONERROR);
+        MessageBoxA(nullptr, ex.what(), "FATAL ERROR", MB_ICONERROR);
 #endif
         _exit(1);
     }

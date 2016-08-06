@@ -140,6 +140,7 @@
     <ClInclude Include="MathLib.h" />
     <ClInclude Include="MaybeOwned.h" />
     <ClInclude Include="MMap.h" />
+    <ClInclude Include="MMapManager.h" />
     <ClInclude Include="optional.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="String.h" />
