@@ -362,3 +362,77 @@ inline void hash_apply(const String &str, H &h)
     gsl::cstring_span<> span = str;
     hash_apply(span, h);
 }
+
+inline String tostring(String &&str)
+{
+    return std::move(str);
+}
+
+inline String tostring(const String &str)
+{
+    return str;
+}
+
+inline String tostring(const char *str)
+{
+    return String(str);
+}
+
+namespace std
+{
+    inline String tostring(std::string &&str)
+    {
+        return String(std::move(str));
+    }
+
+    inline String tostring(const std::string &str)
+    {
+        return String(std::string(str));
+    }
+}
+
+inline String tostring(uint32_t u)
+{
+    return std::to_string(u);
+}
+
+inline String tostring(int32_t i)
+{
+    return std::to_string(i);
+}
+
+inline String tostring(uint64_t u)
+{
+    return std::to_string(u);
+}
+
+inline String tostring(int64_t i)
+{
+    return std::to_string(i);
+}
+
+inline String tostring(float f)
+{
+    return std::to_string(f);
+}
+
+inline String tostring(double d)
+{
+    return std::to_string(d);
+}
+
+template <typename T>
+inline String operator+(String &&lhs, T &&rhs)
+{
+    auto temp = std::move(lhs);
+    temp.append(tostring(std::forward<T>(rhs)));
+    return std::move(temp);
+}
+
+template <typename T>
+inline String operator+(const String &lhs, T &&rhs)
+{
+    String temp = tostring(std::forward<T>(rhs));
+    temp.as_owned().insert(0, lhs.span().data(), lhs.span().size());
+    return std::move(temp);
+}

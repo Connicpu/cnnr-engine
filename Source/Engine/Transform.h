@@ -6,13 +6,13 @@
 
 struct GameData;
 
-struct Transform
+struct Transform : public Component
 {
     std::optional<Entity> parent;
 
     Math::Point2F position = Math::Point2();
     Math::Radians rotation = Math::Rads(0);
-    Math::Vec2F size = Math::Vec2();
+    Math::Size2F size = Math::SizeF();
     float scale = 1.f;
 
     Math::Matrix3x2 transform;
@@ -20,8 +20,12 @@ struct Transform
 
     void Update(GameData &data);
 
+    virtual String GetName() const;
+    virtual void PushLuaBinding(lua_State *L);
+    static std::optional<Transform &> FromLua(lua_State *L, int idx);
+
 private:
+    static void PushTransformMetatable(lua_State *L);
+
     bool updating;
 };
-
-COMPONENT_NAME(Transform, "transform");

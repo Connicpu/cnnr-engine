@@ -22,7 +22,7 @@ public:
     const ComponentList &operator[](const String &name) const;
     const ComponentList &operator[](ComponentId id) const;
 
-    HotComponentList<DataComponent<Transform>> transform;
+    HotComponentList<Transform> transform;
 
 private:
     ComponentId InternalRegister(String name, ComponentListPtr ptr);

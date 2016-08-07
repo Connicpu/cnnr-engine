@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "DxInstance.h"
 #include "DxDevice.h"
 #include "HwndDisplay.h"

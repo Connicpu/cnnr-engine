@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "LuaState.h"
 #include "RequireLoader.h"
+#include "LuaMath.h"
 
 #define LS_PTR "___LuaState_ptr"
 
@@ -13,6 +14,8 @@ LuaState::LuaState()
 
     luaL_openlibs(L);
     RegisterRequireLoader(L);
+
+    lua_math_init(L);
 }
 
 LuaState::~LuaState()

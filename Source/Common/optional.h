@@ -583,7 +583,9 @@ namespace std {
             }
 
             T& value() {
-                return initialized() ? contained_val() : (throw bad_optional_access("bad optional access"), contained_val());
+                if (!initialized())
+                    throw bad_optional_access("bad optional access");
+                return contained_val();
             }
 
 # endif

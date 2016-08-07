@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "InputLayouts.h"
 
 D3D11_INPUT_ELEMENT_DESC SpriteVSLayout[] =

@@ -42,6 +42,9 @@
     <Filter Include="Source Files\Services">
       <UniqueIdentifier>{213a235c-1235-467a-b215-5ba7f8848364}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\System\Systems">
+      <UniqueIdentifier>{836617ab-0fd6-47ca-a4ed-5e42a42acc09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -98,14 +101,14 @@
     <ClCompile Include="LuaEntitySystem.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="TransformUpdate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsService.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformUpdate.cpp">
+      <Filter>Source Files\System\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsService.cpp">
+      <Filter>Source Files\Services</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

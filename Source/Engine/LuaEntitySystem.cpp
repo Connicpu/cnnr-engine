@@ -50,12 +50,26 @@ static int iterStep(lua_State *L)
     }
     else
     {
-        ++iter->iter.value();
+        ++*iter->iter;
     }
 
-    lua_pushnil(L);
-    Entity::PushLua(L, **iter->iter);
-    return 2;
+    lua_getfield(L, LUA_GLOBALSINDEX, "__GAME_STATE");
+    auto &data = *(GameData *)lua_touserdata(L, -1);
+    lua_pop(L, 1);
+    while (*iter->iter != iter->system->end() && !iter->system->IsMatch(data, **iter->iter))
+    {
+        ++*iter->iter;
+    }
+
+    if (*iter->iter != iter->system->end())
+    {
+        Entity::PushLua(L, **iter->iter);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 static int iter(lua_State *L)
@@ -66,9 +80,8 @@ static int iter(lua_State *L)
     auto iter = (LESIter *)lua_newuserdata(L, sizeof(LESIter));
     iter->system = system;
     iter->iter = std::nullopt;
-    lua_pushnil(L);
 
-    return 3;
+    return 2;
 }
 
 void LuaEntitySystem::InitializeLuaModule(lua_State *L)
@@ -77,4 +90,9 @@ void LuaEntitySystem::InitializeLuaModule(lua_State *L)
 
     lua_pushcclosure(L, iter, 0);
     lua_setfield(L, -2, "iter");
+}
+
+bool LuaEntitySystem::IsMatch(const GameData &data, Entity e)
+{
+    return filter_->IsMatch(data, e);
 }

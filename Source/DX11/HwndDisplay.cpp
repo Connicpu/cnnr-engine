@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "HwndDisplay.h"
 #include <Common/Platform.h>
 #include <Common/InitOnce.h>

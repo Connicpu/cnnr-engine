@@ -18,7 +18,7 @@ function SpinEntities:process(data)
     for entity in self:entities() do
         -- Rotate all of the transforms by delta*speed
         local transform = data.components.transform[entity]
-        transform:rotate(data.delta * self.speed)
+        transform.rotation = transform.rotation + data.delta * self.speed
     end
 end
 

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "DxShader.h"
 #include "DxException.h"
 #include <Common/MMap.h>

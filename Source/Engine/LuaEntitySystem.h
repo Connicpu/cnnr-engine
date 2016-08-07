@@ -14,6 +14,8 @@ public:
 
     static void InitializeLuaModule(lua_State *L);
 
+    bool IsMatch(const GameData &data, Entity e);
+
 private:
     String name_;
     LuaValue lua_obj_;

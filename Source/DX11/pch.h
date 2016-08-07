@@ -10,7 +10,4 @@
 #include <Common/Platform.h>
 #include <Common/optional.h>
 #include <Renderer/Renderer.h>
-#include <LuaInterface/IncludeLua.h>
-#include <LuaInterface/LuaBinding.h>
-#include <LuaInterface/LuaValue.h>
-#include <LuaInterface/LuaState.h>
+#include "DxPlatform.h"

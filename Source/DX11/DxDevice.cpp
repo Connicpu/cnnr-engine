@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "DxDevice.h"
 #include "DxException.h"
 #include "DxSpriteSet.h"

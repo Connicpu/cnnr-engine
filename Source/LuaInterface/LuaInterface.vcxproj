@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="LuaBinding.cpp" />
     <ClCompile Include="LuaConversion.cpp" />
+    <ClCompile Include="LuaMath.cpp" />
     <ClCompile Include="LuaObject.cpp" />
     <ClCompile Include="LuaState.cpp" />
     <ClCompile Include="LuaValue.cpp" />
@@ -150,12 +151,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RequireLoader.cpp" />
-    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IncludeLua.h" />
     <ClInclude Include="LuaBinding.h" />
     <ClInclude Include="LuaConversion.h" />
+    <ClInclude Include="LuaMath.h" />
     <ClInclude Include="LuaObject.h" />
     <ClInclude Include="LuaState.h" />
     <ClInclude Include="LuaValue.h" />

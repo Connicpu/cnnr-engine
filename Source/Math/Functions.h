@@ -3,11 +3,17 @@
 #include "Structures.h"
 #include "CxMath.h"
 #include <cmath>
+#include <Common/String.h>
 
 namespace Math
 {
     ////////////////////////////
     // Vec2 functions
+
+    inline String tostring(Vec2F v)
+    {
+        return "<"_s + v.x + ", "_s + v.y + ">"_s;
+    }
 
     constexpr Vec2F Vec2()
     {
@@ -37,6 +43,11 @@ namespace Math
     constexpr Vec2F operator-(const Vec2F lhs, const Vec2F rhs)
     {
         return Vec2(lhs.x - rhs.x, lhs.y - rhs.y);
+    }
+
+    constexpr Vec2F operator*(const Vec2F lhs, const Size2F rhs)
+    {
+        return Vec2(lhs.x * rhs.width, lhs.y * rhs.height);
     }
 
     constexpr Vec2F operator*(const Vec2F lhs, float rhs)
@@ -110,6 +121,11 @@ namespace Math
     ////////////////////////////
     // Point2 functions
 
+    inline String tostring(Point2F p)
+    {
+        return "("_s + p.x + ", "_s + p.y + ")"_s;
+    }
+
     constexpr Point2F Point2()
     {
         return Point2F{ 0.f, 0.f };
@@ -152,6 +168,11 @@ namespace Math
 
     ////////////////////////////
     // SizeF functions
+
+    inline String tostring(Size2F size)
+    {
+        return "["_s + size.width + ", "_s + size.height + "]"_s;
+    }
 
     constexpr Size2F SizeF()
     {
@@ -201,6 +222,11 @@ namespace Math
     ////////////////////////////
     // SizeU functions
 
+    inline String tostring(Size2U size)
+    {
+        return "["_s + size.width + ", "_s + size.height + "]"_s;
+    }
+
     constexpr Size2U SizeU()
     {
         return Size2U{ 0, 0 };
@@ -223,6 +249,13 @@ namespace Math
 
     ////////////////////////////
     // Rect functions
+
+    inline String tostring(RectF rect)
+    {
+        return
+            "["_s + rect.left + ", "_s + rect.top +
+            ", "_s + rect.right + ", "_s + rect.bottom + "]"_s;
+    }
 
     constexpr RectF Rect(float left, float top, float right, float bottom)
     {
@@ -267,6 +300,14 @@ namespace Math
     ////////////////////////////
     // Matrix transform functions
 
+    inline String tostring(Matrix3x2F m)
+    {
+        return
+            "["_s + m.m11 + ", "_s + m.m12 + ", 0]\n"_s +
+            "["_s + m.m21 + ", "_s + m.m22 + ", 0]\n"_s +
+            "["_s + m.m31 + ", "_s + m.m32 + ", 1]"_s;
+    }
+
     constexpr Matrix3x2F operator*(Matrix3x2F m1, Matrix3x2F m2)
     {
         return Matrix3x2F
@@ -296,9 +337,27 @@ namespace Math
     ////////////////////////////
     // Color functions
 
+    inline String tostring(ColorF color)
+    {
+        return "rgba("_s + ::tostring(color.r) +
+            ", "_s + ::tostring(color.g) +
+            ", "_s + ::tostring(color.b) +
+            ", "_s + ::tostring(color.a) +
+            ")"_s;
+    }
+
     constexpr ColorF Color(float r, float g, float b, float a = 1)
     {
         return ColorF{ r, g, b, a };
+    }
+
+    inline String tostring(ColorHslF color)
+    {
+        return "hsla("_s + ::tostring(color.h) +
+            ", "_s + ::tostring(color.s) +
+            ", "_s + ::tostring(color.l) +
+            ", "_s + ::tostring(color.a) +
+            ")"_s;
     }
 
     constexpr ColorHslF ColorHsl(float h, float s, float l, float a = 1)
@@ -447,6 +506,11 @@ namespace Math
         constexpr float DEGREES_TO_RADIANS = PI / 180.0f;
     }
 
+    inline String tostring(Radians r)
+    {
+        return ::tostring(r.rad) + "_rad"_s;
+    }
+
     constexpr Radians Rads(float r)
     {
         return Radians{ r };
@@ -460,6 +524,11 @@ namespace Math
     constexpr Radians Rads(Degrees d)
     {
         return Radians{ d.deg * details::DEGREES_TO_RADIANS };
+    }
+
+    inline String tostring(Degrees d)
+    {
+        return ::tostring(d.deg) + "_deg"_s;
     }
 
     constexpr Degrees Degs(float d)

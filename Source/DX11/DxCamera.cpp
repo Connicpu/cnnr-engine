@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "DxCamera.h"
 #include "DxException.h"
 
