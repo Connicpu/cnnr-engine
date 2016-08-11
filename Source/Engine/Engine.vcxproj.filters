@@ -45,6 +45,12 @@
     <Filter Include="Source Files\System\Systems">
       <UniqueIdentifier>{836617ab-0fd6-47ca-a4ed-5e42a42acc09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\System\Systems\General">
+      <UniqueIdentifier>{50892d8c-7dce-4bc8-a9a1-a50597fed106}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System\Systems\Dev">
+      <UniqueIdentifier>{f5bedd1f-0a4c-43df-b7ad-16a60586d0af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -157,9 +163,6 @@
     <ClInclude Include="Transform.h">
       <Filter>Header Files\Component\Components</Filter>
     </ClInclude>
-    <ClInclude Include="TransformUpdate.h">
-      <Filter>Header Files\System\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="MarkerComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
@@ -183,6 +186,12 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformUpdate.h">
+      <Filter>Header Files\System\Systems\General</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugAdapter.h">
+      <Filter>Header Files\System\Systems\Dev</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

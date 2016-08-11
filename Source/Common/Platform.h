@@ -27,11 +27,11 @@ using ComPtr = ATL::CComPtr<T>;
 
 #else /* ifdef MSVC */
 
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <sys/mman.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <dlfcn.h>
 
 #ifdef NDEBUG

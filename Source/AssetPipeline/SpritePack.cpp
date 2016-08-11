@@ -11,6 +11,11 @@ std::unique_ptr<SpritePack> SpritePack::LoadPack(
     bool has_size = false, consistent_size = true;
     uint32_t pack_width, pack_height;
 
+    bool pixel_art = false;
+    auto &pack_desc = config_root["Pack"]->GetTable();
+    if (auto pixel = pack_desc["PixelArt"])
+        pixel_art = pixel->IsBool() && pixel->GetBool();
+
     for (auto &sprite_data : config_root["Sprite"]->GetArray())
     {
         SpriteDesc sprite_desc;
@@ -96,6 +101,7 @@ std::unique_ptr<SpritePack> SpritePack::LoadPack(
     params.sprite_width = pack_width;
     params.sprite_height = pack_height;
     params.buffers = buffers.data();
+    params.pixel_art = pixel_art;
     RPtr<ISpriteSet> set;
     device->CreateSpriteSet(&params, &set);
 

@@ -1,7 +1,7 @@
-local v1 = math.Vec2(1, 2)
-local v2 = math.Vec2(3, 4)
-print(2*v1 + v2) -- <5.00000, 8.00000>
+local ffi, serialization = require("serialization.ffi")
+local toml = require("serialization.toml")
 
-v1.x = v1.x + 1
-print(v1:topoint()) -- (2.00000, 2.00000)
+local val = toml.parse('[test]\ntest = "test"')
+assert(toml.toml_to_lua(val).test.test == "test")
 
+print("done")

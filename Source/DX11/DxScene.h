@@ -153,6 +153,7 @@ public:
     ComPtr<ID3D11RasterizerState> rasterizer;
     ComPtr<ID3D11BlendState> blender;
     ComPtr<ID3D11SamplerState> sampler;
+    ComPtr<ID3D11SamplerState> pixel_sampler;
     Size2F segment_size;
 
 private:

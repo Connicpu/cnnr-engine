@@ -53,7 +53,7 @@ void DxDevice::CreateSpriteSet(const SpriteSetParams *params, ISpriteSet **set)
 
     *set = MakeRenderObject<DxSpriteSet>(
         inst.p, this, params->streaming, params->sprite_count, params->sprite_width,
-        params->sprite_height, params->buffers
+        params->sprite_height, params->buffers, params->pixel_art
     ).Release();
 }
 

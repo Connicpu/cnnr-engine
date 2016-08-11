@@ -16,9 +16,8 @@ function Copy-Libraries($target, $configuration)
     if (Test-Path "bin\$target\$configuration")
     {
         Copy-Item -Path "$env:CONNORLIB_HOME\bin\$target\serialization.dll" -Destination "bin\$target\$configuration\serialization.dll"
-        Copy-Item -Path "$env:CONNORLIB_HOME\bin\$target\serialization.pdb" -Destination "bin\$target\$configuration\serialization.pdb"
         Copy-Item -Path "$env:CONNORLIB_HOME\bin\$target\imageload.dll" -Destination "bin\$target\$configuration\imageload.dll"
-        Copy-Item -Path "$env:CONNORLIB_HOME\bin\$target\imageload.pdb" -Destination "bin\$target\$configuration\imageload.pdb"
+        Copy-Item -Path "$env:CONNORLIB_HOME\bin\$target\messageipc.dll" -Destination "bin\$target\$configuration\messageipc.dll"
         Copy-Item -Path "Source\Vendor\luajit\bin\windows_$target\lua51.dll" -Destination "bin\$target\$configuration\lua51.dll"
     }
 }

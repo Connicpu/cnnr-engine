@@ -350,7 +350,6 @@ void DxScene::Draw(DxDevice *device, DxCamera *camera)
 
     device->context->RSSetState(rasterizer);
     device->context->OMSetBlendState(blender, nullptr, 0xFFFFFF);
-    device->context->PSSetSamplers(0, 1, &sampler.p);
 
     const int32_t CULL_MARGIN = 2;
     RectF viewport;
@@ -517,6 +516,11 @@ void DxScene::DrawBatch(const SpriteBatch &batch, DxDevice *device, DxCamera *ca
     const UINT vert_offsets[] = { 0, 0 };
 
     ID3D11DeviceContext *context = device->context;
+    if (batch.set->is_pixel_art)
+        context->PSSetSamplers(0, 1, &pixel_sampler.p);
+    else
+        context->PSSetSamplers(0, 1, &sampler.p);
+
     device->sprite_shader.Bind(context);
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     context->IASetVertexBuffers(0, 2, vert_buffers, vert_strides, vert_offsets);
@@ -572,6 +576,9 @@ void DxScene::InitializeSampler(ID3D11Device *device)
     desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
     *(ColorF *)desc.BorderColor = Color(1, 1, 1);
     CheckHR(device->CreateSamplerState(&desc, &sampler));
+
+    desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+    CheckHR(device->CreateSamplerState(&desc, &pixel_sampler));
 }
 
 SegCoord SpriteObject::CalculateCoord(const Size2F segment_size)

@@ -391,25 +391,66 @@ void lua_math_init(lua_State *L)
         #pragma endregion
 
         #pragma region operator+
+        Def(L, meta, "__add", [](lua_State *L)
+        {
+            if (auto self = lua_topoint2f(L, 1)) // __add(Point2, _)
+            {
+                if (auto rhs = lua_tovec2f(L, 2)) // __add(Point2, Vec2)
+                    lua_pushpoint2f(L, *self + *rhs);
+                else
+                    return luaL_typerror(L, 2, "Vec2");
 
+                return 1;
+            }
+
+            return luaL_typerror(L, 1, "Vec2");
+        });
         #pragma endregion
 
         #pragma region operator-
-        #pragma endregion
+        Def(L, meta, "__sub", [](lua_State *L)
+        {
+            if (auto self = lua_topoint2f(L, 1)) // __sub(Point2, _)
+            {
+                if (auto rhs = lua_tovec2f(L, 2)) // __add(Point2, Vec2)
+                    lua_pushpoint2f(L, *self - *rhs);
+                else if (auto rhs = lua_topoint2f(L, 2)) // __add(Point2, Point2)
+                    lua_pushvec2f(L, *self - *rhs);
+                else
+                    return luaL_typerror(L, 2, "Vec2 or Point2");
 
-        #pragma region operator*
-        #pragma endregion
+                return 1;
+            }
 
-        #pragma region operator/
+            return luaL_typerror(L, 1, "Vec2");
+        });
         #pragma endregion
 
         #pragma region operator- (unary)
+        Def(L, meta, "__unm", [](lua_State *L)
+        {
+            auto self = *lua_topoint2f(L, 1);
+            lua_pushpoint2f(L, -self);
+            return 1;
+        });
         #pragma endregion
 
         #pragma region tovec
+        Def(L, meta, "tovec", [](lua_State *L)
+        {
+            auto self = *lua_topoint2f(L, 1);
+            lua_pushvec2f(L, Vec2(self));
+            return 1;
+        });
         #pragma endregion
 
         #pragma region tosize
+        Def(L, meta, "tosize", [](lua_State *L)
+        {
+            auto self = *lua_topoint2f(L, 1);
+            lua_pushsize2f(L, SizeF(Vec2(self)));
+            return 1;
+        });
         #pragma endregion
     });
     #pragma endregion
@@ -418,9 +459,77 @@ void lua_math_init(lua_State *L)
     BuildMeta(L, "Size2", [L](int meta)
     {
         #pragma region Constructor
+        lua_createtable(L, 0, 1);
+        Def(L, lua_gettop(L), "__call", [](lua_State *L)
+        {
+            int argc = lua_gettop(L);
+            if (argc == 1)
+            {
+                lua_pushsize2f(L, SizeF());
+            }
+            else if (argc == 3)
+            {
+                if (lua_type(L, 2) != LUA_TNUMBER)
+                    return luaL_typerror(L, 2, "number");
+                if (lua_type(L, 3) != LUA_TNUMBER)
+                    return luaL_typerror(L, 3, "number");
+                auto x = (float)lua_tonumber(L, 2);
+                auto y = (float)lua_tonumber(L, 3);
+                lua_pushsize2f(L, SizeF(x, y));
+            }
+            else
+            {
+                return luaL_error(L, "Unknown number of arguments passed to math.Size2()");
+            }
+            return 1;
+        });
+        lua_setmetatable(L, meta);
         #pragma endregion
 
         #pragma region Get fields
+        Def(L, meta, "__index", [](lua_State *L)
+        {
+            auto &self = *lua_tosize2f(L, 1);
+
+            if (lua_type(L, 2) != LUA_TSTRING)
+                return luaL_typerror(L, 2, "string");
+            auto field = String::from_lua(L, 2);
+
+            if (field == "width"_s)
+                lua_pushnumber(L, self.width);
+            else if (field == "height"_s)
+                lua_pushnumber(L, self.height);
+            else
+            {
+                lua_getmetatable(L, 1);
+                lua_pushvalue(L, 2);
+                lua_gettable(L, -2);
+            }
+            return 1;
+        });
+        #pragma endregion
+
+        #pragma region Set fields
+        Def(L, meta, "__newindex", [](lua_State *L)
+        {
+            auto &self = *lua_tosize2f(L, 1);
+
+            if (lua_type(L, 2) != LUA_TSTRING)
+                return luaL_typerror(L, 2, "string");
+            auto field = String::from_lua(L, 2);
+
+            if (lua_type(L, 3) != LUA_TNUMBER)
+                return luaL_typerror(L, 3, "number");
+            auto value = (float)lua_tonumber(L, 3);
+
+            if (field == "width"_s)
+                self.width = value;
+            else if (field == "height"_s)
+                self.height = value;
+            else
+                return luaL_error(L, "Size2 has no field `%s`", field.c_str());
+            return 0;
+        });
         #pragma endregion
 
         #pragma region Set fields

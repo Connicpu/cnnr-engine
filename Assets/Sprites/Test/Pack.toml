@@ -7,3 +7,10 @@ Name = "Dickbutt"
 Path = "Dickbutt.png"
 Size = 1.0
 Format = "PNG" # optional because Path ends with .png
+
+[[Sprite]]
+Name = "BiggerDickbutt"
+Path = "Dickbutt.png"
+Size = 2.0
+
+

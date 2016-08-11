@@ -20,6 +20,8 @@ struct SpriteSetParams
     // This may be null if streaming is true, and the textures will
     // not be immediately initialized.
     const uint8_t *const *buffers;
+    // Determines if texture sampling should be disabled
+    bool pixel_art;
 };
 
 struct SpriteObjectParams

@@ -19,7 +19,8 @@ public:
         DxInstance *instance, DxDevice *device,
         bool streaming, uint32_t spriteCount,
         uint32_t spriteWidth, uint32_t spriteHeight,
-        const uint8_t *const *buffers
+        const uint8_t *const *buffers,
+        bool pixel_art
     );
 
     // Get the width and height in pixels of each image in this set

@@ -8,6 +8,7 @@
 #include <Renderer/Renderer.h>
 #include <LuaInterface/LuaState.h>
 #include <LuaInterface/ModulePack.h>
+#include <connorlib/serialization/toml.h>
 
 extern "C" void RunEngine(const EngineOptions &options)
 {
@@ -22,7 +23,11 @@ extern "C" void RunEngine(const EngineOptions &options)
     data.services.graphics = GraphicsService(*options.backend);
 
     // Testing
+    auto start = std::chrono::system_clock::now();
     state.load("test");
+    auto end = std::chrono::system_clock::now();
+    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "module `test` ran in " << time.count() << "ms" << std::endl;
 
     // Run the game loop
     data.services.running = true;

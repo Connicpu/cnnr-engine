@@ -1,0 +1,10 @@
+[Pack]
+Name = "Default"
+Type = "Sprites"
+PixelArt = true
+
+[[Sprite]]
+Name = "Default"
+Path = "Default.png"
+Size = 1.0
+Format = "PNG"

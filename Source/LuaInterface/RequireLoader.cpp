@@ -47,10 +47,6 @@ static std::optional<std::pair<fs::path, bool>> choose_path(const String &path)
         {
             return{ { file_path, false } };
         }
-        else if (cached_exists)
-        {
-            return{ { cached_path, true } };
-        }
     }
     else if (file_exists)
     {
@@ -60,7 +56,7 @@ static std::optional<std::pair<fs::path, bool>> choose_path(const String &path)
     return std::nullopt;
 }
 
-static bool try_load(lua_State *L, String path)
+static int try_load(lua_State *L, String path)
 {
     bool was_cached;
     fs::path module_path;
@@ -71,7 +67,7 @@ static bool try_load(lua_State *L, String path)
     }
     else
     {
-        return false;
+        return 0;
     }
 
     MMap file;
@@ -119,13 +115,36 @@ static bool try_load(lua_State *L, String path)
         }
     }
 
-    if (lua_pcall(L, 0, 1, 0))
+    int first_result = lua_gettop(L);
+    if (lua_pcall(L, 0, LUA_MULTRET, 0))
     {
         auto msg = String::from_lua(L, -1).into_stdstring();
         throw std::runtime_error{ msg };
     }
 
-    return 1;
+    int last_result = lua_gettop(L);
+    int result_count = last_result - first_result + 1;
+    lua_createtable(L, result_count, 1);
+    int table = last_result + 1;
+
+    int i = 0;
+    for (int idx = first_result; idx <= last_result; ++idx)
+    {
+        lua_pushvalue(L, idx);
+        lua_rawseti(L, table, ++i);
+    }
+
+    lua_pushnumber(L, result_count);
+    lua_setfield(L, table, "n");
+
+    lua_getfield(L, LUA_GLOBALSINDEX, "package");
+    lua_getfield(L, -1, "cnnr-loaded");
+    lua_pushvalue(L, 1);
+    lua_pushvalue(L, table);
+    lua_rawset(L, -3);
+    lua_pop(L, 3);
+
+    return result_count + 1;
 }
 
 static int require(lua_State *L)
@@ -143,11 +162,32 @@ static int require(lua_State *L)
 
     // Check the loaded table
     lua_getfield(L, LUA_GLOBALSINDEX, "package");
-    lua_getfield(L, -1, "loaded");
+    lua_getfield(L, -1, "cnnr-loaded");
+    if (lua_type(L, -1) == LUA_TNIL)
+    {
+        lua_pop(L, 1);
+        lua_createtable(L, 0, 0);
+        lua_pushvalue(L, -1);
+        lua_setfield(L, -3, "cnnr-loaded");
+    }
+
     lua_pushvalue(L, 1);
     lua_rawget(L, -2);
     if (lua_type(L, -1) != LUA_TNIL)
-        return 1;
+    {
+        auto package = lua_gettop(L);
+        lua_getfield(L, package, "n");
+        auto n = (int)lua_tonumber(L, -1);
+        lua_pop(L, 1);
+
+        lua_assertstack(L, n);
+        for (int i = 1; i <= n; ++i)
+        {
+            lua_rawgeti(L, package, i);
+        }
+
+        return n;
+    }
     lua_pop(L, 3);
 
     // Get the requested module
@@ -161,12 +201,12 @@ static int require(lua_State *L)
     try
     {
         auto module_path = module.clone().replace('.', '/');
-        if (try_load(L, module_path.clone()))
-            return 1;
-        if (try_load(L, module_path + ".lua"_s))
-            return 1;
-        if (try_load(L, module_path + "/init.lua"_s))
-            return 1;
+        if (auto ct = try_load(L, module_path.clone()))
+            return ct - 1;
+        if (auto ct = try_load(L, module_path + ".lua"_s))
+            return ct - 1;
+        if (auto ct = try_load(L, module_path + "/init.lua"_s))
+            return ct - 1;
     }
     catch (const std::exception &ex)
     {
@@ -182,10 +222,11 @@ static int require(lua_State *L)
     }
 
     // Fall back to the default `require`
+    auto otop = lua_gettop(L);
     lua_pushvalue(L, lua_upvalueindex(1));
     lua_pushvalue(L, 1);
-    lua_call(L, 1, 1);
-    return 1;
+    lua_call(L, 1, LUA_MULTRET);
+    return lua_gettop(L) - otop;
 }
 
 void RegisterRequireLoader(lua_State *L)

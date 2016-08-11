@@ -9,12 +9,13 @@ DxSpriteSet::DxSpriteSet(
     DxInstance *instance, DxDevice *device,
     bool streaming, uint32_t spriteCount,
     uint32_t spriteWidth, uint32_t spriteHeight,
-    const uint8_t *const * buffers)
+    const uint8_t *const * buffers, bool pixel_art)
     : ImplRenderBase<ISpriteSet, DxInstance>{ instance },
     device(device),
     sprite_width(spriteWidth),
     sprite_height(spriteHeight),
-    is_streaming(streaming)
+    is_streaming(streaming),
+    is_pixel_art(pixel_art)
 {
     D3D11_TEXTURE2D_DESC tex_desc;
     D3D11_SUBRESOURCE_DATA subresources[MAX_SPRITES];
