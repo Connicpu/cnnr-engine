@@ -1,17 +1,19 @@
 local ffi, serialization = require("serialization.ffi")
 
 local temp = {
-    value = ffi.new("struct Value *[1]"),
-    const_value = ffi.new("struct const Value *[1]"),
+    value = ffi.new("struct TomlValue *[1]"),
+    const_value = ffi.new("struct const TomlValue *[1]"),
     str = ffi.new("struct RustStr[1]"),
     int = ffi.new("int64_t[1]"),
     double = ffi.new("double[1]"),
     bool = ffi.new("bool[1]"),
-    array = ffi.new("struct Array *[1]"),
-    const_array = ffi.new("struct const Array *[1]"),
-    table = ffi.new("struct Table *[1]"),
-    const_table = ffi.new("struct const Table *[1]"),
-    table_iter = ffi.new("struct TableIterator *[1]")
+    array = ffi.new("struct TomlArray *[1]"),
+    const_array = ffi.new("struct const TomlArray *[1]"),
+    table = ffi.new("struct TomlTable *[1]"),
+    const_table = ffi.new("struct const TomlTable *[1]"),
+    table_iter = ffi.new("struct TomlTableIterator *[1]"),
+
+    json_value = ffi.new("struct JsonValue *[1]")
 }
 
 local function toml_to_lua(value)
@@ -97,15 +99,30 @@ local function parse(data)
     end
 end
 
+local function serialize(value)
+    serialization.toml_serialize_text(value, temp.value)
+    local val = temp.value[0]
+    local result = toml_to_lua(val)
+    serialization.toml_free_value(val)
+    return result
+end
+
 local function release(value)
     serialization.toml_free_value(ffi.gc(value, nil))
+end
+
+local function toml_to_json(value)
+    serialization.toml_to_json(value, temp.json_value)
+    return ffi.gc(temp.json_value[0], serialization.json_free_value)
 end
 
 return {
     toml_to_lua = toml_to_lua,
     lua_to_toml = lua_to_toml,
     parse = parse,
-    release = release
+    serialize = serialize,
+    release = release,
+    toml_to_json = toml_to_json
 }
 
 

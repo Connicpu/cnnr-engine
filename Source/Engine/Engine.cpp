@@ -9,9 +9,13 @@
 #include <LuaInterface/LuaState.h>
 #include <LuaInterface/ModulePack.h>
 #include <connorlib/serialization/toml.h>
+#include <LuaInterface/RequireLoader.h>
 
 extern "C" void RunEngine(const EngineOptions &options)
 {
+    lua_cache_dir = fs::temp_directory_path() / "cnnr-engine" / "script-cache";
+    fs::create_directories(*lua_cache_dir);
+
     // Create the lua state
     LuaState state;
     RegisterLuaModules(state);

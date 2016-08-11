@@ -30,6 +30,7 @@ static std::optional<std::pair<fs::path, bool>> choose_path(const String &path)
     if (lua_cache_dir)
     {
         auto cached_path = *lua_cache_dir / path;
+        cached_path.replace_extension(".binlua");
         auto cached_exists = fs::exists(cached_path);
 
         if (file_exists && cached_exists)
@@ -100,7 +101,11 @@ static int try_load(lua_State *L, String path)
         if (!fs::exists(*lua_cache_dir))
             fs::create_directories(*lua_cache_dir);
 
-        std::ofstream output(*lua_cache_dir / path, std::ios::binary);
+        auto cpath = *lua_cache_dir / path;
+        cpath.replace_extension(".binlua");
+        fs::create_directories(cpath.parent_path());
+
+        std::ofstream output(cpath, std::ios::binary | std::ios::trunc);
         auto err = lua_dump(L, [](lua_State *L, const void *data, size_t sz, void *ud) -> int
         {
             auto &output = *(std::ofstream *)ud;
