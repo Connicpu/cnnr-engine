@@ -1,0 +1,10 @@
+[entity]
+name = "testEnt"
+
+[components]
+spin = {}
+transform = {}
+
+[components.sprite]
+source = "TestPixel:Test"
+

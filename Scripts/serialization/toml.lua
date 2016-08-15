@@ -12,7 +12,6 @@ local temp = {
     table = ffi.new("struct TomlTable *[1]"),
     const_table = ffi.new("struct const TomlTable *[1]"),
     table_iter = ffi.new("struct TomlTableIterator *[1]"),
-
     json_value = ffi.new("struct JsonValue *[1]")
 }
 
@@ -124,5 +123,3 @@ return {
     release = release,
     toml_to_json = toml_to_json
 }
-
-

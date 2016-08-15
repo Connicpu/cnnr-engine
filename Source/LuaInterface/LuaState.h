@@ -45,7 +45,7 @@ inline void LuaState::register_module(const String &name)
     }
 
     name.push_lua(L);
-    int top = lua_gettop(L);
+    int top = lua_gettop(L); ((void)top);
     T::InitializeLuaModule(L);
     assert((lua_gettop(L) == top + 1) && "T::InitializeLuaModule is an unbalanced function!");
     

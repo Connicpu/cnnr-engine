@@ -5,6 +5,7 @@
 #include <Common/String.h>
 #include <stdint.h>
 #include <vector>
+#include <algorithm>
 
 struct GameData;
 struct EntityStatus;
@@ -27,6 +28,10 @@ public:
     class iterator;
     iterator begin() const;
     iterator end() const;
+
+    // ADVANCED USAGE
+    inline uint32_t MaxIndex() const;
+    inline std::optional<Entity> EntityAtIndex(uint32_t index) const;
 
 private:
     EntityStatus &status(Entity e);
@@ -70,6 +75,21 @@ struct EntityStatus
     bool alive = false;
     uint64_t id;
 };
+
+inline uint32_t EntityManager::MaxIndex() const
+{
+    return next_index_;
+}
+
+inline std::optional<Entity> EntityManager::EntityAtIndex(uint32_t index) const
+{
+    if (index >= next_id_)
+        return std::nullopt;
+    auto &status = statuses_[index];
+    if (!status.alive)
+        return std::nullopt;
+    return Entity(status.id, index);
+}
 
 inline EntityManager::iterator &EntityManager::iterator::operator++()
 {

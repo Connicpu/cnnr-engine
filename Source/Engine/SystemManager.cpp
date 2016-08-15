@@ -4,7 +4,8 @@
 
 SystemManager::SystemManager(const ComponentManager &components)
 {
-    RegisterSystem(SystemPtr(new TransformUpdate(components)));
+    RegisterSystem(SystemPtr(new TransformUpdate));
+    ((void)components);
 }
 
 void SystemManager::RegisterSystem(SystemPtr system)

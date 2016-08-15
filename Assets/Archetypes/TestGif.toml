@@ -1,5 +1,8 @@
 [entity]
-Name = "TestGif"
+name = "testGif"
+
+[components]
+transform = {}
 
 [components.sprite]
 source = "TestGif" # Automatically detects that this is a gif pack

@@ -7,23 +7,33 @@ void Run(const char *backend_name)
     DynamicLibrary backend(backend_name);
     DynamicLibrary engine("engine");
 
-    try
-    {
-        while (!fs::exists(fs::current_path() / "Assets"))
-            fs::current_path(fs::current_path().parent_path());
+    while (!fs::exists(fs::current_path() / "Assets"))
+        fs::current_path(fs::current_path().parent_path());
 
-        EngineOptions options;
-        options.backend = &backend;
-
-        engine.Call<PFRunEngine>("RunEngine", options);
-    }
-    catch (std::exception &ex)
-    {
-        std::cerr << ex.what() << std::endl;
+    EngineOptions options;
+    options.backend = &backend;
 #ifdef MSVC
-        MessageBoxA(nullptr, ex.what(), "FATAL ERROR", MB_ICONERROR);
+    options.catch_exceptions = !IsDebuggerPresent();
 #endif
-        _exit(1);
+
+    if (options.catch_exceptions)
+    {
+        try
+        {
+            engine.Call<PFRunEngine>("RunEngine", options);
+        }
+        catch (std::exception &ex)
+        {
+            std::cerr << ex.what() << std::endl;
+#ifdef MSVC
+            MessageBoxA(nullptr, ex.what(), "FATAL ERROR", MB_ICONERROR);
+#endif
+            _exit(1);
+        }
+    }
+    else
+    {
+        engine.Call<PFRunEngine>("RunEngine", options);
     }
 }
 

@@ -4,36 +4,47 @@
 
 void Transform::Update(GameData &data)
 {
+    ParallelCalculate();
+    ParallelUpdate(data);
+}
+
+void Transform::ParallelCalculate()
+{
     using namespace Math;
 
     if (!changed)
         return;
-    if (updating)
-        throw std::runtime_error{ "Entity transform dependency loop" };
 
-    updating = true;
-
-    transform =
+    parallel_calc =
         Matrix3x2::Rotation(rotation) *
         Matrix3x2::Scale(size * scale) *
         Matrix3x2::Translation(position);
 
-    if (parent)
-    {
-        if (auto ptransform = data.components.transform.get(*parent))
-        {
-            if (ptransform->changed)
-            {
-                // Ensure the parent gets updated first
-                ptransform->Update(data);
-            }
+    changed = false;
+}
 
-            transform = ptransform->transform * transform;
+void Transform::ParallelUpdate(GameData &data)
+{
+    auto result = parallel_calc;
+    auto par = parent;
+
+    int i = 0;
+    while (par)
+    {
+        if (++i > 128)
+            throw std::runtime_error{ "Recursion depth of transform parents exceeded" };
+
+        if (auto ptransform = data.components.transform.get(*par))
+        {
+            result = ptransform->parallel_calc * result;
+            par = ptransform->parent;
+
+            continue;
         }
+        break;
     }
 
-    updating = false;
-    changed = false;
+    transform = result;
 }
 
 String Transform::GetName() const

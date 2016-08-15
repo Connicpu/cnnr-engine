@@ -45,8 +45,24 @@ local function json_to_toml(value)
     return ffi.gc(temp.toml_value[0], serialization.toml_free_value)
 end
 
+local function json_to_lua(value)
+    return toml.toml_to_lua(json_to_toml(value))
+end
+
+local function lua_to_json(data)
+    return toml.toml_to_json(toml.lua_to_toml(data))
+end
+
+local function release(value)
+    serialization.json_free_value(ffi.gc(value, nil))
+end
+
 return {
+    json_to_lua = json_to_lua,
+    lua_to_json = lua_to_json,
+    release = release,
     parse = parse,
     serialize = serialize,
+    serialize_pretty = serialize_pretty,
     json_to_toml = json_to_toml
 }

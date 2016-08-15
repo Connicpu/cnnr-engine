@@ -25,7 +25,7 @@ static HashSet<String> module_whitelist =
 static std::optional<std::pair<fs::path, bool>> choose_path(const String &path)
 {
     auto file_path = fs::current_path() / "Scripts"_s / path;
-    auto file_exists = fs::exists(file_path);
+    auto file_exists = fs::exists(file_path) && fs::is_regular_file(file_path);
 
     if (lua_cache_dir)
     {

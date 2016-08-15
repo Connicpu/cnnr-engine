@@ -51,17 +51,23 @@
     <Filter Include="Header Files\System\Systems\Dev">
       <UniqueIdentifier>{f5bedd1f-0a4c-43df-b7ad-16a60586d0af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{db0775fa-0971-42c3-938c-dd5a35f52db7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{49c4558f-ded3-4eba-855a-ad4e8fe6cf87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System\Systems\Graphics">
+      <UniqueIdentifier>{99740c6e-1791-4fcb-86c1-f5f857cf1821}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Module.def">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Utility</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
@@ -79,9 +85,6 @@
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
       <Filter>Source Files\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="GameData.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ComponentManager.cpp">
       <Filter>Source Files\Component</Filter>
@@ -101,14 +104,8 @@
     <ClCompile Include="WatchSystem.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="LuaModules.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LuaEntitySystem.cpp">
       <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TransformUpdate.cpp">
       <Filter>Source Files\System\Systems</Filter>
@@ -116,11 +113,26 @@
     <ClCompile Include="GraphicsService.cpp">
       <Filter>Source Files\Services</Filter>
     </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="GameData.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaModules.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Perf.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\Component\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EntityManager.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
@@ -147,9 +159,6 @@
     </ClInclude>
     <ClInclude Include="EntityEvent.h">
       <Filter>Header Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="GameData.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ServiceManager.h">
       <Filter>Header Files\Services</Filter>
@@ -178,20 +187,38 @@
     <ClInclude Include="LuaEntitySystem.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="LuaModules.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicsService.h">
       <Filter>Header Files\Services</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TransformUpdate.h">
       <Filter>Header Files\System\Systems\General</Filter>
     </ClInclude>
     <ClInclude Include="DebugAdapter.h">
       <Filter>Header Files\System\Systems\Dev</Filter>
+    </ClInclude>
+    <ClInclude Include="ParallelProcess.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="GameData.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaModules.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Perf.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteUpdater.h">
+      <Filter>Header Files\System\Systems\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\Component\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

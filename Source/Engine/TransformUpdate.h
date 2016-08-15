@@ -1,14 +1,15 @@
 #pragma once
 
-#include "EntitySystem.h"
+#include "System.h"
+#include "ComponentId.h"
 
 class ComponentManager;
 
-class TransformUpdate final : public EntitySystem
+class TransformUpdate final : public System
 {
 public:
-    TransformUpdate(const ComponentManager &components);
+    TransformUpdate();
 
-    virtual void ProcessEntity(GameData &data, Entity e) override;
+    virtual void Process(GameData &data) override;
     virtual String GetName() const override;
 };

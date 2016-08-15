@@ -8,17 +8,20 @@ struct GameData;
 
 struct Transform : public Component
 {
-    std::optional<Entity> parent;
+    Math::Matrix3x2 transform;
+    Math::Matrix3x2 parallel_calc;
 
     Math::Point2F position = Math::Point2();
     Math::Radians rotation = Math::Rads(0);
-    Math::Size2F size = Math::SizeF();
     float scale = 1.f;
+    Math::Size2F size = Math::SizeF();
 
-    Math::Matrix3x2 transform;
+    std::optional<Entity> parent;
     bool changed = true;
 
     void Update(GameData &data);
+    void ParallelCalculate();
+    void ParallelUpdate(GameData &data);
 
     virtual String GetName() const;
     virtual void PushLuaBinding(lua_State *L);
@@ -26,6 +29,4 @@ struct Transform : public Component
 
 private:
     static void PushTransformMetatable(lua_State *L);
-
-    bool updating;
 };
