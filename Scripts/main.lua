@@ -1,4 +1,5 @@
-require("debugger")
+local dbg = require("debugger")
+dbg:initialize()
 
 local registers = require("engine.registers")
 local registerComponents = require("components")

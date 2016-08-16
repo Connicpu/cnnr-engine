@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "SystemManager.h"
 #include "TransformUpdate.h"
+#include "WindowHandler.h"
 
-SystemManager::SystemManager(const ComponentManager &components)
+SystemManager::SystemManager(const ComponentManager &)
 {
+    RegisterSystem(SystemPtr(new WindowHandler));
     RegisterSystem(SystemPtr(new TransformUpdate));
-    ((void)components);
 }
 
 void SystemManager::RegisterSystem(SystemPtr system)

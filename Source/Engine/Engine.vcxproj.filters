@@ -131,6 +131,9 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>Source Files\Component\Components</Filter>
     </ClCompile>
+    <ClCompile Include="WindowHandler.cpp">
+      <Filter>Source Files\System\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EntityManager.h">
@@ -214,11 +217,14 @@
     <ClInclude Include="Perf.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteUpdater.h">
-      <Filter>Header Files\System\Systems\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Header Files\Component\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowHandler.h">
+      <Filter>Header Files\System\Systems\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteUpdate.h">
+      <Filter>Header Files\System\Systems\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

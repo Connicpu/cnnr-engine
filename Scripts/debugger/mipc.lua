@@ -41,18 +41,33 @@ local STAT = {
 local ClientMT = {}
 ClientMT.__index = ClientMT
 function ClientMT:__gc()
-    lib.mipc_close(self.ptr)
+    self:close()
 end
 
 function ClientMT:close()
-    lib.mipc_close(ffi.gc(self.ptr, nil))
+    if self.ptr ~= nil then
+        lib.mipc_close(self.ptr)
+        self.ptr = nil
+    end
+end
+
+function ClientMT:isOpen()
+    return self.ptr ~= nil
+end
+
+function ClientMT:ensureOpen()
+    if not self:isOpen() then
+        error("mipc client has already been closed")
+    end
 end
 
 function ClientMT:send(data)
+    self:ensureOpen()
     return STAT[lib.mipc_send(self.ptr, data, #data)]
 end
 
 function ClientMT:recv()
+    self:ensureOpen()
     local status = lib.mipc_recv(self.ptr, temp.data, temp.len)
     if status == lib.MIPC_SUCCESS then
         local data = ffi.string(temp.data[0], temp.len[0])
@@ -63,6 +78,7 @@ function ClientMT:recv()
 end
 
 function ClientMT:try_recv()
+    self:ensureOpen()
     local status = lib.mipc_try_recv(self.ptr, temp.data, temp.len)
     if status == lib.MIPC_SUCCESS then
         local data = ffi.string(temp.data[0], temp.len[0])

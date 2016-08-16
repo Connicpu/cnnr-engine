@@ -75,7 +75,7 @@ static int try_load(lua_State *L, String path)
     if (!file.Open(module_path))
         throw std::runtime_error{ "Failed to open module file" };
     
-    switch (luaL_loadbuffer(L, file.GetMemory<char>(), file.GetLength(), path.c_str()))
+    switch (luaL_loadbuffer(L, file.GetMemory<char>(), file.GetLength(), module_path.generic_string().c_str()))
     {
         case 0:
         {

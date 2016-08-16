@@ -33,7 +33,7 @@ ComponentList &ComponentManager::operator[](ComponentId id)
     return *it->second;
 }
 
-const ComponentList & ComponentManager::operator[](const String & name) const
+const ComponentList & ComponentManager::operator[](const String &name) const
 {
     auto it = ids_.find(name);
     if (it == ids_.end())

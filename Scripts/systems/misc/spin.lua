@@ -1,5 +1,4 @@
 -- Dependencies
-local Transform = require("engine.components.transform")
 local EntitySystem = require("engine.entitySystem")
 local filter = require("engine.filter")
 

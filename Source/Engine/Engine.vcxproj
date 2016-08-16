@@ -203,6 +203,7 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformUpdate.cpp" />
     <ClCompile Include="WatchSystem.cpp" />
+    <ClCompile Include="WindowHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component.h" />
@@ -228,12 +229,13 @@
     <ClInclude Include="Perf.h" />
     <ClInclude Include="ServiceManager.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="SpriteUpdater.h" />
+    <ClInclude Include="SpriteUpdate.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="SystemManager.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="TransformUpdate.h" />
     <ClInclude Include="WatchSystem.h" />
+    <ClInclude Include="WindowHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
