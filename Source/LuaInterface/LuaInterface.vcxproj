@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="LuaBinding.cpp" />
     <ClCompile Include="LuaConversion.cpp" />
+    <ClCompile Include="LuaFFIFuncs.cpp" />
     <ClCompile Include="LuaMath.cpp" />
     <ClCompile Include="LuaObject.cpp" />
     <ClCompile Include="LuaState.cpp" />

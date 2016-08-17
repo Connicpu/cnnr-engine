@@ -1,14 +1,10 @@
 local dbg = require("debugger")
-dbg:initialize()
+dbg:startTracing()
 
-local registers = require("engine.registers")
 local registerComponents = require("components")
 local registerSystems = require("systems")
 
-return function()
-    local comreg = registers.ComponentRegister()
-    local sysreg = registers.SystemRegister()
-
+return function(comreg, sysreg)
     registerComponents(comreg)
     registerSystems(sysreg)
 end

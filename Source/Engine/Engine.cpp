@@ -38,5 +38,7 @@ extern "C" void RunEngine(const EngineOptions &options)
     {
         data.systems.Process(data);
     }
+
+    state.load("onexit");
 }
 

@@ -7,7 +7,7 @@ function DebugSys:initialize()
 end
 
 function DebugSys:process()
-    self.dbg:update()
+    self.dbg:processEvent()
 end
 
 return DebugSys 

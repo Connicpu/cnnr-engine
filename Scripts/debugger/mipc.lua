@@ -77,7 +77,7 @@ function ClientMT:recv()
     end
 end
 
-function ClientMT:try_recv()
+function ClientMT:tryRecv()
     self:ensureOpen()
     local status = lib.mipc_try_recv(self.ptr, temp.data, temp.len)
     if status == lib.MIPC_SUCCESS then
@@ -90,7 +90,7 @@ end
 
 local ClientCT = ffi.metatype("struct IpcClientWrapper", ClientMT)
 
-local function open_server(name)
+local function openServer(name)
     local ptr = lib.mipc_open_server(name)
     if ptr then
         return ClientCT(ptr)
@@ -99,7 +99,7 @@ local function open_server(name)
     end
 end
 
-local function open_client(name, pid)
+local function openClient(name, pid)
     local ptr = lib.mipc_open_client(name, pid)
     if ptr then
         return ClientCT(ptr)
@@ -109,6 +109,6 @@ local function open_client(name, pid)
 end
 
 return {
-    open_server = open_server,
-    open_client = open_client
+    openServer = openServer,
+    openClient = openClient
 }
