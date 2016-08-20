@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cnnr-Lua-Debug",
+            "type": "cnnr-lua",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/x64/Release/Game.exe",
+            "stopOnEntry": false
+        }
+    ]
+}

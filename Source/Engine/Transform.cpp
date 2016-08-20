@@ -23,7 +23,7 @@ void Transform::ParallelCalculate()
     changed = false;
 }
 
-void Transform::ParallelUpdate(GameData &data)
+void Transform::ParallelUpdate(const GameData &data)
 {
     auto result = parallel_calc;
     auto par = parent;

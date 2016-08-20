@@ -3,6 +3,7 @@
 #include "ComponentListImpls.h"
 #include "DataComponent.h"
 #include "Transform.h"
+#include "Sprite.h"
 #include "ComponentList.h"
 #include "ComponentId.h"
 
@@ -23,6 +24,7 @@ public:
     const ComponentList &operator[](ComponentId id) const;
 
     HotComponentList<Transform> transform;
+    HotComponentList<Sprite> sprite;
 
 private:
     ComponentId InternalRegister(String name, ComponentListPtr ptr);

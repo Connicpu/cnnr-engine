@@ -4,6 +4,7 @@
 #include <Common/optional.h>
 #include <Common/String.h>
 #include <Common/Hash.h>
+#include <Common/MathLib.h>
 #include <Renderer/Renderer.h>
 #include <connorlib/serialization/toml.h>
 #include <connorlib/imageload.h>
@@ -22,6 +23,10 @@ struct SpriteWindow
 {
     SpriteWindow(float u, float v) : u_width(u), v_height(v) {}
     float u_width, v_height;
+    inline operator Math::RectF() const
+    {
+        return Math::Rect(0, 0, u_width, v_height);
+    }
 };
 
 class SpritePack
@@ -37,7 +42,7 @@ public:
     uint32_t GetSpriteCount() const;
     ITexture *GetSprite(uint32_t index) const;
     std::optional<ITexture *> GetSprite(const String &name) const;
-    bool GetSpriteWindow(uint32_t index, SpriteWindow *window) const;
+    std::optional<SpriteWindow> GetSpriteWindow(uint32_t index) const;
     std::optional<uint32_t> FindSprite(const String &name) const;
 
 protected:
@@ -49,6 +54,8 @@ protected:
     std::unordered_map<String, uint32_t, StdHash<Fnv1A>> name_map;
 };
 
+using GifFuture = std::future<std::optional<ImageLoad::duration>>;
+
 class GifPack : public SpritePack
 {
 public:
@@ -59,13 +66,12 @@ public:
     ~GifPack();
 
     bool LoadFrame(uint32_t frame, ImageLoad::duration *duration);
-    void CacheNextThreaded(uint32_t frame);
+    GifFuture CacheNextThreaded(uint32_t frame);
 
 protected:
     GifPack(ImageLoad::AnimatedGif &&gif) : gif(std::move(gif)) {}
     bool InternalLoadFrame(uint32_t frame, ImageLoad::duration *duration);
 
-    std::future<bool> cache_future;
     IStreamingTexture *texture;
     ImageLoad::AnimatedGif gif;
 };

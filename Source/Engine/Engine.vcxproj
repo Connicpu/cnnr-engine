@@ -196,8 +196,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Perf.cpp" />
+    <ClCompile Include="SceneDraw.cpp" />
     <ClCompile Include="ServiceManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SpriteUpdate.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="SystemManager.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -223,10 +225,12 @@
     <ClInclude Include="GraphicsService.h" />
     <ClInclude Include="LuaEntitySystem.h" />
     <ClInclude Include="LuaModules.h" />
+    <ClInclude Include="LuaSystem.h" />
     <ClInclude Include="MarkerComponent.h" />
     <ClInclude Include="ParallelProcess.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Perf.h" />
+    <ClInclude Include="SceneDraw.h" />
     <ClInclude Include="ServiceManager.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteUpdate.h" />

@@ -6,7 +6,13 @@
 
 struct ServiceManager
 {
-    bool running;
     std::optional<GraphicsService> graphics;
     std::optional<SpriteLoader> sprite_loader;
+
+    HashMap<String, RPtr<IScene>> scenes;
+    std::vector<String> scene_order;
+    RPtr<ICamera> camera;
+
+    double delta;
+    bool running;
 };

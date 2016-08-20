@@ -15,6 +15,11 @@ public:
     SpriteLoader(IDevice *device);
     ~SpriteLoader();
 
+    SpriteLoader(const SpriteLoader &) = delete;
+    SpriteLoader(SpriteLoader &&) = default;
+    SpriteLoader &operator=(const SpriteLoader &) = delete;
+    SpriteLoader &operator=(SpriteLoader &&) = default;
+
     SpritePack *Load(const String &pack);
     void Clear();
 

@@ -9,19 +9,22 @@
 struct GameData;
 class Entity;
 
+class EntityFilter;
+using FilterPtr = std::unique_ptr<EntityFilter>;
+
 class EntityFilter
 {
 public:
     virtual ~EntityFilter() {}
 
     // Move this value into a type-erased heap-allocated pointer
-    virtual std::unique_ptr<EntityFilter> Erase() && = 0;
+    virtual FilterPtr Erase() && = 0;
     // Copy this value into a type-erased heap-allocated pointer
-    virtual std::unique_ptr<EntityFilter> Clone() const& = 0;
+    virtual FilterPtr Clone() const& = 0;
     // Combine this filter with another filter (moves *this)
-    virtual std::unique_ptr<EntityFilter> Combine(std::unique_ptr<EntityFilter> other) &&;
+    virtual FilterPtr Combine(FilterPtr other) &&;
     // Combine this filter with another filter (copies *this)
-    virtual std::unique_ptr<EntityFilter> Combine(std::unique_ptr<EntityFilter> other) const&;
+    virtual FilterPtr Combine(FilterPtr other) const&;
 
     // Determines whether this filter might match based only on
     // whether required components exist on the entity.
@@ -30,6 +33,8 @@ public:
     // and can use data that might not raise an EntityEvent
     // when changed
     virtual bool IsMatch(const GameData &data, Entity e) const = 0;
+
+    static void InitializeLuaModule(lua_State *L);
 };
 
 class ComponentExistsFilter : public EntityFilter
@@ -37,8 +42,8 @@ class ComponentExistsFilter : public EntityFilter
 public:
     ComponentExistsFilter(ComponentId id);
 
-    virtual std::unique_ptr<EntityFilter> Erase() && override;
-    virtual std::unique_ptr<EntityFilter> Clone() const& override;
+    virtual FilterPtr Erase() && override;
+    virtual FilterPtr Clone() const& override;
 
     virtual bool CanMatch(const GameData &data, Entity e) const override;
     virtual bool IsMatch(const GameData &data, Entity e) const override;
@@ -51,30 +56,30 @@ class MultiEntityFilter : public EntityFilter
 {
 public:
     MultiEntityFilter();
-    MultiEntityFilter(std::vector<std::unique_ptr<EntityFilter>> list);
+    MultiEntityFilter(std::vector<FilterPtr> list);
     MultiEntityFilter(const MultiEntityFilter &other);
     MultiEntityFilter(MultiEntityFilter &&) = default;
 
-    virtual std::unique_ptr<EntityFilter> Erase() && override;
-    virtual std::unique_ptr<EntityFilter> Clone() const& override;
-    virtual std::unique_ptr<EntityFilter> Combine(std::unique_ptr<EntityFilter> other) && override;
-    virtual std::unique_ptr<EntityFilter> Combine(std::unique_ptr<EntityFilter> other) const& override;
+    virtual FilterPtr Erase() && override;
+    virtual FilterPtr Clone() const& override;
+    virtual FilterPtr Combine(FilterPtr other) && override;
+    virtual FilterPtr Combine(FilterPtr other) const& override;
 
     virtual bool CanMatch(const GameData &data, Entity e) const override;
     virtual bool IsMatch(const GameData &data, Entity e) const override;
 
 private:
-    std::vector<std::unique_ptr<EntityFilter>> filters_;
+    std::vector<FilterPtr> filters_;
 };
 
 template <typename ...Names>
-std::unique_ptr<EntityFilter> component_list_filter(const ComponentManager &components, Names &&...names)
+FilterPtr component_list_filter(const ComponentManager &components, Names &&...names)
 {
-    std::unique_ptr<EntityFilter> afilters[sizeof...(Names)] =
+    FilterPtr afilters[sizeof...(Names)] =
     {
         ComponentExistsFilter(*components.FindList(names)).Erase()...
     };
-    std::vector<std::unique_ptr<EntityFilter>> filters;
+    std::vector<FilterPtr> filters;
     filters.reserve(sizeof...(Names));
     for (auto &filter : afilters)
         filters.push_back(std::move(filter));

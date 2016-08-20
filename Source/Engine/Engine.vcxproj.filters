@@ -134,6 +134,12 @@
     <ClCompile Include="WindowHandler.cpp">
       <Filter>Source Files\System\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteUpdate.cpp">
+      <Filter>Source Files\System\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneDraw.cpp">
+      <Filter>Source Files\System\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EntityManager.h">
@@ -224,6 +230,12 @@
       <Filter>Header Files\System\Systems\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="SpriteUpdate.h">
+      <Filter>Header Files\System\Systems\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaSystem.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneDraw.h">
       <Filter>Header Files\System\Systems\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

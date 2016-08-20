@@ -7,7 +7,18 @@
 #include <future>
 #include <algorithm>
 
-#ifdef aMSVC
+template <typename Func>
+inline void HotProcess(GameData &data, const Func &f)
+{
+    auto max = data.entities.MaxIndex();
+    for (uint32_t i = 0; i < max; ++i)
+    {
+        if (auto entity = data.entities.EntityAtIndex(i))
+            f(data, *entity);
+    }
+}
+
+#ifdef MSVC
 
 #include <ppl.h>
 
@@ -17,7 +28,7 @@ inline void ParallelProcess(GameData &data, const Func &f)
     concurrency::parallel_for(0u, data.entities.MaxIndex(), [&data, &f](uint32_t idx)
     {
         if (auto entity = data.entities.EntityAtIndex(idx))
-            f(data, *entity);
+            f((const GameData &)data, *entity);
     });
 }
 
@@ -31,11 +42,7 @@ inline void ParallelProcess(GameData &data, const Func &f)
     auto max = data.entities.MaxIndex();
     if (max < PARALLEL_THRESHOLD * 2)
     {
-        for (uint32_t i = 0; i < max; ++i)
-        {
-            if (auto entity = data.entities.EntityAtIndex(i))
-                f(data, *entity);
-        }
+        HotProcess(data, f);
     }
     else
     {
@@ -58,7 +65,7 @@ inline void ParallelProcess(GameData &data, const Func &f)
                 for (uint32_t i = 0; i < num; ++i)
                 {
                     if (auto entity = data.entities.EntityAtIndex(start + i))
-                        f(data, *entity);
+                        f((const GameData &)data, *entity);
                 }
             }));
         }

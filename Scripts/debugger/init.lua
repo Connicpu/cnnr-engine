@@ -16,8 +16,8 @@ function Debugger:close()
 end
 
 function Debugger:startTracing(events)
-    local function trace(...)
-        self:onTrace(...)
+    local function trace(event, line)
+        self:onTrace(event, line, 2)
     end
     debug.sethook(trace, events or "crl")
 end
@@ -50,7 +50,13 @@ function Debugger:isBreakpoint(source, line)
     return true
 end
 
-function Debugger:processEvent(blocking)
+function Debugger:send(data)
+    if self.mipc:send(json.serialize(json.lua_to_json(data))) ~= 'success' then
+        self:close()
+    end
+end
+
+function Debugger:processEvent(blocking, hookdepth)
     local status, data
     if blocking then
         status, data = self.mipc:recv()
@@ -67,7 +73,23 @@ function Debugger:processEvent(blocking)
 
     data = json.json_to_lua(json.parse(data))
 
-    if data.event == "continue" then
+    if data.event == "getTrace" then
+        if not hookdepth then
+            self:send({
+                event = "stacktrace",
+                success = false
+            })
+        end
+
+        local trace = debug.traceback(nil, hookdepth + 1)
+        self:send({
+            event = "stacktrace",
+            success = true,
+            data = {
+                stacktrace = trace
+            }
+        })
+    elseif data.event == "continue" then
         self.paused = false
     elseif data.event == "stepOver" then
         self:stepOver()
@@ -86,7 +108,7 @@ function Debugger:processEvent(blocking)
     end
 end
 
-function Debugger:breakpoint(dbginfo)
+function Debugger:breakpoint(dbginfo, hookdepth)
     self.state.paused = true
 
     local data = json.lua_to_json({
@@ -97,25 +119,24 @@ function Debugger:breakpoint(dbginfo)
         }
     })
     self.mipc:send(json.serialize(data))
+
     while self.state.paused do
-        self:processEvent(true)
+        self:processEvent(true, hookdepth + 1)
     end
 end
 
-function Debugger:onTrace(event, line)
-    local info = debug.getinfo(3)
+function Debugger:onTrace(event, line, hookdepth)
+    local info = debug.getinfo(hookdepth + 1)
     if event == "call" and info.what == "C" then
         return
     end
 
-    print("[TRACE] ["..event.."] "..(info.name or "(main chunk)")..":"..tostring(info.currentline).." ("..info.source..")")
-
     if self.state.mode == "stepOver" then
-        self:onStepOver(event, info)
-    elseif self.state.mode == "stepInto"
-        self:onStepInto(event, info)
+        self:onStepOver(event, info, hookdepth + 1)
+    elseif self.state.mode == "stepInto" then
+        self:onStepInto(event, info, hookdepth + 1)
     elseif self.state.mode == "scan" then
-        self:onScan(event, info, line)
+        self:onScan(event, info, line, hookdepth + 1)
     else
         error("Debugger is in an unknown state: "..self.state.mode)
     end
@@ -126,14 +147,14 @@ function Debugger:stepOver()
     self.state.level = 0
 end
 
-function Debugger:onStepOver(event, info)
+function Debugger:onStepOver(event, info, hookdepth)
     if event == "call" then
         self.state.level = self.state.level + 1
     elseif event == "return" then
         self.state.level = self.state.level - 1
     elseif event == "line" and self.state.level <= 0 then
         self.state.mode = "scan"
-        self:breakpoint(info)
+        self:breakpoint(info, hookdepth + 1)
     end
 end
 
@@ -141,17 +162,17 @@ function Debugger:stepInto()
     self.state.mode = "stepInto"
 end
 
-function Debugger:onStepInto(event, info)
+function Debugger:onStepInto(event, info, hookdepth)
     if event == "line" then
         self.state.mode = "scan"
-        self:breakpoint(info)
+        self:breakpoint(info, hookdepth + 1)
     end
 end
 
-function Debugger:onScan(event, info, line)
+function Debugger:onScan(event, info, line, hookdepth)
     if event == "line" then
         if self:isBreakpoint(info.source, line) then
-            self:breakpoint()
+            self:breakpoint(info, hookdepth + 1)
         end
     end
 end

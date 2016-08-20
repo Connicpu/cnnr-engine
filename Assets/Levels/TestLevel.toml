@@ -1,0 +1,7 @@
+[level]
+default-scene = "main"
+scenes = [
+    "main",
+    "floating-text",
+    "hud"
+]

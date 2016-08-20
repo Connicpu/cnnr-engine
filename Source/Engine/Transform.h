@@ -14,14 +14,14 @@ struct Transform : public Component
     Math::Point2F position = Math::Point2();
     Math::Radians rotation = Math::Rads(0);
     float scale = 1.f;
-    Math::Size2F size = Math::SizeF();
+    Math::Size2F size = Math::SizeF(1.f, 1.f);
 
     std::optional<Entity> parent;
     bool changed = true;
 
     void Update(GameData &data);
     void ParallelCalculate();
-    void ParallelUpdate(GameData &data);
+    void ParallelUpdate(const GameData &data);
 
     virtual String GetName() const;
     virtual void PushLuaBinding(lua_State *L);

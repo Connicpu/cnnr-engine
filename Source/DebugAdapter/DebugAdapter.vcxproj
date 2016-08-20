@@ -138,12 +138,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="VsCode.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="DebugSession.h" />
-    <ClInclude Include="Protocol.h" />
-    <ClInclude Include="VsCode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

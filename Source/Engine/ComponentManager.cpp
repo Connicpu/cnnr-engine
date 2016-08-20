@@ -2,9 +2,10 @@
 #include "ComponentManager.h"
 
 ComponentManager::ComponentManager(EntityManager *entities)
-    : transform(entities)
+    : transform(entities), sprite(entities)
 {
     InternalRegister("transform"_s, ComponentListPtr(&transform, false));
+    InternalRegister("sprite"_s, ComponentListPtr(&sprite, false));
 }
 
 std::optional<ComponentId> ComponentManager::FindList(const String &name) const
@@ -12,7 +13,7 @@ std::optional<ComponentId> ComponentManager::FindList(const String &name) const
     auto it = ids_.find(name);
     if (it != ids_.end())
         return it->second;
-    return it->second;
+    return std::nullopt;
 }
 
 ComponentList &ComponentManager::operator[](const String &name)

@@ -4,6 +4,9 @@
 #include <iostream>
 #include <iomanip>
 
+char defaultcmd[] = "Game.exe --console";
+char pausedcmd[] = "Game.exe --console --startpaused";
+
 int main(int argc, const char *const *argv)
 {
     using namespace MessageIpc;
@@ -11,14 +14,20 @@ int main(int argc, const char *const *argv)
     if (argc < 3)
         return 1;
 
+    char *cmdline = defaultcmd;
+    if (argc > 3 && argv[3] == "start-paused")
+    {
+        cmdline = pausedcmd;
+    }
+
     unsigned pid;
-    if (argv[1] == "--launch"_s)
+    if (argv[1] == "launch"_s)
     {
         STARTUPINFO startinfo = { sizeof(startinfo) };
         PROCESS_INFORMATION procinfo;
         CreateProcessA(
             argv[2],
-            "Game.exe --console",
+            cmdline,
             nullptr,
             nullptr,
             false,
@@ -31,7 +40,7 @@ int main(int argc, const char *const *argv)
 
         pid = procinfo.dwProcessId;
     }
-    else if (argv[1] == "--attach"_s)
+    else if (argv[1] == "attach"_s)
     {
         pid = std::stoul(argv[1]);
     }
@@ -39,7 +48,10 @@ int main(int argc, const char *const *argv)
     std::cout << std::setiosflags(std::ios::binary);
     std::cin >> std::setiosflags(std::ios::binary);
 
-    Sleep(1000);
+    Sleep(200);
+
+    std::cout << "21\n{\"event\":\"ready\"}";
+    std::cout.flush();
 
     IpcClient client = std::move(*IpcClient::OpenClient("cnnr-lua-debugger", pid));
 
@@ -48,11 +60,9 @@ int main(int argc, const char *const *argv)
         std::vector<char> data;
         for (;;)
         {
-            std::string len_str;
-            if (!std::getline(std::cin, len_str))
-                return;
+            unsigned len = 0;
+            std::cin.read((char *)&len, 4);
 
-            unsigned len = std::stoul(len_str);
             data.resize(len);
             if (!std::cin.read(data.data(), len))
                 return;

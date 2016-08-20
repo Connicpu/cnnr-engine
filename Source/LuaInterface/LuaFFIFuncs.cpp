@@ -19,3 +19,17 @@ extern "C" size_t GetCurrentDir(char **path)
     memcpy(*path, &cd[0], len);
     return len;
 }
+
+static thread_local void *userdata_to_ptr;
+
+int LuaStoreUserDataForPtr(lua_State *L)
+{
+    userdata_to_ptr = lua_touserdata(L, 1);
+    return 0;
+}
+
+extern "C" void *LuaLoadUserDataForPtr()
+{
+    return userdata_to_ptr;
+}
+

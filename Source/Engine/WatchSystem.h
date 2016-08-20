@@ -10,8 +10,9 @@ public:
 
     virtual void OnEntityEvent(const GameData &data, const EntityEvent &event) override;
 
-    HashSet<Entity>::const_iterator begin() const;
-    HashSet<Entity>::const_iterator end() const;
+    using iterator = HashSet<Entity>::const_iterator;
+    iterator begin() const;
+    iterator end() const;
 
 protected:
     std::unique_ptr<EntityFilter> filter_;

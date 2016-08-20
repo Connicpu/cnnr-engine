@@ -19,7 +19,8 @@ LuaValue::LuaValue(const LuaValue &other)
 LuaValue::LuaValue(LuaValue &&other)
     : LuaValue()
 {
-    std::swap(*this, other);
+    std::swap(lua_state_, other.lua_state_);
+    std::swap(handle_, other.handle_);
 }
 
 LuaValue::LuaValue(lua_State *L, int stack_index)

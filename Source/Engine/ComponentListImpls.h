@@ -14,7 +14,17 @@ public:
     {
     }
 
-    inline std::optional<T &> get(const Entity &e)
+    inline void insert(const Entity &e)
+    {
+        ComponentList::insert(e);
+    }
+
+    inline void insert(const Entity &e, T &&component)
+    {
+        ComponentList::insert(e, static_cast<Component &&>(component));
+    }
+
+    inline std::optional<T &> get(const Entity &e) const
     {
         if (auto val = ComponentList::get(e))
             return static_cast<T &>(*val);

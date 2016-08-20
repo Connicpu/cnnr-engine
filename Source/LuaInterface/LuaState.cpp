@@ -5,6 +5,8 @@
 
 #define LS_PTR "___LuaState_ptr"
 
+int LuaStoreUserDataForPtr(lua_State *L);
+
 LuaState::LuaState()
 {
     L = lua_open();
@@ -14,6 +16,9 @@ LuaState::LuaState()
 
     luaL_openlibs(L);
     RegisterRequireLoader(L);
+
+    lua_pushcclosure(L, LuaStoreUserDataForPtr, 0);
+    lua_setfield(L, LUA_GLOBALSINDEX, "__helper_LuaStoreUserDataForPtr");
 
     lua_math_init(L);
 }

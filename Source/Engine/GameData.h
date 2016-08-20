@@ -17,6 +17,8 @@ struct GameData
 
     void PushLua(lua_State *L);
 
+    static void InitializeLuaModule(lua_State *L);
+
 private:
     LuaValue lua_obj_;
 };

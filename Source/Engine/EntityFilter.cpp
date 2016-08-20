@@ -3,22 +3,70 @@
 #include "Entity.h"
 #include "GameData.h"
 
-std::unique_ptr<EntityFilter> EntityFilter::Combine(std::unique_ptr<EntityFilter> other) &&
+FilterPtr EntityFilter::Combine(FilterPtr other) &&
 {
-    std::vector<std::unique_ptr<EntityFilter>> filters;
+    std::vector<FilterPtr> filters;
     filters.reserve(2);
     filters.push_back(std::move(*this).Erase());
     filters.push_back(std::move(other));
     return MultiEntityFilter(std::move(filters)).Erase();
 }
 
-std::unique_ptr<EntityFilter> EntityFilter::Combine(std::unique_ptr<EntityFilter> other) const &
+FilterPtr EntityFilter::Combine(FilterPtr other) const &
 {
-    std::vector<std::unique_ptr<EntityFilter>> filters;
+    std::vector<FilterPtr> filters;
     filters.reserve(2);
     filters.push_back(Clone());
     filters.push_back(std::move(other));
     return MultiEntityFilter(std::move(filters)).Erase();
+}
+
+void EntityFilter::InitializeLuaModule(lua_State *L)
+{
+    lua_createtable(L, 0, 1);
+
+    #pragma region metatable
+    lua_createtable(L, 0, 2);
+    lua_pushcclosure(L, [](lua_State *L) -> int
+    {
+        auto &lhs = *(const FilterPtr *)lua_touserdata(L, 1);
+        auto &rhs = *(const FilterPtr *)lua_touserdata(L, 2);
+        auto filter = lhs->Combine(rhs->Clone());
+        new (lua_newuserdata(L, sizeof(FilterPtr))) FilterPtr(std::move(filter));
+        return 1;
+    }, 0);
+    lua_setfield(L, -2, "__add");
+
+    lua_pushcclosure(L, [](lua_State *L) -> int
+    {
+        ((FilterPtr *)lua_touserdata(L, 1))->~unique_ptr();
+        return 1;
+    }, 0);
+    lua_setfield(L, -2, "__gc");
+
+    lua_pushvalue(L, -2);
+    lua_setfield(L, -2, "__index");
+    #pragma endregion
+
+    lua_pushcclosure(L, [](lua_State *L) -> int
+    {
+        auto name = String::from_lua(L, 1);
+        lua_getfield(L, LUA_GLOBALSINDEX, "__GAME_STATE");
+        auto &data = *(GameData *)lua_touserdata(L, -1);
+        lua_pop(L, 1);
+
+        if (auto id = data.components.FindList(name))
+        {
+            auto filter = ComponentExistsFilter(*id).Erase();
+            new (lua_newuserdata(L, sizeof(FilterPtr))) FilterPtr(std::move(filter));
+            lua_pushvalue(L, lua_upvalueindex(1));
+            lua_setmetatable(L, -2);
+            return 1;
+        }
+
+        return luaL_error(L, "Failed to find a component named %s", lua_tostring(L, 1));
+    }, 1);
+    lua_setfield(L, -2, "component");
 }
 
 ComponentExistsFilter::ComponentExistsFilter(ComponentId id)
@@ -26,12 +74,12 @@ ComponentExistsFilter::ComponentExistsFilter(ComponentId id)
 {
 }
 
-std::unique_ptr<EntityFilter> ComponentExistsFilter::Erase() &&
+FilterPtr ComponentExistsFilter::Erase() &&
 {
-    return std::unique_ptr<EntityFilter>(new ComponentExistsFilter(std::move(*this)));
+    return FilterPtr(new ComponentExistsFilter(std::move(*this)));
 }
 
-std::unique_ptr<EntityFilter> ComponentExistsFilter::Clone() const&
+FilterPtr ComponentExistsFilter::Clone() const&
 {
     return ComponentExistsFilter(*this).Erase();
 }
@@ -50,7 +98,7 @@ MultiEntityFilter::MultiEntityFilter()
 {
 }
 
-MultiEntityFilter::MultiEntityFilter(std::vector<std::unique_ptr<EntityFilter>> list)
+MultiEntityFilter::MultiEntityFilter(std::vector<FilterPtr> list)
     : filters_(std::move(list))
 {
 }
@@ -64,23 +112,23 @@ MultiEntityFilter::MultiEntityFilter(const MultiEntityFilter &other)
     }
 }
 
-std::unique_ptr<EntityFilter> MultiEntityFilter::Erase() &&
+FilterPtr MultiEntityFilter::Erase() &&
 {
-    return std::unique_ptr<EntityFilter>(new MultiEntityFilter(std::move(*this)));
+    return FilterPtr(new MultiEntityFilter(std::move(*this)));
 }
 
-std::unique_ptr<EntityFilter> MultiEntityFilter::Clone() const&
+FilterPtr MultiEntityFilter::Clone() const&
 {
     return MultiEntityFilter(*this).Erase();
 }
 
-std::unique_ptr<EntityFilter> MultiEntityFilter::Combine(std::unique_ptr<EntityFilter> other) &&
+FilterPtr MultiEntityFilter::Combine(FilterPtr other) &&
 {
     filters_.push_back(std::move(other));
     return std::move(*this).Erase();
 }
 
-std::unique_ptr<EntityFilter> MultiEntityFilter::Combine(std::unique_ptr<EntityFilter> other) const&
+FilterPtr MultiEntityFilter::Combine(FilterPtr other) const&
 {
     return MultiEntityFilter(*this).Combine(std::move(other));
 }

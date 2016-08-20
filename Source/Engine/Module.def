@@ -4,3 +4,4 @@ EXPORTS
 	LuaFFIAlloc
 	LuaFFIFree
 	GetCurrentDir
+	LuaLoadUserDataForPtr

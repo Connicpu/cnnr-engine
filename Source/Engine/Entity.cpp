@@ -34,7 +34,7 @@ static void GetEntityMetatable(lua_State *L)
 
 void Entity::PushLua(lua_State *L, Entity e)
 {
-    *((Entity *)lua_newuserdata(L, sizeof(L))) = e;
+    new (lua_newuserdata(L, sizeof(Entity))) Entity(e);
     GetEntityMetatable(L);
     lua_setmetatable(L, -2);
 }

@@ -2,11 +2,15 @@
 #include "SystemManager.h"
 #include "TransformUpdate.h"
 #include "WindowHandler.h"
+#include "SpriteUpdate.h"
+#include "SceneDraw.h"
 
 SystemManager::SystemManager(const ComponentManager &)
 {
     RegisterSystem(SystemPtr(new WindowHandler));
     RegisterSystem(SystemPtr(new TransformUpdate));
+    RegisterSystem(SystemPtr(new SpriteUpdate));
+    RegisterSystem(SystemPtr(new SceneDraw));
 }
 
 void SystemManager::RegisterSystem(SystemPtr system)

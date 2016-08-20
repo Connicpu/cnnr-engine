@@ -8,12 +8,11 @@
 TransformUpdate::TransformUpdate()
     : System(1000)
 {
-    
 }
 
 void TransformUpdate::Process(GameData &data)
 {
-    ParallelProcess(data, [this](GameData &data, Entity e)
+    ParallelProcess(data, [this](const GameData &data, Entity e)
     {
         if (auto transform = data.components.transform.get(e))
         {
@@ -21,7 +20,7 @@ void TransformUpdate::Process(GameData &data)
         }
     });
 
-    ParallelProcess(data, [this](GameData &data, Entity e)
+    ParallelProcess(data, [this](const GameData &data, Entity e)
     {
         if (auto transform = data.components.transform.get(e))
         {

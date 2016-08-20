@@ -138,19 +138,14 @@ std::optional<ITexture*> SpritePack::GetSprite(const String &name) const
     return{};
 }
 
-bool SpritePack::GetSpriteWindow(uint32_t index, SpriteWindow *window) const
+std::optional<SpriteWindow> SpritePack::GetSpriteWindow(uint32_t index) const
 {
     if (windows.empty())
-    {
-        *window = { 1.0f, 1.0f };
-    }
-    else
-    {
-        if (index >= windows.size())
-            return false;
-        *window = windows[index];
-    }
-    return true;
+        return SpriteWindow{ 1.0f, 1.0f };
+    else if (index < windows.size())
+        return windows[index];
+
+    return std::nullopt;
 }
 
 std::optional<uint32_t> SpritePack::FindSprite(const String &name) const
@@ -200,47 +195,33 @@ std::unique_ptr<GifPack> GifPack::LoadGif(
 
 GifPack::~GifPack()
 {
-    if (cache_future.valid())
-        cache_future.get();
 }
 
 bool GifPack::LoadFrame(uint32_t frame, ImageLoad::duration *duration)
 {
-    bool result = true;
-    if (cache_future.valid())
-    {
-        if (!cache_future.get())
-        {
-            frame = 0;
-            result = false;
-        }
-    }
-    return InternalLoadFrame(frame, duration) && result;
+    return InternalLoadFrame(frame, duration);
 }
 
-void GifPack::CacheNextThreaded(uint32_t frame)
+GifFuture GifPack::CacheNextThreaded(uint32_t frame)
 {
-    cache_future = std::async([this, frame]() -> bool
+    return std::async([this, frame]() -> std::optional<ImageLoad::duration>
     {
         ImageLoad::duration dur;
-        if (!this->InternalLoadFrame(frame, &dur))
+        if (this->InternalLoadFrame(frame, &dur))
         {
-            this->InternalLoadFrame(0, &dur);
-            return false;
+            return dur;
         }
-        return true;
+        return std::nullopt;
     });
 }
 
 bool GifPack::InternalLoadFrame(uint32_t frame, ImageLoad::duration *duration)
 {
     auto device = texture->GetDevice();
-    device->Lock();
 
     ImageLoad::Frame frame_buf;
     if (!gif.GetFrame(frame, &frame_buf, duration))
     {
-        device->Unlock();
         return false; // `frame` >= the number of frames inside the file
     }
 
@@ -252,8 +233,9 @@ bool GifPack::InternalLoadFrame(uint32_t frame, ImageLoad::duration *duration)
     // Size is required here as a sanity check. Comparing some numbers
     // is miniscule compared to copying an entire image to the GPU :P
 
+    device->Lock();
     texture->Update(buffer, width * height * 4);
-
     device->Unlock();
+
     return true; // the requested frame existed in the file!
 }
