@@ -275,6 +275,8 @@ inline void String::push_lua(lua_State *L) const
 
 inline String String::from_lua(lua_State * L, int idx)
 {
+    if (lua_type(L, idx) != LUA_TSTRING)
+        throw std::runtime_error{ "Expected string" };
     size_t len;
     const char *str = lua_tolstring(L, idx, &len);
     return String{ gsl::cstring_span<>{ str, (ptrdiff_t)len } };

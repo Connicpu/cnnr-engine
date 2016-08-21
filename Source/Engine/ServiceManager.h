@@ -14,5 +14,6 @@ struct ServiceManager
     RPtr<ICamera> camera;
 
     double delta;
+    double running_time;
     bool running;
 };

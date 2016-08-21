@@ -143,6 +143,7 @@
     <ClInclude Include="MMapManager.h" />
     <ClInclude Include="optional.h" />
     <ClInclude Include="Platform.h" />
+    <ClInclude Include="RawTime.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="WindowsHelpers.h" />
   </ItemGroup>

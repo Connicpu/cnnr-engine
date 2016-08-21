@@ -88,7 +88,7 @@ static int iterValue(lua_State *L)
 
 void LuaEntitySystem::InitializeLuaModule(lua_State *L)
 {
-    lua_createtable(L, 0, 1);
+    lua_createtable(L, 0, 3);
 
     lua_pushcclosure(L, iterReset, 0);
     lua_setfield(L, -2, "iterReset");

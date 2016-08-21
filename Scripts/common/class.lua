@@ -22,7 +22,7 @@ return function(name, ...)
             local instance = setmetatable({}, c)
             -- run the init method if it's there
             local init = instance.initialize
-            if init then init(instance, ...) end
+            if type(init) == 'function' then init(instance, ...) end
             return instance
         end
     })

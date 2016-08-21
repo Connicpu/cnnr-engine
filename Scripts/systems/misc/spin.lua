@@ -14,11 +14,10 @@ end
 
 -- Define the process function
 function SpinEntities:process(data)
-    for entity in self:entities() do
+    for e in self:entities() do
         -- Rotate all of the transforms by delta*speed
-        print("'spin' an entity @", data.delta)
-        --local transform = data.components.transform[entity]
-        --transform.rotation = transform.rotation + data.delta * self.speed
+        local transform = data.components.transform[e]
+        transform.rotation = transform.rotation + data.delta * self.speed
     end
 end
 

@@ -34,6 +34,11 @@ using ComPtr = ATL::CComPtr<T>;
 #include <unistd.h>
 #include <dlfcn.h>
 
+#ifdef MACOS
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+
 #ifdef NDEBUG
 #define unreachable() (__builtin_unreachable())
 #else

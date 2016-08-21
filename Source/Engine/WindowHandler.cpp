@@ -14,7 +14,8 @@ String WindowHandler::GetName() const
 
 void WindowHandler::Process(GameData &data)
 {
-    auto display = data.services.graphics->GetDisplay();
+    auto &graphics = *data.services.graphics;
+    auto display = graphics.GetDisplay();
     EventStorage event;
     
     while (display->PollEvent(event))
@@ -22,7 +23,10 @@ void WindowHandler::Process(GameData &data)
         switch (event.base.type)
         {
             case EventType::Resized:
-                //TODO
+                Math::Size2F viewport;
+                data.services.camera->GetViewport(&viewport);
+                viewport.width = (viewport.height * event.resized.width) / event.resized.height;
+                data.services.camera->SetViewport(viewport);
                 break;
             case EventType::Moved:
                 //TODO

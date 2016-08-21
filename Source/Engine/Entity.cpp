@@ -4,8 +4,6 @@
 #include <Common/Hash.h>
 #include <LuaInterface/LuaValue.h>
 
-static HashMap<lua_State *, LuaValue> ENTITY_METATABLE;
-
 static int entity_tostring(lua_State *L)
 {
     auto e = *Entity::FromLua(L, 1);
@@ -17,19 +15,20 @@ static int entity_tostring(lua_State *L)
 
 static void GetEntityMetatable(lua_State *L)
 {
-    auto it = ENTITY_METATABLE.find(L);
-    if (it != ENTITY_METATABLE.end())
+    lua_getfield(L, LUA_GLOBALSINDEX, "__ENTITY_METATABLE");
+    if (lua_type(L, -1) != LUA_TNIL)
     {
-        it->second.push();
         return;
     }
+    lua_pop(L, 1);
 
     lua_createtable(L, 0, 0);
 
     lua_pushcclosure(L, entity_tostring, 0);
     lua_setfield(L, -2, "__tostring");
 
-    ENTITY_METATABLE.insert_or_assign(L, LuaValue{ L, -1 });
+    lua_pushvalue(L, -1);
+    lua_setfield(L, LUA_GLOBALSINDEX, "__ENTITY_METATABLE");
 }
 
 void Entity::PushLua(lua_State *L, Entity e)

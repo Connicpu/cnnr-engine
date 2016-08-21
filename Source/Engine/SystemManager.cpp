@@ -4,9 +4,11 @@
 #include "WindowHandler.h"
 #include "SpriteUpdate.h"
 #include "SceneDraw.h"
+#include "TimerUpdate.h"
 
 SystemManager::SystemManager(const ComponentManager &)
 {
+    RegisterSystem(SystemPtr(new TimerUpdate));
     RegisterSystem(SystemPtr(new WindowHandler));
     RegisterSystem(SystemPtr(new TransformUpdate));
     RegisterSystem(SystemPtr(new SpriteUpdate));

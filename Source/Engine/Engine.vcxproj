@@ -202,6 +202,7 @@
     <ClCompile Include="SpriteUpdate.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="SystemManager.cpp" />
+    <ClCompile Include="TimerUpdate.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformUpdate.cpp" />
     <ClCompile Include="WatchSystem.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="SpriteUpdate.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="SystemManager.h" />
+    <ClInclude Include="TimerUpdate.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="TransformUpdate.h" />
     <ClInclude Include="WatchSystem.h" />

@@ -12,6 +12,8 @@ public:
     IDevice *GetDevice() const;
     IDisplay *GetDisplay() const;
 
+    uint32_t width, height;
+
 private:
     RPtr<IRenderInstance> instance_;
     RPtr<IDevice> device_;

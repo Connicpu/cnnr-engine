@@ -1,7 +1,7 @@
 Prio - System
 -------------------------
-   0 - TimerUpdate❎
- 100 - WindowHandler❎
+   0 - TimerUpdate
+ 100 - WindowHandler
  200 - KeyboardHandler❎
  300 - MouseHandler❎
 -------------------------
@@ -12,4 +12,4 @@ Prio - System
 1000 - TransformUpdate
 1100 - SpriteUpdate
 -------------------------
-1500 - SceneDraw❎
+1500 - SceneDraw

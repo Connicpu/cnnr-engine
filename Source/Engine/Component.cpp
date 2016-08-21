@@ -4,8 +4,6 @@
 #include <typeindex>
 #include <typeinfo>
 
-static HashMap<lua_State *, std::unordered_map<std::type_index, LuaValue>> NO_BINDING;
-
 String Component::GetName() const
 {
     return "Unnamed component"_s;
@@ -13,16 +11,22 @@ String Component::GetName() const
 
 static void PushMetatable(lua_State *L, const std::type_info &id, const String &cls)
 {
-    auto lit = NO_BINDING.find(L);
-    if (lit != NO_BINDING.end())
+    lua_getfield(L, LUA_GLOBALSINDEX, "__COMPONENT_NO_BINDING");
+    if (lua_type(L, -1) == LUA_TNIL)
     {
-        auto it = lit->second.find(id);
-        if (it != lit->second.end())
-        {
-            it->second.push();
-            return;
-        }
+        lua_pop(L, 1);
+        lua_createtable(L, 0, 0);
+        lua_pushvalue(L, -1);
+        lua_setfield(L, LUA_GLOBALSINDEX, "__COMPONENT_NO_BINDING");
     }
+
+    lua_getfield(L, -1, id.name());
+    if (lua_type(L, -1) != LUA_TNIL)
+    {
+        lua_remove(L, -2);
+        return;
+    }
+    lua_pop(L, 2);
 
     lua_assertstack(L, 3);
 
@@ -62,11 +66,12 @@ static void PushMetatable(lua_State *L, const std::type_info &id, const String &
         return 1;
     }, 0);
     lua_rawset(L, table);
-
-    LuaValue binding{ L, -1 };
-    NO_BINDING[L].insert_or_assign(id, std::move(binding));
-
     assert(lua_gettop(L) == table);
+
+    lua_getfield(L, LUA_GLOBALSINDEX, "__COMPONENT_NO_BINDING");
+    lua_pushvalue(L, -2);
+    lua_setfield(L, -2, id.name());
+    lua_pop(L, 1);
 }
 
 void Component::PushLuaBinding(lua_State *L)

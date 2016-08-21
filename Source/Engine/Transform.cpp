@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Transform.h"
 #include "GameData.h"
+#include <LuaInterface/LuaMath.h>
 
 void Transform::Update(GameData &data)
 {
@@ -12,15 +13,10 @@ void Transform::ParallelCalculate()
 {
     using namespace Math;
 
-    if (!changed)
-        return;
-
     parallel_calc =
         Matrix3x2::Rotation(rotation) *
         Matrix3x2::Scale(size * scale) *
         Matrix3x2::Translation(position);
-
-    changed = false;
 }
 
 void Transform::ParallelUpdate(const GameData &data)
@@ -79,7 +75,7 @@ void Transform::PushTransformMetatable(lua_State *L)
     {
         lua_pushcclosure(L, [](lua_State *L) -> int
         {
-            auto self = *Transform::FromLua(L, 1);
+            auto &self = *Transform::FromLua(L, 1);
             ("Transform{ pos: "_s + self.position +
                 ", rot: "_s + self.rotation +
                 ", scale: "_s + self.scale +
@@ -89,5 +85,84 @@ void Transform::PushTransformMetatable(lua_State *L)
             return 1;
         }, 0);
         lua_setfield(L, -2, "__tostring");
+
+        #pragma region Fields
+        lua_pushcclosure(L, [](lua_State *L) -> int
+        {
+            auto oself = Transform::FromLua(L, 1);
+            if (!oself)
+                return luaL_typerror(L, 1, "Transform");
+            auto &self = *oself;
+
+            if (lua_type(L, 2) != LUA_TSTRING)
+                return luaL_typerror(L, 2, "string");
+            auto name = String::from_lua(L, 2);
+
+            if (name == "position"_s)
+                lua_pushpoint2f_ref(L, &self.position);
+            else if (name == "rotation"_s)
+                lua_pushnumber(L, self.rotation.rad);
+            else if (name == "scale"_s)
+                lua_pushnumber(L, self.scale);
+            else if (name == "size"_s)
+                lua_pushsize2f_ref(L, &self.size);
+            else
+            {
+                lua_getmetatable(L, 1);
+                lua_pushvalue(L, 2);
+                lua_gettable(L, -2);
+            }
+            return 1;
+        }, 0);
+        lua_setfield(L, -2, "__index");
+
+        lua_pushcclosure(L, [](lua_State *L) -> int
+        {
+            auto oself = Transform::FromLua(L, 1);
+            if (!oself)
+                return luaL_typerror(L, 1, "Transform");
+            auto &self = *oself;
+
+            if (lua_type(L, 2) != LUA_TSTRING)
+                return luaL_typerror(L, 2, "string");
+            auto name = String::from_lua(L, 2);
+
+            if (name == "position"_s)
+            {
+                if (auto p = lua_topoint2f(L, 3))
+                    self.position = *p;
+                else
+                    return luaL_typerror(L, 3, "math.Point2");
+            }
+            else if (name == "rotation"_s)
+            {
+                if (lua_type(L, 3) != LUA_TNUMBER)
+                    return luaL_typerror(L, 3, "number");
+
+                self.rotation = Math::Rads((float)lua_tonumber(L, 3));
+            }
+            else if (name == "scale"_s)
+            {
+                if (lua_type(L, 3) != LUA_TNUMBER)
+                    return luaL_typerror(L, 3, "number");
+
+                self.scale = (float)lua_tonumber(L, 3);
+            }
+            else if (name == "size"_s)
+            {
+                if (auto s = lua_tosize2f(L, 3))
+                    self.size = *s;
+                else
+                    return luaL_typerror(L, 3, "math.Size2");
+            }
+            else
+            {
+                return luaL_error(L, "No field named %s exists on Transform", lua_tostring(L, 2));
+            }
+
+            return 0;
+        }, 0);
+        lua_setfield(L, -2, "__newindex");
+        #pragma endregion
     });
 }

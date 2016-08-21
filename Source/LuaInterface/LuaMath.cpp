@@ -532,9 +532,6 @@ void lua_math_init(lua_State *L)
         });
         #pragma endregion
 
-        #pragma region Set fields
-        #pragma endregion
-
         #pragma region tostring
         #pragma endregion
 

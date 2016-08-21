@@ -235,6 +235,7 @@ void DxScene::GetTexture(SpriteHandle sprite, ITexture **texture)
 void DxScene::SetTransform(SpriteHandle sprite, const Matrix3x2F *transform)
 {
     sprite->transform = *transform;
+    *sprite->dirty_flag = true;
 
     auto old_coord = sprite->current_coord;
     auto new_coord = sprite->CalculateCoord(segment_size);

@@ -17,7 +17,6 @@ struct Transform : public Component
     Math::Size2F size = Math::SizeF(1.f, 1.f);
 
     std::optional<Entity> parent;
-    bool changed = true;
 
     void Update(GameData &data);
     void ParallelCalculate();
