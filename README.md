@@ -22,7 +22,7 @@ PS> .\build_msvc.ps1
 
 Add an environment variable `CONNORLIB_HOME = "C:\path\to\sources\connorlib"`
 
-#### Open .\Sources\CnnrEngine.sln in Visual Studio 2015
+#### Open .\Source\CnnrEngine.sln in Visual Studio 2015
 
 ## Linux
 
