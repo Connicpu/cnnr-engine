@@ -69,6 +69,7 @@ public:
 
 protected:
     virtual void do_insert(const Entity &e, Component &&component) override;
+    virtual void do_insert(const Entity &e) override;
     virtual void do_remove(const Entity &e) override;
     virtual std::optional<Component &> do_get(const Entity &e) const override;
 
@@ -117,6 +118,13 @@ inline void ColdComponentList<T>::do_insert(const Entity &e, Component &&compone
 {
     auto index = static_cast<IndexedEntity>(e).index;
     components_.insert_or_assign(index, dynamic_cast<T &&>(component));
+}
+
+template<typename T>
+inline void ColdComponentList<T>::do_insert(const Entity &e)
+{
+    auto index = static_cast<IndexedEntity>(e).index;
+    components_.insert_or_assign(index, T{});
 }
 
 template<typename T>

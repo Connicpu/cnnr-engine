@@ -70,23 +70,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(CONNORLIB_HOME)\bin\x86;$(LibraryPath)</LibraryPath>
-    <IntDir>$(SolutionDir)..\obj\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)..\bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\obj\windows\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)..\bin\windows\$(PlatformTarget)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(CONNORLIB_HOME)\bin\x86;$(LibraryPath)</LibraryPath>
-    <IntDir>$(SolutionDir)..\obj\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)..\bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\obj\windows\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)..\bin\windows\$(PlatformTarget)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(CONNORLIB_HOME)\bin\x64;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)..\bin\$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)..\obj\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)..\bin\windows\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\obj\windows\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(CONNORLIB_HOME)\bin\x64;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)..\bin\$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)..\obj\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)..\bin\windows\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\obj\windows\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -99,7 +99,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(OutDIr)LuaInterface.lib;$(SolutionDir)Vendor\luajit\bin\windows_$(PlatformTarget)\lua51.lib;$(CONNORLIB_HOME)\bin\$(PlatformTarget)\serialization.dll.lib;$(CONNORLIB_HOME)\bin\$(PlatformTarget)\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(OutDIr)LuaInterface.lib;$(SolutionDir)Vendor\luajit\bin\windows_$(PlatformTarget)\lua51.lib;$(CONNORLIB_HOME)\bin\windows\$(PlatformTarget)\serialization.dll.lib;$(CONNORLIB_HOME)\bin\windows\$(PlatformTarget)\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>Module.def</ModuleDefinitionFile>
     </Link>
@@ -118,7 +118,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(OutDIr)LuaInterface.lib;$(SolutionDir)Vendor\luajit\bin\windows_$(PlatformTarget)\lua51.lib;$(CONNORLIB_HOME)\bin\$(PlatformTarget)\serialization.dll.lib;$(CONNORLIB_HOME)\bin\$(PlatformTarget)\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(OutDIr)LuaInterface.lib;$(SolutionDir)Vendor\luajit\bin\windows_$(PlatformTarget)\lua51.lib;$(CONNORLIB_HOME)\bin\windows\$(PlatformTarget)\serialization.dll.lib;$(CONNORLIB_HOME)\bin\windows\$(PlatformTarget)\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>Module.def</ModuleDefinitionFile>
     </Link>
@@ -141,7 +141,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(OutDIr)LuaInterface.lib;$(SolutionDir)Vendor\luajit\bin\windows_$(PlatformTarget)\lua51.lib;$(CONNORLIB_HOME)\bin\$(PlatformTarget)\serialization.dll.lib;$(CONNORLIB_HOME)\bin\$(PlatformTarget)\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(OutDIr)LuaInterface.lib;$(SolutionDir)Vendor\luajit\bin\windows_$(PlatformTarget)\lua51.lib;$(CONNORLIB_HOME)\bin\windows\$(PlatformTarget)\serialization.dll.lib;$(CONNORLIB_HOME)\bin\windows\$(PlatformTarget)\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>Module.def</ModuleDefinitionFile>
     </Link>
@@ -164,7 +164,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(OutDIr)LuaInterface.lib;$(SolutionDir)Vendor\luajit\bin\windows_$(PlatformTarget)\lua51.lib;$(CONNORLIB_HOME)\bin\$(PlatformTarget)\serialization.dll.lib;$(CONNORLIB_HOME)\bin\$(PlatformTarget)\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)AssetPipeline.lib;$(OutDIr)LuaInterface.lib;$(SolutionDir)Vendor\luajit\bin\windows_$(PlatformTarget)\lua51.lib;$(CONNORLIB_HOME)\bin\windows\$(PlatformTarget)\serialization.dll.lib;$(CONNORLIB_HOME)\bin\windows\$(PlatformTarget)\imageload.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>Module.def</ModuleDefinitionFile>
     </Link>

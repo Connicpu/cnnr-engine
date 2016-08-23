@@ -1,4 +1,5 @@
 #include "SpriteDesc.h"
+#include <algorithm>
 
 void SpriteDesc::Deserialize(const TOML::Table &sprite_desc, const fs::path &pack_folder)
 {

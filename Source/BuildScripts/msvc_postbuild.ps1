@@ -13,12 +13,12 @@ while ($(Get-CurrFolderName) -ne "cnnr-engine")
 
 function Copy-Libraries($target, $configuration)
 {
-    if (Test-Path "bin\$target\$configuration")
+    if (Test-Path "bin\windows\$target\$configuration")
     {
-        Copy-Item -Path "$env:CONNORLIB_HOME\bin\$target\serialization.dll" -Destination "bin\$target\$configuration\serialization.dll"
-        Copy-Item -Path "$env:CONNORLIB_HOME\bin\$target\imageload.dll" -Destination "bin\$target\$configuration\imageload.dll"
-        Copy-Item -Path "$env:CONNORLIB_HOME\bin\$target\messageipc.dll" -Destination "bin\$target\$configuration\messageipc.dll"
-        Copy-Item -Path "Source\Vendor\luajit\bin\windows_$target\lua51.dll" -Destination "bin\$target\$configuration\lua51.dll"
+        Copy-Item -Path "$env:CONNORLIB_HOME\bin\windows\$target\serialization.dll" -Destination "bin\windows\$target\$configuration\serialization.dll"
+        Copy-Item -Path "$env:CONNORLIB_HOME\bin\windows\$target\imageload.dll" -Destination "bin\windows\$target\$configuration\imageload.dll"
+        Copy-Item -Path "$env:CONNORLIB_HOME\bin\windows\$target\messageipc.dll" -Destination "bin\windows\$target\$configuration\messageipc.dll"
+        Copy-Item -Path "Source\Vendor\luajit\bin\windows_$target\lua51.dll" -Destination "bin\windows\$target\$configuration\lua51.dll"
     }
 }
 

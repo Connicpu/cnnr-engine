@@ -26,7 +26,6 @@ namespace cx
         return details::fnv1a_helper<uint64_t, 14695981039346656037U, 1099511628211U>(str, (ptrdiff_t)len);
     }
 
-    template <char ...str>
     constexpr size_t fnv1a(const char *str, size_t len)
     {
         return std::is_same<size_t, uint32_t>::value

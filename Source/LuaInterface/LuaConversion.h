@@ -8,13 +8,13 @@
 struct lua_arg_error : public std::exception
 {
 public:
-    lua_arg_error(int narg, const type_info *type)
-        : narg(narg), type(type)
+    lua_arg_error(int narg, const std::type_info &type)
+        : narg(narg), type(&type)
     {
     }
 
     int narg;
-    const type_info *type;
+    const std::type_info *type;
 };
 
 struct lua_freed_error : public std::exception
@@ -33,7 +33,11 @@ namespace details
     {
         static T convert(lua_State *L, int index)
         {
+#ifdef MSVC
             static_assert(false,
+#else
+            assert(false &&
+#endif
                 "There is no way to perform the conversion you are asking."
                 "Add an overload, or use a reference if your object inherits LuaObject.");
         }

@@ -257,6 +257,13 @@ union EventStorage
                 unreachable();
         }
     }
+
+    inline EventStorage &operator=(const EventStorage &rhs)
+    {
+        this->~EventStorage();
+        new (this) EventStorage(rhs);
+        return *this;
+    }
 #pragma endregion
 
     #pragma region Move Initializers
@@ -356,18 +363,18 @@ union EventStorage
                 unreachable();
         }
     }
+
+    inline EventStorage &operator=(EventStorage &&rhs)
+    {
+        this->~EventStorage();
+        new (this) EventStorage(std::move(rhs));
+        return *this;
+    }
     #pragma endregion
 
     inline ~EventStorage()
     {
         base.~Event();
-    }
-
-    inline EventStorage &operator=(const EventStorage &rhs)
-    {
-        this->~EventStorage();
-        new (this) EventStorage(rhs);
-        return *this;
     }
 
     Event base;

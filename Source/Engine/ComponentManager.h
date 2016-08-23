@@ -24,7 +24,7 @@ public:
     const ComponentList &operator[](ComponentId id) const;
 
     HotComponentList<Transform> transform;
-    HotComponentList<Sprite> sprite;
+    ColdComponentList<Sprite> sprite;
 
 private:
     ComponentId InternalRegister(String name, ComponentListPtr ptr);

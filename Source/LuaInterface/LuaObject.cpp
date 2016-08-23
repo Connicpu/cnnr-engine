@@ -20,7 +20,17 @@ LuaObject::LuaObject(LuaObject &&move)
 LuaObject &LuaObject::operator=(LuaObject &&move)
 {
     userdata_.~optional();
-    this->LuaObject::LuaObject(std::move(move));
+    userdata_ = std::move(move.userdata_);
+    if (userdata_)
+    {
+        auto L = userdata_->state();
+        userdata_->push();
+
+        auto data = (UserdataRepr *)lua_touserdata(L, -1);
+        data->obj = this;
+
+        lua_pop(L, 1);
+    }
     return *this;
 }
 

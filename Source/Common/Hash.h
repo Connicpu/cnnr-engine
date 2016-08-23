@@ -353,8 +353,8 @@ namespace SipDetails
         }
     };
 
-    template <typename Rng = std::random_device>
-    inline uint64_t rand_key(Rng &&rng = Rng())
+    template <typename Rng>
+    inline uint64_t rand_key(Rng &rng)
     {
         return std::uniform_int_distribution<uint64_t>(
             std::numeric_limits<uint64_t>::min(),
@@ -362,17 +362,22 @@ namespace SipDetails
             (rng);
     }
 
+    inline uint64_t rand_key()
+    {
+        std::random_device rng;
+        return rand_key(rng);
+    }
+
     template <typename H, typename Out>
     struct RandomKey
     {
         RandomKey()
-            : hasher(rand_key<>(), rand_key<>())
+            : hasher(rand_key(), rand_key())
         {
         }
 
-        template <typename Rng>
-        RandomKey(Rng &rng)
-            : hasher(rand_key<Rng &>(rng), rand_key<Rng &>(rng))
+        RandomKey(uint64_t k1, uint64_t k2)
+            : hasher(k1, k2)
         {
         }
 
@@ -423,21 +428,6 @@ using RandomSipHash24 = SipDetails::RandomKey<SipHash24, size_t>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Wrapper to allow use of custom hashers where one would normally expect std::hash
-
-template <typename Hasher = Fnv1A>
-class StdHash
-{
-    mutable Hasher h;
-
-public:
-    template <typename T>
-    size_t operator()(const T &value) const
-    {
-        h.reset();
-        hash_apply(value, h);
-        return static_cast<size_t>(h);
-    }
-};
 
 template <typename Algo, typename T>
 inline size_t simple_hash(const T &value)
@@ -554,6 +544,21 @@ namespace gsl
         h.write(span.data(), span.size_bytes());
     }
 }
+
+template <typename Hasher = Fnv1A>
+class StdHash
+{
+    mutable Hasher h;
+
+public:
+    template <typename T>
+    size_t operator()(const T &value) const
+    {
+        h.reset();
+        hash_apply(value, h);
+        return static_cast<size_t>(h);
+    }
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Other typedefs I like
