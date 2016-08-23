@@ -1,1 +1,5 @@
+local ComponentRegistry
 
+return {
+
+}

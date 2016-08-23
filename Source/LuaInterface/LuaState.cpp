@@ -48,6 +48,27 @@ void LuaState::load(const String &file)
     }
 }
 
+void LuaState::call(int nresults, int nargs, const String &func, std::optional<const String&> module)
+{
+    if (module)
+        require(1, *module);
+    else
+        lua_pushvalue(L, LUA_GLOBALSINDEX);
+
+
+}
+
+void LuaState::require(int nresults, const String &file)
+{
+    lua_getfield(L, LUA_GLOBALSINDEX, "require");
+    file.push_lua(L);
+    if (lua_pcall(L, 1, nresults, 0))
+    {
+        auto msg = String::from_lua(L, -1);
+        throw std::runtime_error{ msg.as_owned() };
+    }
+}
+
 LuaState *LuaState::from_raw(lua_State *L)
 {
     lua_assertstack(L, 1);

@@ -16,6 +16,8 @@ public:
 
     lua_State *state();
     void load(const String &file);
+    void call(int nresults, int nargs, const String &func, std::optional<const String &> module = std::nullopt);
+    void require(int nresults, const String &file);
 
     template <typename T>
     void register_module(const String &name);
