@@ -26,6 +26,9 @@ Add an environment variable `CONNORLIB_HOME = "C:\path\to\sources\connorlib"`
 
 ## Linux
 
+Ensure you have g++-6 and libstdc++-6-dev installed. You can get them from [this ppa](https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test) on Ubuntu 14.04
+
+
 *TODO*
 
 ## MacOS
