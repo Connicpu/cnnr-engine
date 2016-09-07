@@ -2,6 +2,7 @@ return function(registry)
     -- Misc
     registry:register("systems.misc.spin")
 
-    -- Debugger
+    -- Utility Systems
     registry:register("debugger.system")
+    registry:register("console.system")
 end

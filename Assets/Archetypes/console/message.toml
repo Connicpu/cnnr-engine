@@ -1,0 +1,13 @@
+[entity]
+name = "consoleMessage"
+
+[components]
+transform = {}
+consoleMessage = {}
+
+[components.text]
+font = "Consolas"
+fontSize = 10.0
+fontColor = "White"
+text = "[someone forgot to replace this text]"
+

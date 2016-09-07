@@ -1,0 +1,9 @@
+[entity]
+name = "consoleBackdrop"
+
+[components]
+transform = {}
+
+[components.sprite]
+texture = "Utility:SolidColor"
+tint = "#6F6F6F8F"
